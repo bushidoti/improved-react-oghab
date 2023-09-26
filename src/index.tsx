@@ -9,6 +9,7 @@ import { BrowserRouter } from 'react-router-dom'
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
+
 root.render(
   <ConfigProvider direction="rtl">
         <BrowserRouter>
@@ -16,7 +17,7 @@ root.render(
             <App />
           </React.StrictMode>
         </BrowserRouter>
-  </ConfigProvider>
+  </ConfigProvider>,
 );
 
 // If you want to start measuring performance in your app, pass a function

@@ -7,8 +7,8 @@ import {
   CloudSyncOutlined,
   PhoneOutlined,
 } from '@ant-design/icons';
-import type { MenuProps } from 'antd';
-import {Link, Route, Routes} from "react-router-dom";
+import { MenuProps } from 'antd';
+import {Link, Route, Routes, useLocation} from "react-router-dom";
 import { Breadcrumb, Layout, Menu, theme , Avatar } from 'antd';
 import React, {useState} from "react";
 import Contactus from "../contactus/page";
@@ -95,36 +95,79 @@ const items: MenuItem[] = [
    getItem(<Link to='../contactus'>پشتیبانی</Link>, '20', <PhoneOutlined />),
 ];
 
+const breadcrumbNameMap: Record<string, string> = {
+  '/contract': 'قراردادها',
+  '/personal': 'مدارک اشخاص',
+  '/document': 'اسناد اموال',
+  '/warhouse': 'انبارداری',
+  '/contactus': 'تماس با ما',
+  '/warhouse/product': 'انبار',
+  '/warhouse/property': 'اموال',
+  '/contract/register': 'ثبت',
+  '/contract/report': 'گزارش',
+  '/contract/upload': 'بارگذاری',
+  '/personal/register': 'ثبت',
+  '/personal/report': 'گزارش',
+  '/personal/upload': 'بارگذاری',
+  '/document/register': 'ثبت',
+  '/document/report': 'گزارش',
+  '/document/upload': 'بارگذاری',
+  '/warhouse/product/register': 'ثبت',
+  '/warhouse/product/report': 'گزارش',
+  '/warhouse/property/register': 'ثبت',
+  '/warhouse/property/report': 'گزارش',
+  '/warhouse/property/sent': 'ارسالی',
+  '/warhouse/property/recycle': 'بایگانی',
+  '/warhouse/handling': 'انبارگردانی',
+
+};
 
 const LayoutForm: React.FC = () => {
   const [collapsed, setCollapsed] = useState(true);
+  const location = useLocation();
+  const pathSnippets = location.pathname.split('/').filter((i) => i);
+
+  const extraBreadcrumbItems = pathSnippets.map((_, index) => {
+    const url = `/${pathSnippets.slice(0, index + 1).join('/')}`;
+    return {
+      key: url,
+      title: <Link to={url}>{breadcrumbNameMap[url]}</Link>,
+    };
+  });
+
+ const breadcrumbItems = [
+    {
+      title: <Link to="/">خانه</Link>,
+      key: 'home',
+    },
+  ].concat(extraBreadcrumbItems);
+
   const {
     token: { colorBgContainer },
   } = theme.useToken();
   return (
-        <Layout style={{ minHeight: '100vh' }}>
-          <Sider collapsible reverseArrow collapsed={collapsed} onCollapse={(value) => setCollapsed(value)}>
+
+        <Layout style={{ minHeight: '100vh', marginRight: !collapsed ? 200 : 80 }}>
+          <Sider style={{
+          overflow: 'auto',
+          height: '100vh',
+          position: 'fixed',
+          right: 0,
+          top: 0,
+          bottom: 0,
+        }} collapsible reverseArrow collapsed={collapsed} onCollapse={(value) => setCollapsed(value)}>
                     <Avatar
                         size={!collapsed ? { xs: 24, sm: 32, md: 40, lg: 64, xl: 80, xxl: 100 } : 'default' }
                         style={{ backgroundColor: '#fde3cf', color: '#f56a00', right: !collapsed ?
                         40 : 15 , margin:10}}>U</Avatar>
-            <Menu theme="dark" defaultSelectedKeys={['1']} mode="inline" items={items} />
+
+                     <Menu theme="dark" defaultSelectedKeys={['1']} mode="inline" items={items} />
           </Sider>
           <Layout>
             <Header style={{ padding: 0, background: colorBgContainer }} />
-            <Content style={{ margin: '0 16px' }}>
-              <Breadcrumb style={{ margin: '16px 0' }} items={[
-                {
-                  title: <Link to="/">خانه</Link>,
-                },
-                {
-                  title: <Link to="/">انبار</Link>,
-                },
-                {
-                  title: 'گزارش',
-                }
-              ]}/>
-              <div style={{ padding: 24, minHeight: 360, background: colorBgContainer }}>
+            <Content style={{ margin: '0 16px', overflow: 'initial' }}>
+              <Breadcrumb separator=">" style={{ margin: '16px 0' }} items={breadcrumbItems}/>
+              <div style={{ padding: 24, minHeight: '100vh', background: colorBgContainer }}>
                  <Routes>
                           <Route path={'/contract/register'} element={<RegisterContract/>}/>
                           <Route path={'/contract/report'} element={<ReportContract/>}/>

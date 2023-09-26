@@ -8,9 +8,26 @@ import {
   PhoneOutlined,
 } from '@ant-design/icons';
 import type { MenuProps } from 'antd';
-import {Link} from "react-router-dom";
+import {Link, Route, Routes} from "react-router-dom";
 import { Breadcrumb, Layout, Menu, theme , Avatar } from 'antd';
 import React, {useState} from "react";
+import Contactus from "../contactus/page";
+import RegisterContract from "../contract/register/page";
+import ReportContract from "../contract/report/page";
+import UploadContract from "../contract/upload/page";
+import RegisterDocument from "../document/register/page";
+import ReportDocument from "../document/report/page";
+import UploadDocument from "../document/upload/page";
+import RegisterProduct from "../warhouse/product/register/page";
+import ReportProduct from "../warhouse/product/report/page";
+import RecycleProperty from "../warhouse/property/recycle/page";
+import RegisterProperty from "../warhouse/property/register/page";
+import ReportProperty from "../warhouse/property/report/page";
+import SentProperty from "../warhouse/property/sent/page";
+import RegisterPersonal from "../personal/register/page";
+import ReportPersonal from "../personal/report/page";
+import UploadPersonal from "../personal/upload/page";
+import Handling from "../warhouse/handling/page";
 
 const { Header, Content, Footer, Sider } = Layout;
 
@@ -84,14 +101,12 @@ const LayoutForm: React.FC = () => {
   const {
     token: { colorBgContainer },
   } = theme.useToken();
-
   return (
-
         <Layout style={{ minHeight: '100vh' }}>
           <Sider collapsible reverseArrow collapsed={collapsed} onCollapse={(value) => setCollapsed(value)}>
                     <Avatar
                         size={!collapsed ? { xs: 24, sm: 32, md: 40, lg: 64, xl: 80, xxl: 100 } : 'default' }
-                        style={{ backgroundColor: '#fde3cf', color: '#f56a00', right:!collapsed ?
+                        style={{ backgroundColor: '#fde3cf', color: '#f56a00', right: !collapsed ?
                         40 : 15 , margin:10}}>U</Avatar>
             <Menu theme="dark" defaultSelectedKeys={['1']} mode="inline" items={items} />
           </Sider>
@@ -110,6 +125,25 @@ const LayoutForm: React.FC = () => {
                 }
               ]}/>
               <div style={{ padding: 24, minHeight: 360, background: colorBgContainer }}>
+                 <Routes>
+                          <Route path={'/contract/register'} element={<RegisterContract/>}/>
+                          <Route path={'/contract/report'} element={<ReportContract/>}/>
+                          <Route path={'/contract/upload'} element={<UploadContract/>}/>
+                          <Route path={'/document/register'} element={<RegisterDocument/>}/>
+                          <Route path={'/document/report'} element={<ReportDocument/>}/>
+                          <Route path={'/document/upload'} element={<UploadDocument/>}/>
+                          <Route path={'/personal/register'} element={<RegisterPersonal/>}/>
+                          <Route path={'/personal/report'} element={<ReportPersonal/>}/>
+                          <Route path={'/personal/upload'} element={<UploadPersonal/>}/>
+                          <Route path={'/warhouse/product/register'} element={<RegisterProduct/>}/>
+                          <Route path={'/warhouse/product/report'} element={<ReportProduct/>}/>
+                          <Route path={'/warhouse/property/register'} element={<RegisterProperty/>}/>
+                          <Route path={'/warhouse/property/report'} element={<ReportProperty/>}/>
+                          <Route path={'/warhouse/property/sent'} element={<SentProperty/>}/>
+                          <Route path={'/warhouse/property/recycle'} element={<RecycleProperty/>}/>
+                          <Route path={'/warhouse/handling'} element={<Handling/>}/>
+                          <Route path={'/contactus'} element={<Contactus/>}/>
+                 </Routes>
               </div>
             </Content>
             <Footer style={{ textAlign: 'center' }}>تمامی حقوق برای شرکت digitkey می باشد.</Footer>

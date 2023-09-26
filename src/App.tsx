@@ -1,6 +1,6 @@
 import React, {Fragment, useEffect, useState} from "react";
 import LayoutForm from "./components/layout/layout";
-import {Route, Routes, useNavigate , Navigate} from "react-router-dom";
+import {Route, Routes, useNavigate } from "react-router-dom";
 import Login from "./components/login/login";
 import '././App.css';
 import {Context} from "./context";
@@ -36,8 +36,8 @@ const App: React.FC = () => {
               }}>
                 {isLogged ?
                         <Routes>
-                            <Route path={'/'} element={<LayoutForm/>}>
-                                <Route path={'*'} element={<Navigate to="/" />}/>
+                            <Route path={'*'} element={<LayoutForm/>}>
+
                             </Route>
                         </Routes>
                     :

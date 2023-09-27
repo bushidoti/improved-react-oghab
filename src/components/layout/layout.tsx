@@ -5,12 +5,13 @@ import {
   HomeOutlined,
   SolutionOutlined,
   CloudSyncOutlined,
+  PoweroffOutlined,
   PhoneOutlined,
 } from '@ant-design/icons';
-import { MenuProps } from 'antd';
+import {MenuProps} from 'antd';
 import {Link, Route, Routes, useLocation} from "react-router-dom";
 import { Breadcrumb, Layout, Menu, theme , Avatar } from 'antd';
-import React, {useState} from "react";
+import React, {useContext, useState} from "react";
 import Contactus from "../contactus/page";
 import RegisterContract from "../contract/register/page";
 import ReportContract from "../contract/report/page";
@@ -28,6 +29,10 @@ import RegisterPersonal from "../personal/register/page";
 import ReportPersonal from "../personal/report/page";
 import UploadPersonal from "../personal/upload/page";
 import Handling from "../warhouse/handling/page";
+import {useTime} from "react-timer-hook";
+import {Logout} from "../login/logout";
+import {Context} from "../../context";
+
 
 const { Header, Content, Footer, Sider } = Layout;
 
@@ -93,6 +98,7 @@ const items: MenuItem[] = [
     getItem(<Link to='../warhouse/handling'>انبارگردانی</Link>, '19')
   ]),
    getItem(<Link to='../contactus'>پشتیبانی</Link>, '20', <PhoneOutlined />),
+   getItem(<Link to='../logout'>خروج</Link>, '21', <PoweroffOutlined />),
 ];
 
 const breadcrumbNameMap: Record<string, string> = {
@@ -125,7 +131,15 @@ const breadcrumbNameMap: Record<string, string> = {
 const LayoutForm: React.FC = () => {
   const [collapsed, setCollapsed] = useState(true);
   const location = useLocation();
+  const context = useContext(Context)
   const pathSnippets = location.pathname.split('/').filter((i) => i);
+  const {
+        seconds,
+        minutes,
+        hours
+      } = useTime({ });
+
+  let today = new Date().toLocaleDateString('fa-IR', {year: 'numeric', month: 'long', day: 'numeric'});
 
   const extraBreadcrumbItems = pathSnippets.map((_, index) => {
     const url = `/${pathSnippets.slice(0, index + 1).join('/')}`;
@@ -145,8 +159,9 @@ const LayoutForm: React.FC = () => {
   const {
     token: { colorBgContainer },
   } = theme.useToken();
-  return (
 
+
+  return (
         <Layout style={{ minHeight: '100vh', marginRight: !collapsed ? 200 : 80 }}>
           <Sider style={{
           overflow: 'auto',
@@ -164,7 +179,11 @@ const LayoutForm: React.FC = () => {
                      <Menu theme="dark" defaultSelectedKeys={['1']} mode="inline" items={items} />
           </Sider>
           <Layout>
-            <Header style={{ padding: 0, background: colorBgContainer }} />
+            <Header style={{ padding: 0, background: colorBgContainer }}>
+                <span>{context.fullName + ' ' +  context.office}</span>
+                <span style={{marginRight:20}}>{hours}:{minutes}:{seconds}</span>
+                <span> امروز {today}</span>
+            </Header>
             <Content style={{ margin: '0 16px', overflow: 'initial' }}>
               <Breadcrumb separator=">" style={{ margin: '16px 0' }} items={breadcrumbItems}/>
               <div style={{ padding: 24, minHeight: '100vh', background: colorBgContainer }}>
@@ -186,6 +205,7 @@ const LayoutForm: React.FC = () => {
                           <Route path={'/warhouse/property/recycle'} element={<RecycleProperty/>}/>
                           <Route path={'/warhouse/handling'} element={<Handling/>}/>
                           <Route path={'/contactus'} element={<Contactus/>}/>
+                          <Route path={'/logout'} element={<Logout/>}/>
                  </Routes>
               </div>
             </Content>

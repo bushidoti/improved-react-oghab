@@ -5,12 +5,47 @@ import Login from "./components/login/login";
 import '././App.css';
 import {Context} from "./context";
 import {Loading} from "./components/loading/loading";
+import axios from "axios";
+import Url from "./components/api-configue";
 
 
 const App: React.FC = () => {
   const navigate = useNavigate();
   const [isLogged , setLogged] = useState(false)
   const [loading, setLoading] = useState(true)
+  const [fullName, setFullName] = useState('');
+  const [office, setOffice] = useState('');
+
+
+
+
+   useEffect(() => {
+        if(isLogged){
+                          (async () => {
+                        const {data} = (await axios.get(`${Url}/name/`, {
+                          headers: {
+                            'Authorization': 'Bearer ' + localStorage.getItem('access_token'),
+                          }
+                        }));
+                      setFullName(data.message);
+                })()
+        }
+
+    }, [isLogged]);
+
+    useEffect(() => {
+        if(isLogged){
+           (async () => {
+
+                    const {data} = (await axios.get(`${Url}/home/`, {
+                      headers: {
+                        'Authorization': 'Bearer ' + localStorage.getItem('access_token'),
+                      }
+                    }));
+                  setOffice(data.message);
+            })()
+        }
+    }, [isLogged]);
 
    useEffect(() => {
       if (localStorage.getItem('access_token') !== null) {
@@ -28,11 +63,15 @@ const App: React.FC = () => {
 
   return (
       <Fragment>
+
           {loading ?
                 <Loading/>
                   :
               <Context.Provider value={{
-                  setLogged:setLogged
+                  setLogged,
+                  fullName,
+                  isLogged,
+                  office
               }}>
                 {isLogged ?
                         <Routes>

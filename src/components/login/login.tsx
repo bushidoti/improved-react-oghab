@@ -1,14 +1,18 @@
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
-import {Button, Form, Input} from 'antd';
+import {Button, Form, Input, message} from 'antd';
 import {useContext} from "react";
 import Url from '../api-configue'
 import axios from "axios";
 import {Context} from "../../context";
 import {useNavigate} from "react-router-dom";
 
-const Login: React.FC = (prop) => {
+const Login: React.FC = () => {
   const context = useContext(Context)
   const navigate = useNavigate();
+
+  const success = () => {
+    message.success(context.fullName + ' ' + context.office + ' خوش آمدید');
+  };
 
   const onFinish = async (values: any) => {
 
@@ -28,10 +32,9 @@ const Login: React.FC = (prop) => {
           localStorage.setItem('access_token', data.access);
           localStorage.setItem('refresh_token', data.refresh);
           axios.defaults.headers.common['Authorization'] = `Bearer ${data['access']}`;
-          if (window.location.href === '/login') {
-             navigate('/');
-          }
+          navigate('/');
           context.setLogged(true)
+          success()
       } catch (e) {
           context.setLogged(false)
       }

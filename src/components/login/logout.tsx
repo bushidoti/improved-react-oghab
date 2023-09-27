@@ -4,25 +4,26 @@ import Url from "../api-configue";
 import {Context} from "../../context";
 
 export const Logout = () => {
-      const context = useContext(Context)
+    const context = useContext(Context)
 
-     const prom = async  () => {
-          window.location.href = '/login'
-    }
 
     const func = async () => {
           if (context.isLogged){
-                await prom().then(() => {
                       try { axios.post(`${Url}/logout/`,{
                             refresh_token:localStorage.getItem('refresh_token')
                         } ,{headers: {
                             'Content-Type': 'application/json'
-                        }});
-                        localStorage.clear();
-                        axios.defaults.headers.common['Authorization'] = null;
+                        }}).then(() => {
+                               localStorage.clear();
+                               axios.defaults.headers.common['Authorization'] = null;
+                        }
+                        ).finally(() => {
+                           window.location.reload()
+                        })
+
                     } catch (e) {
                     }
-                 });
+
           }
     }
 

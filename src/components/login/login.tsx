@@ -14,6 +14,10 @@ const Login: React.FC = () => {
     message.success(context.fullName + ' ' + context.office + ' خوش آمدید');
   };
 
+  const error = () => {
+    message.error('نام کاربری یا رمز عبور اشتباه است');
+  };
+
   const onFinish = async (values: any) => {
 
       try {
@@ -37,6 +41,7 @@ const Login: React.FC = () => {
           success()
       } catch (e) {
           context.setLogged(false)
+          error()
       }
   };
 

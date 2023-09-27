@@ -65,7 +65,7 @@ const Login: React.FC = () => {
                     name="password"
                     rules={[{ required: true, message: 'لطفا رمز عبور را وارد کنید!' }]}
                   >
-                    <Input
+                    <Input.Password
                       prefix={<LockOutlined className="site-form-item-icon" />}
                       type="password"
                       placeholder="رمز عبور"

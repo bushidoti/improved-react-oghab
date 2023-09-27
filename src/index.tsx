@@ -11,7 +11,13 @@ const root = ReactDOM.createRoot(
 );
 
 root.render(
-  <ConfigProvider direction="rtl">
+  <ConfigProvider direction="rtl" theme={{
+                            components: {
+                              Layout: {
+                                  headerBg:'#bae0ff'
+                              }
+                            }
+                        }}>
         <BrowserRouter>
           <React.StrictMode>
             <App />

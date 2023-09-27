@@ -8,7 +8,7 @@ import {
   PoweroffOutlined,
   PhoneOutlined,
 } from '@ant-design/icons';
-import {MenuProps} from 'antd';
+import {MenuProps, Space} from 'antd';
 import {Link, Route, Routes, useLocation} from "react-router-dom";
 import { Breadcrumb, Layout, Menu, theme , Avatar } from 'antd';
 import React, {useContext, useState} from "react";
@@ -171,18 +171,18 @@ const LayoutForm: React.FC = () => {
           top: 0,
           bottom: 0,
         }} collapsible reverseArrow collapsed={collapsed} onCollapse={(value) => setCollapsed(value)}>
-                    <Avatar
-                        size={!collapsed ? { xs: 24, sm: 32, md: 40, lg: 64, xl: 80, xxl: 100 } : 'default' }
-                        style={{ backgroundColor: '#fde3cf', color: '#f56a00', right: !collapsed ?
-                        40 : 15 , margin:10}}>U</Avatar>
-
-                     <Menu theme="dark" defaultSelectedKeys={['1']} mode="inline" items={items} />
+            <Avatar shape="square" size={!collapsed ? { xs: 24, sm: 32, md: 40, lg: 64, xl: 80, xxl: 100 } : 'default' }
+                style={{right: !collapsed ?
+                40 : 15 , margin:10}} src={require('./icon-512x512.png')} />
+            <Menu theme="dark" defaultSelectedKeys={['1']} mode="inline" items={items} />
           </Sider>
           <Layout>
-            <Header style={{ padding: 0, background: colorBgContainer }}>
-                <span>{context.fullName + ' ' +  context.office}</span>
-                <span style={{marginRight:20}}>{hours}:{minutes}:{seconds}</span>
-                <span> امروز {today}</span>
+            <Header style={{ padding: 0 }}>
+                <Space>
+                    <span className='span-header' style={{marginRight:20}}>{context.fullName + ' ' +  context.office}</span>
+                    <span className='span-header'>{hours}:{minutes}:{seconds}</span>
+                    <span className='span-header'>{today}</span>
+                </Space>
             </Header>
             <Content style={{ margin: '0 16px', overflow: 'initial' }}>
               <Breadcrumb separator=">" style={{ margin: '16px 0' }} items={breadcrumbItems}/>

@@ -5,13 +5,14 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { ConfigProvider } from 'antd';
 import { BrowserRouter } from 'react-router-dom'
+import locale from 'antd/locale/fa_IR';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
 
 root.render(
-  <ConfigProvider direction="rtl" theme={{
+  <ConfigProvider direction="rtl" locale={locale} theme={{
                             components: {
                               Layout: {
                                   headerBg:'#bae0ff'
@@ -23,7 +24,7 @@ root.render(
             <App />
           </React.StrictMode>
         </BrowserRouter>
-  </ConfigProvider>,
+  </ConfigProvider>
 );
 
 // If you want to start measuring performance in your app, pass a function

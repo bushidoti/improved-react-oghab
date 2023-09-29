@@ -6,6 +6,13 @@ import {Badge, Button, Input, Space, Table} from 'antd';
 import type { ColumnType, ColumnsType } from 'antd/es/table';
 import type {FilterConfirmProps, FilterValue, SorterResult} from 'antd/es/table/interface';
 import Url from "../../api-configue";
+import 'dayjs/locale/fa';
+import { DatePicker as DatePickerJalali, JalaliLocaleListener } from "antd-jalali";
+import dayjs from 'dayjs';
+import 'dayjs/locale/fa';
+import {DateObject} from "react-multi-date-picker";
+import persian from "react-date-object/calendars/persian";
+
 
 interface DataType {
   key: React.Key;
@@ -41,6 +48,7 @@ const MainPersonal: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [filteredInfo, setFilteredInfo] = useState<Record<string, FilterValue | null>>({});
   const [sortedInfo, setSortedInfo] = useState<SorterResult<DataType>>({});
+  const date = new DateObject({ calendar: persian })
 
   const fetchData = async () => {
         await fetch(`${Url}/api/persons/?fields=affidavitStatus,id,type,full_name,expireDate,date,national_id,sex,office,job,approvedPrice,commitmentPrice,typeBail,firstBail,secondBail,clearedStatus,clearedDate,receivedDocument` , {
@@ -55,6 +63,9 @@ const MainPersonal: React.FC = () => {
             setLoading(false)
         })
       }
+
+
+
 
 
   useEffect(() => {
@@ -125,18 +136,39 @@ const MainPersonal: React.FC = () => {
 
   }
 
-  const getColumnSearchProps = (dataIndex: DataIndex): ColumnType<DataType> => ({
 
+  const getColumnSearchProps = (dataIndex: DataIndex): ColumnType<DataType> => ({
     filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }) => (
+
       <div style={{ padding: 8 }} onKeyDown={(e) => e.stopPropagation()}>
-        <Input
-          ref={searchInput}
-          placeholder={`جستجو ${handleSearchPlaceHolder(dataIndex)}`}
-          value={selectedKeys[0]}
-          onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
-          onPressEnter={() => handleSearch(selectedKeys as string[], confirm, dataIndex)}
-          style={{ marginBottom: 8, display: 'block' }}
-        />
+
+        {dataIndex === "date" ?
+              <>
+                 <JalaliLocaleListener/>
+                   <DatePickerJalali
+                       onChange={function(dateString : string){
+                         setSelectedKeys(dayjs(dateString).locale('fa').format('YYYY-M-D') ? [dayjs(dateString).locale('fa').format('YYYY-MM-DD')] : [])
+                         console.log(selectedKeys[0])
+                       }}
+                        onPressEnter={() => handleSearch(selectedKeys as string[], confirm, dataIndex)}
+                   />
+              </>
+
+            :
+              <Input
+              ref={searchInput}
+              placeholder={`جستجو ${handleSearchPlaceHolder(dataIndex)}`}
+              value={selectedKeys[0]}
+              onChange={(e) => {
+                  setSelectedKeys(e.target.value ? [e.target.value] : [])
+              } }
+              onPressEnter={() => handleSearch(selectedKeys as string[], confirm, dataIndex)}
+              style={{ marginBottom: 8, display: 'block' }}
+            />
+        }
+
+
+
         <Space>
           <Button
             type="primary"
@@ -204,6 +236,7 @@ const MainPersonal: React.FC = () => {
   });
 
 
+
   const columns: ColumnsType<DataType> = [
     {
       align:"center",
@@ -217,7 +250,13 @@ const MainPersonal: React.FC = () => {
       sortOrder: sortedInfo.columnKey === 'id' ? sortedInfo.order : null,
       sortDirections: ['descend', 'ascend'],
       filteredValue: filteredInfo.id || null,
-      
+      render: (value, record, index) =>
+          <>
+            <Space>
+              {date.format('YYYY-MM-DD').replaceAll('/' , '-') > record.expireDate ? <Badge  color="red" status="processing"/> :  ''} {record.id}
+            </Space>
+          </>
+
     },{
       align:"center",
       title: 'وضعیت',
@@ -246,7 +285,6 @@ const MainPersonal: React.FC = () => {
       key: 'full_name',
       ...getColumnSearchProps('full_name'),
       filteredValue: filteredInfo.full_name || null,
-      
     },{
       align:"center",
       title: 'جنسیت',
@@ -356,9 +394,14 @@ const MainPersonal: React.FC = () => {
       dataIndex: 'expireDate',
       width: '5%',
       key: 'expireDate',
-      ...getColumnSearchProps('expireDate'),
+      filters: [
+          {
+            text: 'قراردادهای پایان یافته',
+            value: 'قراردادهای پایان یافته',
+          }
+      ],
       filteredValue: filteredInfo.expireDate || null,
-
+      onFilter: (value, record) => date.format('YYYY-MM-DD').replaceAll('/' , '-') > record.expireDate,
     },{
       align:"center",
       title: 'وضعیت تسویه',
@@ -374,9 +417,6 @@ const MainPersonal: React.FC = () => {
       width: '5%',
       dataIndex: 'clearedDate',
       key: 'clearedDate',
-      ...getColumnSearchProps('clearedDate'),
-      filteredValue: filteredInfo.expireDate || null,
-
     },{
       align:"center",
       title: 'وضعیت مدرک',
@@ -448,8 +488,19 @@ const MainPersonal: React.FC = () => {
          <Space style={{ marginBottom: 16 }}>
             <Button onClick={clearFilters}>پاک کردن فیتلر ها</Button>
             <Button onClick={clearAll}>پاک کردن فیلتر و مرتب کننده ها</Button>
+            <Badge  color="red" status="processing" text="به معنی پایان قرارداد" />
+
           </Space>
-          <Table bordered columns={columns}  dataSource={contract} scroll={{ x: 3000 }} rowKey="id" onChange={handleChange}  loading={loading} pagination={{position:["bottomCenter"]}}/>;
+          <Table
+              bordered columns={columns}
+              dataSource={contract}
+              scroll={{ x: 3000 , y:'60vh'}}
+              rowKey="id"
+              onChange={handleChange}
+              loading={loading}
+              pagination={{position:["bottomCenter"],pageSize:1000}}
+              rowClassName={(record, index) =>  date.format('YYYY-MM-DD').replaceAll('/' , '-') > record.expireDate  ? 'table-expired-rows' :  ''}
+          />
       </>
   )
 };

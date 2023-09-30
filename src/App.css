@@ -31,3 +31,7 @@ body {
     background-color: #fff1f0;
 }
 
+.register-form-personal {
+    display: inline-block;
+    margin: 8px;
+}

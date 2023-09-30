@@ -2,7 +2,7 @@ import { SearchOutlined } from '@ant-design/icons';
 import React, {useEffect, useRef, useState} from 'react';
 import Highlighter from "react-highlight-words";
 import type {InputRef, TableProps} from 'antd';
-import {Badge, Button, Input, Space, Table} from 'antd';
+import {Badge, Button, Input, Space, Table } from 'antd';
 import type { ColumnType, ColumnsType } from 'antd/es/table';
 import type {FilterConfirmProps, FilterValue, SorterResult} from 'antd/es/table/interface';
 import Url from "../../api-configue";
@@ -12,7 +12,10 @@ import dayjs from 'dayjs';
 import 'dayjs/locale/fa';
 import {DateObject} from "react-multi-date-picker";
 import persian from "react-date-object/calendars/persian";
-
+import { CSVLink } from "react-csv";
+import {
+  FileExcelOutlined,
+} from '@ant-design/icons';
 
 interface DataType {
   key: React.Key;
@@ -35,6 +38,28 @@ interface DataType {
   receivedDocument  : boolean;
   affidavitStatus  : boolean;
 }
+
+const headers = [
+  { label: "شماره ثبت", key: "id" },
+  { label: "وضعیت", key: "type" },
+  { label: "نام و نشانی", key: "full_name" },
+  { label: "جنسیت", key: "sex" },
+  { label: "تاریخ استخدام", key: "date" },
+  { label: "کد ملی", key: "national_id" },
+  { label: "شغل", key: "job" },
+  { label: "تضمین مصوب", key: "approvedPrice" },
+  { label: "مبلغ تضمین", key: "commitmentPrice" },
+  { label: "وثیقه تضمین", key: "typeBail" },
+  { label: "مشخصه وثیقه", key: "firstBail" },
+  { label: "مشخصه وثیقه", key: "secondBail" },
+  { label: "تاریخ پایان قرارداد", key: "expireDate" },
+  { label: "وضعیت تسویه", key: "clearedStatus" },
+  { label: "تاریخ تسویه", key: "clearedDate"},
+  { label: "وضعیت مدرک", key: "receivedDocument" },
+  { label: "وضعیت اقرارنامه", key: "affidavitStatus" },
+  { label: "محل کار", key: "office" },
+
+];
 
 type DataIndex = keyof DataType;
 
@@ -148,7 +173,6 @@ const MainPersonal: React.FC = () => {
                    <DatePickerJalali
                        onChange={function(dateString : string){
                          setSelectedKeys(dayjs(dateString).locale('fa').format('YYYY-M-D') ? [dayjs(dateString).locale('fa').format('YYYY-MM-DD')] : [])
-                         console.log(selectedKeys[0])
                        }}
                         onPressEnter={() => handleSearch(selectedKeys as string[], confirm, dataIndex)}
                    />
@@ -253,7 +277,16 @@ const MainPersonal: React.FC = () => {
       render: (value, record, index) =>
           <>
             <Space>
-              {date.format('YYYY-MM-DD').replaceAll('/' , '-') > record.expireDate ? <Badge  color="red" status="processing"/> :  ''} {record.id}
+              {date.format('YYYY-MM-DD').replaceAll('/' , '-') > record.expireDate ?
+                  <>
+                  <Badge  color="red" status="processing"/> {record.id}
+                  </> :  ''}
+              {record.clearedStatus ?
+                  <>
+                    <Badge color="green" status="processing"/> {record.id}
+                  </>
+
+                  : ''}
             </Space>
           </>
 
@@ -281,10 +314,13 @@ const MainPersonal: React.FC = () => {
       title: 'نام و نشانی',
       fixed: 'left',
       dataIndex: 'full_name',
-      width: '5.88%',
+      width: '7%',
       key: 'full_name',
       ...getColumnSearchProps('full_name'),
       filteredValue: filteredInfo.full_name || null,
+      render: (value, record, index) => <Button type="link" onClick={() => {
+      }}>{record.full_name}</Button>,
+
     },{
       align:"center",
       title: 'جنسیت',
@@ -392,7 +428,7 @@ const MainPersonal: React.FC = () => {
       align:"center",
       title: 'تاریخ پایان قرارداد',
       dataIndex: 'expireDate',
-      width: '5%',
+      width: '6%',
       key: 'expireDate',
       filters: [
           {
@@ -401,16 +437,25 @@ const MainPersonal: React.FC = () => {
           }
       ],
       filteredValue: filteredInfo.expireDate || null,
-      onFilter: (value, record) => date.format('YYYY-MM-DD').replaceAll('/' , '-') > record.expireDate,
+      onFilter: (value, record) =>
+          date.format('YYYY-MM-DD').replaceAll('/' , '-') > record.expireDate,
     },{
       align:"center",
       title: 'وضعیت تسویه',
       width: '5%',
       dataIndex: 'clearedStatus',
       key: 'clearedStatus',
-      render: (value, record, index) => record.clearedStatus ? <Badge status="success"/> : <Badge status="error"/> ,
-
-
+      filters: [
+          {
+            text: 'قراردادهای تسفیه شده',
+            value: 'قراردادهای تسفیه شده',
+          }
+      ],
+      filteredValue: filteredInfo.clearedStatus || null,
+      onFilter: (value, record) =>
+          record.clearedStatus,
+      render: (value, record, index) => record.clearedStatus ?
+          <Badge status="success"/> : <Badge status="error"/> ,
     },{
       align:"center",
       title: 'تاریخ تسویه',
@@ -486,10 +531,14 @@ const MainPersonal: React.FC = () => {
   return (
       <>
          <Space style={{ marginBottom: 16 }}>
+            <Badge  color="red" status="processing" text="به معنی پایان قرارداد" />
+            <Badge  color="green" status="processing" text="به معنی تسویه شده و قفل شده" />
             <Button onClick={clearFilters}>پاک کردن فیتلر ها</Button>
             <Button onClick={clearAll}>پاک کردن فیلتر و مرتب کننده ها</Button>
-            <Badge  color="red" status="processing" text="به معنی پایان قرارداد" />
-
+            <Button ><CSVLink
+                filename={"پرسنل.csv"}
+                data={contract}
+                headers={headers}>اکسل <FileExcelOutlined /></CSVLink></Button>
           </Space>
           <Table
               bordered columns={columns}
@@ -498,8 +547,8 @@ const MainPersonal: React.FC = () => {
               rowKey="id"
               onChange={handleChange}
               loading={loading}
-              pagination={{position:["bottomCenter"],pageSize:1000}}
-              rowClassName={(record, index) =>  date.format('YYYY-MM-DD').replaceAll('/' , '-') > record.expireDate  ? 'table-expired-rows' :  ''}
+              pagination={{position:["bottomCenter"]}}
+              // rowClassName={(record, index) =>  date.format('YYYY-MM-DD').replaceAll('/' , '-') > record.expireDate  ? 'table-expired-rows' :  ''}
           />
       </>
   )

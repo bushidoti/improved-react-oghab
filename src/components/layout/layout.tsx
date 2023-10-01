@@ -29,7 +29,6 @@ import RegisterPersonal from "../personal/register/page";
 import ReportPersonal from "../personal/report/page";
 import UploadPersonal from "../personal/upload/page";
 import Handling from "../warhouse/handling/page";
-import {useTime} from "react-timer-hook";
 import {Logout} from "../login/logout";
 import {Context} from "../../context";
 import MainContract from "../contract/main/page";
@@ -139,13 +138,6 @@ const LayoutForm: React.FC = () => {
   const location = useLocation();
   const context = useContext(Context)
   const pathSnippets = location.pathname.split('/').filter((i) => i);
-  const {
-        seconds,
-        minutes,
-        hours
-      } = useTime({ });
-
-  let today = new Date().toLocaleDateString('fa-IR', {year: 'numeric', month: 'long', day: 'numeric'});
 
   const extraBreadcrumbItems = pathSnippets.map((_, index) => {
     const url = `/${pathSnippets.slice(0, index + 1).join('/')}`;
@@ -186,8 +178,6 @@ const LayoutForm: React.FC = () => {
             <Header style={{ padding: 0 }}>
                 <Space>
                     <span className='span-header' style={{marginRight:20}}>{context.fullName + ' ' +  context.office}</span>
-                    <span className='span-header'>{hours}:{minutes}:{seconds}</span>
-                    <span className='span-header'>{today}</span>
                 </Space>
             </Header>
             <Content style={{ margin: '0 16px', overflow: 'initial' }}>

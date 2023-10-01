@@ -6,7 +6,6 @@ import {Badge, Button, Input, Space, Table } from 'antd';
 import type { ColumnType, ColumnsType } from 'antd/es/table';
 import type {FilterConfirmProps, FilterValue, SorterResult} from 'antd/es/table/interface';
 import Url from "../../api-configue";
-import 'dayjs/locale/fa';
 import { DatePicker as DatePickerJalali, JalaliLocaleListener } from "antd-jalali";
 import dayjs from 'dayjs';
 import 'dayjs/locale/fa';
@@ -172,7 +171,7 @@ const MainPersonal: React.FC = () => {
                  <JalaliLocaleListener/>
                    <DatePickerJalali
                        onChange={function(dateString : string){
-                         setSelectedKeys(dayjs(dateString).locale('fa').format('YYYY-M-D') ? [dayjs(dateString).locale('fa').format('YYYY-MM-DD')] : [])
+                         setSelectedKeys(dayjs(dateString).locale('fa').format('YYYY-MM-DD') ? [dayjs(dateString).locale('fa').format('YYYY-MM-DD')] : [])
                        }}
                         onPressEnter={() => handleSearch(selectedKeys as string[], confirm, dataIndex)}
                    />

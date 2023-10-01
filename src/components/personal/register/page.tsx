@@ -1,8 +1,10 @@
 import React, {useEffect} from 'react';
-import {Button, Form, Input, InputNumber,message, Select} from 'antd';
+import {App, Button, Form, Input, InputNumber, Select} from 'antd';
 import {DatePicker as DatePickerJalali, JalaliLocaleListener} from "antd-jalali";
 import Url from "../../api-configue";
 import axios from "axios";
+import dayjs from "dayjs";
+
 
 const layout = {
   labelCol: { span: 8 },
@@ -15,31 +17,12 @@ const validateMessages = {
 };
 /* eslint-enable no-template-curly-in-string */
 
-const onFinish = async (values: any) => {
-    await axios.post(
-        `${Url}/api/persons/`,
-        values.contract, {
-            headers: {
-                'Authorization': 'Bearer ' + localStorage.getItem('access_token'),
-            }
-        }).then(response => {
-     return response
-          }).then(async data => {
-                    try {
-                        if (data.status === 400) {
-                            return  message.error(data.status);
-                        }
-                    } catch (e) {
-                        if (data.status === 201) {
-                           return  message.success('ثبت شد');
-                        }
-                    }
 
-                })
-    };
+
 
 let firstBail:string = ' '
 let secondBail:string = ' '
+
 
 const handleBailsLabel = (values: any) => {
    if (values === 'چک'){
@@ -65,6 +48,45 @@ const handleBailsLabel = (values: any) => {
 
 const RegisterPersonal: React.FC = () => {
     const [form] = Form.useForm();
+    const { message } = App.useApp();
+
+    const onFinish = async (values: any) => {
+    await axios.post(
+        `${Url}/api/persons/`,{
+              type: values.contract.type,
+              full_name: values.contract.full_name,
+              caseNumber: values.contract.caseNumber,
+              date: dayjs(values.contract.date).locale('fa').format('YYYY-MM-DD'),
+              national_id: values.contract.national_id,
+              sex: values.contract.sex,
+              expireDate: dayjs(values.contract.expireDate).locale('fa').format('YYYY-MM-DD'),
+              office: values.contract.office,
+              job: values.contract.job,
+              approvedPrice: values.contract.approvedPrice,
+              commitmentPrice: values.contract.commitmentPrice,
+              typeBail: values.contract.typeBail,
+              firstBail: values.contract.firstBail,
+              secondBail: values.contract.secondBail,
+         }, {
+            headers: {
+                'Authorization': 'Bearer ' + localStorage.getItem('access_token'),
+            }
+        }).then(response => {
+     return response
+          }).then(async data => {
+                    try {
+                        if (data.status === 201) {
+                              message.success('ثبت شد!');
+                              form.resetFields()
+                        }
+                    } catch (e) {
+                        if (data.status === 400) {
+                            message.error(data.status);
+                        }
+                    }
+                })
+    };
+
     const fetchLastData = async () => {
         const response = await fetch(`${Url}/api/persons/?fields=id`, {
                 headers: {
@@ -85,6 +107,7 @@ const RegisterPersonal: React.FC = () => {
           },
           // eslint-disable-next-line react-hooks/exhaustive-deps
           [])
+
     return (
           <Form
             form={form}
@@ -110,7 +133,7 @@ const RegisterPersonal: React.FC = () => {
                         <Input />
                   </Form.Item>
                   <Form.Item name={['contract', 'caseNumber']} style={{ display: 'inline-block', margin:8 }} label="شماره پرونده" rules={[{ required: true }]}>
-                        <Input />
+                        <Input/>
                   </Form.Item>
                   <Form.Item name={['contract', 'sex']} style={{ display: 'inline-block', margin:8  }} label="جنسیت" rules={[{ required: true }]}>
                       <Select
@@ -119,7 +142,7 @@ const RegisterPersonal: React.FC = () => {
                       />
                   </Form.Item>
                   <Form.Item name={['contract', 'date']} style={{ display: 'inline-block', margin:8}} label="تاریخ استخدام" rules={[{ required: true }]}>
-                     <DatePickerJalali/>
+                     <DatePickerJalali  />
                   </Form.Item>
               </Form.Item>
               <Form.Item>

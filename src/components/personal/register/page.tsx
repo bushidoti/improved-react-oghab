@@ -27,11 +27,11 @@ const onFinish = async (values: any) => {
           }).then(async data => {
                     try {
                         if (data.status === 400) {
-                            message.error(data.status);
+                            return  message.error(data.status);
                         }
                     } catch (e) {
                         if (data.status === 201) {
-                            message.success('ثبت شد');
+                           return  message.success('ثبت شد');
                         }
                     }
 
@@ -74,7 +74,7 @@ const RegisterPersonal: React.FC = () => {
         const data = await response.json()
         form.setFieldsValue({
                contract: {
-                  id: data.length + 1,
+                  id: data.slice(-1)[0].id + 1,
                 },
         });
       }

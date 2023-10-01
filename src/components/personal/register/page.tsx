@@ -119,29 +119,29 @@ const RegisterPersonal: React.FC = () => {
 
           >
             <JalaliLocaleListener/>
-                    <Form.Item name={['contract', 'id']} style={{width:200 ,margin:8}} label="شماره ثبت" rules={[{ required: true }]}>
+                    <Form.Item name={['contract', 'id']} style={{margin:8}} label="شماره ثبت" rules={[{ required: true }]}>
                       <InputNumber disabled/>
-                  </Form.Item>
+                    </Form.Item>
               <Form.Item>
-                  <Form.Item name={['contract', 'type']} style={{ display: 'inline-block', margin:8  }} label="وضعیت" rules={[{ required: true }]}>
+                  <Form.Item name={['contract', 'type']} className='register-form-personal' label="وضعیت" rules={[{ required: true }]}>
                       <Select
                       placeholder="انتخاب کنید"
                       options={[{ value: 'قراردادی', label: 'قراردادی' },{ value: 'بیمه ای', label: 'بیمه ای' }]}
                       />
                   </Form.Item>
-                  <Form.Item name={['contract', 'full_name']} style={{ display: 'inline-block', margin:8 }} label="نام و نشان" rules={[{ required: true }]}>
+                  <Form.Item name={['contract', 'full_name']} className='register-form-personal' label="نام و نشان" rules={[{ required: true }]}>
                         <Input />
                   </Form.Item>
-                  <Form.Item name={['contract', 'caseNumber']} style={{ display: 'inline-block', margin:8 }} label="شماره پرونده" rules={[{ required: true }]}>
+                  <Form.Item name={['contract', 'caseNumber']} className='register-form-personal' label="شماره پرونده" rules={[{ required: true }]}>
                         <Input/>
                   </Form.Item>
-                  <Form.Item name={['contract', 'sex']} style={{ display: 'inline-block', margin:8  }} label="جنسیت" rules={[{ required: true }]}>
+                  <Form.Item name={['contract', 'sex']} className='register-form-personal' label="جنسیت" rules={[{ required: true }]}>
                       <Select
                       placeholder="انتخاب کنید"
                       options={[{ value: 'مذکر', label: 'مذکر' },{ value: 'مونث', label: 'مونث' }]}
                       />
                   </Form.Item>
-                  <Form.Item name={['contract', 'date']} style={{ display: 'inline-block', margin:8}} label="تاریخ استخدام" rules={[{ required: true }]}>
+                  <Form.Item name={['contract', 'date']} className='register-form-personal' label="تاریخ استخدام" rules={[{ required: true }]}>
                      <DatePickerJalali  />
                   </Form.Item>
               </Form.Item>
@@ -149,22 +149,19 @@ const RegisterPersonal: React.FC = () => {
                   <Form.Item
                       hasFeedback
                       name={['contract', 'national_id']}
-                      style={{ display: 'inline-block', margin:8}}
+                      className='register-form-personal'
                       label="کد ملی"
                       rules={[{len: 10, required: true }]}>
                     <Input />
                   </Form.Item>
-                  <Form.Item name={['contract', 'expireDate']} style={{ display: 'inline-block', margin:8}} label="تاریخ پایان قرارداد" rules={[{ required: true }]}>
-                    <DatePickerJalali/>
-                 </Form.Item>
-                 <Form.Item name={['contract', 'approvedPrice']} style={{ display: 'inline-block', margin:8}} label="تضمین مصوب" rules={[{ required: true }]}>
+                 <Form.Item name={['contract', 'approvedPrice']} className='register-form-personal' label="تضمین مصوب" rules={[{ required: true }]}>
                     <InputNumber
                       addonAfter="ریال"
                       formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
                       parser={(value) => value!.replace(/\$\s?|(,*)/g, '')}
                     />
                  </Form.Item>
-                 <Form.Item  name={['contract', 'office']} style={{ display: 'inline-block', margin:8}} label="محل کار" rules={[{ required: true }]}>
+                 <Form.Item  name={['contract', 'office']} className='register-form-personal' label="محل کار" rules={[{ required: true }]}>
                     <Select placeholder="انتخاب کنید"
                       options={[{ value: 'جاسک', label: 'جاسک' }
                         ,{ value: 'اورهال تهران', label: 'اورهال تهران' }
@@ -175,8 +172,11 @@ const RegisterPersonal: React.FC = () => {
                         ,{ value: 'چابهار', label: 'چابهار' }]}
                       />
                  </Form.Item>
-                 <Form.Item name={['contract', 'job']} style={{ display: 'inline-block', margin:8}} label="شغل" rules={[{ required: true }]}>
+                 <Form.Item name={['contract', 'job']} className='register-form-personal' label="شغل" rules={[{ required: true }]}>
                     <Input />
+                 </Form.Item>
+                 <Form.Item name={['contract', 'expireDate']} className='register-form-personal' label="تاریخ پایان قرارداد" rules={[{ required: true }]}>
+                    <DatePickerJalali/>
                  </Form.Item>
               </Form.Item>
               <Form.Item>

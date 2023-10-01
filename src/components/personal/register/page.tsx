@@ -1,15 +1,11 @@
-import React, {useEffect} from 'react';
-import {App, Button, Form, Input, InputNumber, Select} from 'antd';
+import React, {useEffect, useState} from 'react';
+import {message, Steps, Button, Form, Input, InputNumber, Select, ConfigProvider} from 'antd';
 import {DatePicker as DatePickerJalali, JalaliLocaleListener} from "antd-jalali";
 import Url from "../../api-configue";
 import axios from "axios";
 import dayjs from "dayjs";
 
 
-const layout = {
-  labelCol: { span: 8 },
-  wrapperCol: { span: 16 },
-};
 
 /* eslint-disable no-template-curly-in-string */
 const validateMessages = {
@@ -20,72 +16,94 @@ const validateMessages = {
 
 
 
-let firstBail:string = ' '
-let secondBail:string = ' '
+let firstBail = ' '
+let secondBail = ' '
 
 
-const handleBailsLabel = (values: any) => {
-   if (values === 'چک'){
-            firstBail = 'شماره چک'
-            secondBail = 'بانک'
-        } else if (values === 'نقد'){
-            firstBail = 'واریز به حساب'
-            secondBail = 'شماره حساب'
-        }else if (values === 'سفته'){
-            firstBail = 'تعداد سفته'
-            secondBail = 'مبلغ سفته'
-        }else if (values === 'بانک'){
-            firstBail = 'ضمانت'
-            secondBail = 'شماره تضمین'
-        }else if (values === 'تعهد'){
-            firstBail = 'موضوع تعهد'
-            secondBail = 'شماره تعهد'
-        }
-};
+
 
 
 
 
 const RegisterPersonal: React.FC = () => {
     const [form] = Form.useForm();
-    const { message } = App.useApp();
+    const [bailLabel , setBailLabel] = useState({
+        firstBail,
+        secondBail
+    })
+    const [loading, setLoading] = useState<boolean>(false);
+    const [currentStep, setCurrentStep] = useState<number>(0);
+    const handleBailsLabel = (values: any) => {
+           if (values === 'چک'){
+                    setBailLabel({
+                        secondBail: 'بانک',
+                        firstBail: 'شماره چک'
+                    })
+                } else if (values === 'نقد'){
+                     setBailLabel({
+                        firstBail: 'واریز به حساب',
+                        secondBail: 'شماره حساب'
+                    })
+                }else if (values === 'سفته'){
+                    setBailLabel({
+                            firstBail: 'تعداد سفته',
+                            secondBail: 'مبلغ سفته'
+                        })
+                }else if (values === 'بانک'){
+                    setBailLabel({
+                                firstBail: 'ضمانت',
+                                secondBail: 'شماره تضمین'
+                            })
+                }else if (values === 'تعهد'){
+                    setBailLabel({
+                                    firstBail: 'موضوع تعهد',
+                                    secondBail: 'شماره تعهد'
+                                })
+                }
 
+        };
     const onFinish = async (values: any) => {
-    await axios.post(
-        `${Url}/api/persons/`,{
-              type: values.contract.type,
-              full_name: values.contract.full_name,
-              caseNumber: values.contract.caseNumber,
-              date: dayjs(values.contract.date).locale('fa').format('YYYY-MM-DD'),
-              national_id: values.contract.national_id,
-              sex: values.contract.sex,
-              expireDate: dayjs(values.contract.expireDate).locale('fa').format('YYYY-MM-DD'),
-              office: values.contract.office,
-              job: values.contract.job,
-              approvedPrice: values.contract.approvedPrice,
-              commitmentPrice: values.contract.commitmentPrice,
-              typeBail: values.contract.typeBail,
-              firstBail: values.contract.firstBail,
-              secondBail: values.contract.secondBail,
-         }, {
-            headers: {
-                'Authorization': 'Bearer ' + localStorage.getItem('access_token'),
-            }
-        }).then(response => {
-     return response
-          }).then(async data => {
-                    try {
+        setLoading(true)
+        await axios.post(
+            `${Url}/api/persons/`,{
+                  type: values.contract.type,
+                  full_name: values.contract.full_name,
+                  caseNumber: values.contract.caseNumber,
+                  date: dayjs(values.contract.date).locale('fa').format('YYYY-MM-DD'),
+                  national_id: values.contract.national_id,
+                  sex: values.contract.sex,
+                  expireDate: dayjs(values.contract.expireDate).locale('fa').format('YYYY-MM-DD'),
+                  office: values.contract.office,
+                  job: values.contract.job,
+                  approvedPrice: `${values.contract.approvedPrice}`.replace(/\B(?=(\d{3})+(?!\d))/g, ','),
+                  commitmentPrice: `${values.contract.commitmentPrice}`.replace(/\B(?=(\d{3})+(?!\d))/g, ','),
+                  typeBail: values.contract.typeBail,
+                  firstBail: values.contract.firstBail,
+                  secondBail: values.contract.secondBail,
+             }, {
+                headers: {
+                    'Authorization': 'Bearer ' + localStorage.getItem('access_token'),
+                }
+            }).then(response => {
+         return response
+              }).then(async data => {
                         if (data.status === 201) {
-                              message.success('ثبت شد!');
-                              form.resetFields()
+                              message.success('ثبت شد');
+                              setCurrentStep(currentStep+1)
+                              await handleResetSubmit()
+                              setLoading(false)
+                        }else if (data.status === 400) {
+                            message.error('عدم ثبت');
+                            setLoading(false)
+                            await handleResetSubmit()
                         }
-                    } catch (e) {
-                        if (data.status === 400) {
-                            message.error(data.status);
-                        }
-                    }
                 })
     };
+
+    const handleResetSubmit = async () => {
+        form.resetFields()
+        await fetchLastData()
+    }
 
     const fetchLastData = async () => {
         const response = await fetch(`${Url}/api/persons/?fields=id`, {
@@ -103,13 +121,30 @@ const RegisterPersonal: React.FC = () => {
 
       useEffect(() => {
             void fetchLastData()
-
           },
           // eslint-disable-next-line react-hooks/exhaustive-deps
           [])
 
     return (
+        <>
+            <Steps
+                current={currentStep}
+                status="process"
+                style={{margin:10,marginBottom:100}}
+                items={[
+                  {
+                    title: 'ثبت مشخصات',
+                  },
+                  {
+                    title: 'بارگذاری مدارک',
+                  },
+                  {
+                    title: 'اتمام ثبت',
+                  },
+                ]}
+          />
           <Form
+            hidden={currentStep !== 0}
             form={form}
             autoComplete="off"
             name="contract"
@@ -119,7 +154,7 @@ const RegisterPersonal: React.FC = () => {
 
           >
             <JalaliLocaleListener/>
-                    <Form.Item name={['contract', 'id']} style={{margin:8}} label="شماره ثبت" rules={[{ required: true }]}>
+                    <Form.Item name={['contract', 'id']} style={{margin:10}} label="شماره ثبت">
                       <InputNumber disabled/>
                     </Form.Item>
               <Form.Item>
@@ -141,26 +176,27 @@ const RegisterPersonal: React.FC = () => {
                       options={[{ value: 'مذکر', label: 'مذکر' },{ value: 'مونث', label: 'مونث' }]}
                       />
                   </Form.Item>
-                  <Form.Item name={['contract', 'date']} className='register-form-personal' label="تاریخ استخدام" rules={[{ required: true }]}>
-                     <DatePickerJalali  />
-                  </Form.Item>
-              </Form.Item>
-              <Form.Item>
+
                   <Form.Item
                       hasFeedback
                       name={['contract', 'national_id']}
                       className='register-form-personal'
                       label="کد ملی"
                       rules={[{len: 10, required: true }]}>
-                    <Input />
+                    <Input showCount maxLength={10}/>
                   </Form.Item>
-                 <Form.Item name={['contract', 'approvedPrice']} className='register-form-personal' label="تضمین مصوب" rules={[{ required: true }]}>
+                  <Form.Item name={['contract', 'approvedPrice']} className='register-form-personal' label="تضمین مصوب" rules={[{ required: true }]}>
                     <InputNumber
                       addonAfter="ریال"
                       formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
                       parser={(value) => value!.replace(/\$\s?|(,*)/g, '')}
                     />
                  </Form.Item>
+                  <Form.Item name={['contract', 'date']} className='register-form-personal' label="تاریخ استخدام" rules={[{ required: true }]}>
+                     <DatePickerJalali  />
+                  </Form.Item>
+              </Form.Item>
+              <Form.Item>
                  <Form.Item  name={['contract', 'office']} className='register-form-personal' label="محل کار" rules={[{ required: true }]}>
                     <Select placeholder="انتخاب کنید"
                       options={[{ value: 'جاسک', label: 'جاسک' }
@@ -175,11 +211,7 @@ const RegisterPersonal: React.FC = () => {
                  <Form.Item name={['contract', 'job']} className='register-form-personal' label="شغل" rules={[{ required: true }]}>
                     <Input />
                  </Form.Item>
-                 <Form.Item name={['contract', 'expireDate']} className='register-form-personal' label="تاریخ پایان قرارداد" rules={[{ required: true }]}>
-                    <DatePickerJalali/>
-                 </Form.Item>
-              </Form.Item>
-              <Form.Item>
+
                  <Form.Item name={['contract', 'commitmentPrice']} className='register-form-personal' label="مبلغ تضمین" rules={[{ required: true }]}>
                     <InputNumber
                       addonAfter="ریال"
@@ -194,20 +226,41 @@ const RegisterPersonal: React.FC = () => {
                             ,{ value: 'بانک', label: 'بانک' }
                             ,{ value: 'تعهد', label: 'تعهد' }]}
                     />
-              </Form.Item>
-              <Form.Item className='register-form-personal' name={['contract', 'firstBail']} label={firstBail} rules={[{ required: true }]}>
-                    <Input />
-              </Form.Item>
-              <Form.Item className='register-form-personal' name={['contract', 'secondBail']} label={secondBail} rules={[{ required: true }]}>
-                    <Input />
-              </Form.Item>
-              <Form.Item wrapperCol={{ ...layout.wrapperCol, }}>
-                  <Button type="primary" htmlType="submit">
-                    ثبت
-                  </Button>
-              </Form.Item>
-            </Form.Item>
+                  </Form.Item>
+                  <Form.Item className='register-form-personal' name={['contract', 'firstBail']} label={bailLabel.firstBail} rules={[{ required: true }]}>
+                        <Input />
+                  </Form.Item>
+                  <Form.Item className='register-form-personal' name={['contract', 'secondBail']} label={bailLabel.secondBail} rules={[{ required: true }]}>
+                        <Input/>
+                  </Form.Item>
+                  <Form.Item name={['contract', 'expireDate']} className='register-form-personal' label="تاریخ پایان قرارداد" rules={[{ required: true }]}>
+                    <DatePickerJalali/>
+                  </Form.Item>
+                     <Form.Item>
+                            <Form.Item style={{margin:8}}>
+                                <ConfigProvider theme={{
+                                components: {
+                                    Button : {
+                                          groupBorderColor:'#092b00'
+                                    }
+                                    },token: {
+                                        colorPrimary:'#52c41a'
+                                        }
+                                }}>
+                                  <Button danger={loading} type={"primary"} loading={loading} block htmlType="submit">
+                                    ثبت
+                                  </Button>
+                            </ConfigProvider>
+                          </Form.Item>
+                         <Form.Item style={{margin:8}}>
+                             <Button onClick={handleResetSubmit} block loading={loading} htmlType="button">
+                                ریست
+                             </Button>
+                         </Form.Item>
+                     </Form.Item>
+                </Form.Item>
           </Form>
+        </>
         );
 }
 

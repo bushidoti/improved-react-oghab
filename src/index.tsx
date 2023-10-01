@@ -16,7 +16,10 @@ root.render(
                             components: {
                               Layout: {
                                   headerBg:'#bae0ff'
-                              }
+                              },
+                                Divider : {
+                                  colorSplit:'#69b1ff'
+                                }
                             }
                         }}>
         <BrowserRouter>

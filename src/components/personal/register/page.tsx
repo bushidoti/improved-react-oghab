@@ -27,6 +27,7 @@ let secondBail = ' '
 
 const RegisterPersonal: React.FC = () => {
     const [form] = Form.useForm();
+
     const [bailLabel , setBailLabel] = useState({
         firstBail,
         secondBail
@@ -124,6 +125,7 @@ const RegisterPersonal: React.FC = () => {
           },
           // eslint-disable-next-line react-hooks/exhaustive-deps
           [])
+
 
     return (
         <>
@@ -260,6 +262,8 @@ const RegisterPersonal: React.FC = () => {
                      </Form.Item>
                 </Form.Item>
           </Form>
+            <input type="file" id="file" accept="image/*"/>
+
         </>
         );
 }

@@ -262,8 +262,6 @@ const RegisterPersonal: React.FC = () => {
                      </Form.Item>
                 </Form.Item>
           </Form>
-            <input type="file" id="file" accept="image/*"/>
-
         </>
         );
 }

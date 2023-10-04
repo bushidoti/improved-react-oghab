@@ -128,28 +128,28 @@ const App: React.FC = () => {
               // Send the compressed image file to server with XMLHttpRequest.
 
             },
-            error(err) {
+            error() {
             },
           });
 
 
 
-    function scanImage() {
-              if (document.readyState === "complete"){
-                             window.ws.send("1100");
-
-              }
-       }
+    // function scanImage() {
+    //           if (document.readyState === "complete"){
+    //                          window.ws.send("1100");
+    //           }
+    //    }
 
   return (
       <Fragment>
-            <button onClick={scanImage}>we</button>
           {loading ?
                 <Loading/>
                   :
               <Context.Provider value={{
                   setLogged,
                   fullName,
+                  scan,
+                  compressed,
                   isLogged,
                   office
               }}>

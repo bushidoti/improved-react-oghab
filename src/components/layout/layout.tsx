@@ -194,7 +194,7 @@ const LayoutForm: React.FC = () => {
                           <Route path={'/document/upload'} element={<UploadDocument/>}/>
                           <Route path={'/personal'} element={<MainPersonal/>}/>
                           <Route path={'/personal/register'} element={<RegisterPersonal/>}/>
-                          <Route path={'/personal/report'} element={<ReportPersonal/>}/>
+                          <Route path={'/personal/report'} element={<MainPersonal/>}/>
                           <Route path={'/personal/upload'} element={<UploadPersonal/>}/>
                           <Route path={'/warhouse'} element={<MainWarehouse/>}/>
                           <Route path={'/warhouse/product'} element={<MainProduct/>}/>

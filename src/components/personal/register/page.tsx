@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {message, Steps, Button, theme, Alert, Result} from 'antd';
+import {message, Steps, Button, theme, Result} from 'antd';
 import UploadPersonal from "../upload/page";
 import Register from "./register";
 import {useNavigate} from "react-router-dom";
@@ -26,8 +26,7 @@ const RegisterPersonal: React.FC = () => {
             title: 'اتمام ثبت',
               content: <Result
                 status="success"
-                title="Successfully Purchased Cloud Server ECS!"
-                subTitle="Order number: 2017182818828182881 Cloud server configuration takes 1-5 minutes, please wait."
+                title="با موفقیت ثبت شد"
                 extra={[
                   <Button type="primary" onClick={() => navigate('/personal')}>صفحه اصلی</Button>,
                     <Button  onClick={() => done()}>
@@ -54,7 +53,6 @@ const RegisterPersonal: React.FC = () => {
 
   const done = () => {
     setCurrentStep(0);
-    message.success('اتمام ثبت')
   };
 
     return (

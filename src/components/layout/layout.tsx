@@ -26,7 +26,6 @@ import RegisterProperty from "../warhouse/property/register/page";
 import ReportProperty from "../warhouse/property/report/page";
 import SentProperty from "../warhouse/property/sent/page";
 import RegisterPersonal from "../personal/register/page";
-import ReportPersonal from "../personal/report/page";
 import UploadPersonal from "../personal/upload/page";
 import Handling from "../warhouse/handling/page";
 import {Logout} from "../login/logout";
@@ -37,6 +36,7 @@ import MainPersonal from "../personal/main/page";
 import MainWarehouse from "../warhouse/main/page";
 import MainProduct from "../warhouse/product/main/page";
 import MainProperty from "../warhouse/property/main/page";
+import Edit from "../personal/register/edit";
 
 
 const { Header, Content, Footer, Sider } = Layout;
@@ -138,7 +138,6 @@ const LayoutForm: React.FC = () => {
   const location = useLocation();
   const context = useContext(Context)
   const pathSnippets = location.pathname.split('/').filter((i) => i);
-
   const extraBreadcrumbItems = pathSnippets.map((_, index) => {
     const url = `/${pathSnippets.slice(0, index + 1).join('/')}`;
     return {
@@ -194,6 +193,7 @@ const LayoutForm: React.FC = () => {
                           <Route path={'/document/upload'} element={<UploadDocument/>}/>
                           <Route path={'/personal'} element={<MainPersonal/>}/>
                           <Route path={'/personal/register'} element={<RegisterPersonal/>}/>
+                          <Route path={`/personal/edit/${context.currentPersonal}`} element={<Edit />}/>
                           <Route path={'/personal/report'} element={<MainPersonal/>}/>
                           <Route path={'/personal/upload'} element={<UploadPersonal/>}/>
                           <Route path={'/warhouse'} element={<MainWarehouse/>}/>

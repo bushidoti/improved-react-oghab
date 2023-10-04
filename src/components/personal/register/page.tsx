@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {message, Steps, Button, theme, Result} from 'antd';
+import {Steps, Button, theme, Result} from 'antd';
 import UploadPersonal from "../upload/page";
 import Register from "./register";
 import {useNavigate} from "react-router-dom";
@@ -10,7 +10,7 @@ import {useNavigate} from "react-router-dom";
 const RegisterPersonal: React.FC = () => {
     const navigate = useNavigate();
 
-    const [currentStep, setCurrentStep] = useState<number>(2);
+    const [currentStep, setCurrentStep] = useState<number>(0);
     const { token } = theme.useToken();
 
         const steps = [

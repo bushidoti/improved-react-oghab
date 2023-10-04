@@ -26,6 +26,7 @@ const App: React.FC = () => {
   const [scan, setScan] = useState('');
   const [compress, setCompress] = useState('');
   const [compressed, setCompressed] = useState('');
+  const [currentPersonal , setCurrentPersonal] = useState<number>(0)
 
 
 
@@ -151,6 +152,8 @@ const App: React.FC = () => {
                   scan,
                   compressed,
                   isLogged,
+                  currentPersonal,
+                  setCurrentPersonal,
                   office
               }}>
                 {isLogged ?

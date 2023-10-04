@@ -5,14 +5,15 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { ConfigProvider } from 'antd';
 import { BrowserRouter } from 'react-router-dom'
-import locale from 'antd/locale/fa_IR';
+import fa_IR from "antd/lib/locale/fa_IR";
+import {JalaliLocaleListener} from "antd-jalali";
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
 
 root.render(
-  <ConfigProvider direction="rtl" locale={locale} theme={{
+  <ConfigProvider locale={fa_IR}  direction="rtl" theme={{
                             components: {
                               Layout: {
                                   headerBg:'#bae0ff'
@@ -22,6 +23,7 @@ root.render(
                                 }
                             }
                         }}>
+        <JalaliLocaleListener/>
         <BrowserRouter>
           <React.StrictMode>
             <App />

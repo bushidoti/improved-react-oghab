@@ -1,5 +1,5 @@
 import { SearchOutlined } from '@ant-design/icons';
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useContext, useEffect, useRef, useState} from 'react';
 import Highlighter from "react-highlight-words";
 import type {InputRef, TableProps} from 'antd';
 import {Badge, Button, Input, Space, Table } from 'antd';
@@ -15,6 +15,8 @@ import { CSVLink } from "react-csv";
 import {
   FileExcelOutlined,
 } from '@ant-design/icons';
+import {Context} from "../../../context";
+import {useNavigate} from "react-router-dom";
 
 interface DataType {
   key: React.Key;
@@ -29,6 +31,7 @@ interface DataType {
   approvedPrice: string;
   commitmentPrice: string;
   typeBail: string;
+  caseNumber: string;
   firstBail: string;
   secondBail: string;
   expireDate: string;
@@ -42,6 +45,7 @@ const headers = [
   { label: "شماره ثبت", key: "id" },
   { label: "وضعیت", key: "type" },
   { label: "نام و نشانی", key: "full_name" },
+  { label: "شماره پرونده", key: "caseNumber" },
   { label: "جنسیت", key: "sex" },
   { label: "تاریخ استخدام", key: "date" },
   { label: "کد ملی", key: "national_id" },
@@ -69,13 +73,15 @@ const MainPersonal: React.FC = () => {
   const [searchedColumn, setSearchedColumn] = useState('');
   const searchInput = useRef<InputRef>(null);
   const [contract, setContracts] = useState([])
+  const context = useContext(Context)
   const [loading, setLoading] = useState(true);
   const [filteredInfo, setFilteredInfo] = useState<Record<string, FilterValue | null>>({});
   const [sortedInfo, setSortedInfo] = useState<SorterResult<DataType>>({});
   const date = new DateObject({ calendar: persian })
+  const navigate = useNavigate();
 
   const fetchData = async () => {
-        await fetch(`${Url}/api/persons/?fields=affidavitStatus,id,type,full_name,expireDate,date,national_id,sex,office,job,approvedPrice,commitmentPrice,typeBail,firstBail,secondBail,clearedStatus,clearedDate,receivedDocument` , {
+        await fetch(`${Url}/api/persons/?fields=affidavitStatus,id,type,full_name,expireDate,date,national_id,caseNumber,sex,office,job,approvedPrice,commitmentPrice,typeBail,firstBail,secondBail,clearedStatus,clearedDate,receivedDocument` , {
              headers: {
                   'Authorization': 'Bearer ' + localStorage.getItem('access_token'),
                 }
@@ -123,6 +129,8 @@ const MainPersonal: React.FC = () => {
       return 'کد ملی'
     }else if (dataIndex === "job") {
       return 'شغل'
+    }else if (dataIndex === "caseNumber") {
+      return 'شماره پرونده'
     }
 
   }
@@ -317,8 +325,19 @@ const MainPersonal: React.FC = () => {
       key: 'full_name',
       ...getColumnSearchProps('full_name'),
       filteredValue: filteredInfo.full_name || null,
-      render: (value, record, index) => <Button type="link" onClick={() => {
+       render: (value, record, index) => <Button type={"link"} onClick={() => {
+        context.setCurrentPersonal(record.id)
+        navigate(`/personal/edit/${record.id}`)
       }}>{record.full_name}</Button>,
+
+    },{
+      align:"center",
+      title: 'شماره پرونده',
+      width: '4%',
+      dataIndex: 'caseNumber',
+      key: 'caseNumber',
+      filteredValue: filteredInfo.caseNumber || null,
+      ...getColumnSearchProps('caseNumber'),
 
     },{
       align:"center",
@@ -510,7 +529,7 @@ const MainPersonal: React.FC = () => {
     ],
       filteredValue: filteredInfo.office || null,
       onFilter: (value, record) => record.office === value,
-    },
+    }
   ];
 
    const clearFilters = () => {

@@ -1,9 +1,11 @@
-import React, {useEffect, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {message, Button, Form, Input, InputNumber, Select, ConfigProvider} from 'antd';
 import {DatePicker as DatePickerJalali} from "antd-jalali";
 import Url from "../../api-configue";
 import axios from "axios";
 import dayjs from "dayjs";
+import {Context} from "../../../context";
+import {useNavigate} from "react-router-dom";
 
 
 
@@ -25,15 +27,16 @@ let secondBail = ' '
 
 
 
-const Register: React.FC = () => {
+const Edit: React.FC = () => {
     const [form] = Form.useForm();
+    const context = useContext(Context)
+    const navigate = useNavigate();
 
     const [bailLabel , setBailLabel] = useState({
         firstBail,
         secondBail
     })
     const [loading, setLoading] = useState<boolean>(false);
-    const [currentStep, setCurrentStep] = useState<number>(0);
 
 
     const handleBailsLabel = (values: any) => {
@@ -67,8 +70,8 @@ const Register: React.FC = () => {
         };
     const onFinish = async (values: any) => {
         setLoading(true)
-        await axios.post(
-            `${Url}/api/persons/`,{
+        await axios.put(
+            `${Url}/api/persons/${context.currentPersonal}/`,{
                   type: values.contract.type,
                   full_name: values.contract.full_name,
                   caseNumber: values.contract.caseNumber,
@@ -90,43 +93,52 @@ const Register: React.FC = () => {
             }).then(response => {
          return response
               }).then(async data => {
-                        if (data.status === 201) {
+                        if (data.status === 200) {
                               message.success('ثبت شد');
-                              setCurrentStep(currentStep+1)
-                              await handleResetSubmit()
                               setLoading(false)
-                        }else if (data.status === 400) {
+                        }else if (data.status === 405) {
                             message.error('عدم ثبت');
                             setLoading(false)
-                            await handleResetSubmit()
                         }
                 })
     };
 
-    const handleResetSubmit = async () => {
-        form.resetFields()
-        await fetchLastData()
-    }
 
-    const fetchLastData = async () => {
-        const response = await fetch(`${Url}/api/persons/?fields=id`, {
+    const fetchData = async () => {
+        const response = await fetch(`${Url}/api/persons/${context.currentPersonal}/?fields=affidavitStatus,id,type,full_name,expireDate,date,national_id,sex,office,caseNumber,job,approvedPrice,commitmentPrice,typeBail,firstBail,secondBail,clearedStatus,clearedDate,receivedDocument`, {
                 headers: {
                   'Authorization': 'Bearer ' + localStorage.getItem('access_token'),
                 }
               })
         const data = await response.json()
+        // @ts-ignore
         form.setFieldsValue({
                contract: {
-                  id: data.slice(-1)[0].id + 1,
+                  id: data.id,
+                  type: data.type,
+                  full_name: data.full_name,
+                  caseNumber: data.caseNumber,
+                  national_id: data.national_id,
+                  sex: data.sex,
+                  office: data.office,         // @ts-ignore
+                  date: dayjs(data.date, { jalali: true }),
+                  job: data.job,
+                  approvedPrice: data.approvedPrice,
+                  commitmentPrice: data.commitmentPrice,
+                  typeBail: data.typeBail,
+                  firstBail: data.firstBail,
+                  secondBail: data.secondBail, // @ts-ignore
+                  expireDate: dayjs(data.expireDate, { jalali: true }),
                 },
         });
       }
 
       useEffect(() => {
-            void fetchLastData()
+            void fetchData()
           },
           // eslint-disable-next-line react-hooks/exhaustive-deps
-          [])
+      [])
+
 
 
 
@@ -140,7 +152,6 @@ const Register: React.FC = () => {
                 layout="vertical"
                 onFinish={onFinish}
                 validateMessages={validateMessages}
-
               >
                         <Form.Item name={['contract', 'id']} style={{margin:10}} label="شماره ثبت">
                           <InputNumber disabled/>
@@ -180,8 +191,10 @@ const Register: React.FC = () => {
                           parser={(value) => value!.replace(/\$\s?|(,*)/g, '')}
                         />
                      </Form.Item>
+
                       <Form.Item name={['contract', 'date']} className='register-form-personal' label="تاریخ استخدام" rules={[{ required: true }]}>
-                         <DatePickerJalali  />
+
+                          <DatePickerJalali/>
                       </Form.Item>
                   </Form.Item>
                   <Form.Item>
@@ -236,19 +249,19 @@ const Register: React.FC = () => {
                                             }
                                     }}>
                                       <Button danger={loading} type={"primary"} loading={loading} block htmlType="submit">
-                                        ثبت
+                                        ویرایش
                                       </Button>
                                 </ConfigProvider>
-                              </Form.Item>
-                             <Form.Item style={{margin:8}}>
-                                 <Button onClick={handleResetSubmit} block loading={loading} htmlType="button">
-                                    ریست
+                             <Form.Item style={{marginTop:8}}>
+                                 <Button onClick={() => navigate('/personal')}  block loading={loading} htmlType="button">
+                                    بازگشت
                                  </Button>
                              </Form.Item>
+                              </Form.Item>
                          </Form.Item>
                     </Form.Item>
             </Form>
         );
 }
 
-export default Register;
+export default Edit;

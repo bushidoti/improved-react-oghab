@@ -185,6 +185,7 @@ export default function UploadPersonal() {
 
   return (
       <Form
+            style={{margin:10}}
             form={form}
             autoComplete="off"
             name="document"

@@ -6,9 +6,6 @@ import axios from "axios";
 import dayjs from "dayjs";
 import {Context} from "../../../context";
 import {useNavigate} from "react-router-dom";
-
-
-
 /* eslint-disable no-template-curly-in-string */
 const validateMessages = {
   required: '${label} مورد نیاز است !',
@@ -78,7 +75,7 @@ const Edit: React.FC = () => {
                   date: dayjs(values.contract.date).locale('fa').format('YYYY-MM-DD'),
                   national_id: values.contract.national_id,
                   sex: values.contract.sex,
-                  expireDate: dayjs(values.contract.expireDate).locale('fa').format('YYYY-MM-DD'),
+                  expireDate: values.contract.extensionManual ?  dayjs(values.contract.extensionManual).locale('fa').format('YYYY-MM-DD') : dayjs(values.contract.expireDate).add(values.contract.extension, "month").locale('fa').format('YYYY-MM-DD'),
                   office: values.contract.office,
                   job: values.contract.job,
                   approvedPrice: `${values.contract.approvedPrice}`.replace(/\B(?=(\d{3})+(?!\d))/g, ','),
@@ -90,6 +87,7 @@ const Edit: React.FC = () => {
                   affidavitStatus: values.contract.affidavitStatus,
                   clearedStatus: !!values.contract.clearedDate,
                   receivedDocument: values.contract.receivedDocument,
+                  extension: values.contract.extension,
              }, {
                 headers: {
                     'Authorization': 'Bearer ' + localStorage.getItem('access_token'),
@@ -256,7 +254,19 @@ const Edit: React.FC = () => {
                           <Checkbox>اقرارنامه تحویل داده شده</Checkbox>
                         </Form.Item>
                       <Divider>تمدید</Divider>
-
+                          <Form.Item  name={['contract', 'extensionManual']} className='register-form-personal' label="تمدید دستی">
+                            <DatePickerJalali/>
+                          </Form.Item>
+                      <Form.Item name={['contract', 'extension']} className='register-form-personal' label="مدت تمدید">
+                          <Select
+                              placeholder="انتخاب کنید"
+                              options={[
+                                  { value: 3, label: '3 ماه' }
+                                  ,{ value: 6, label: '6 ماه' }
+                                  ,{ value: 12, label: '1 سال' }
+                              ]}
+                              />
+                      </Form.Item>
                          <Form.Item>
                                 <Form.Item style={{margin:8}}>
                                     <ConfigProvider theme={{

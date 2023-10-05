@@ -287,7 +287,7 @@ const MainPersonal: React.FC = () => {
               {date.format('YYYY-MM-DD').replaceAll('/' , '-') > record.expireDate ?
                   <>
                   <Badge  color="red" status="processing"/> {record.id}
-                  </> :  ''}
+                  </> :  record.id}
               {record.clearedStatus ?
                   <>
                     <Badge color="green" status="processing"/> {record.id}

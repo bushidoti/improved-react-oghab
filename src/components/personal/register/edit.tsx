@@ -28,6 +28,7 @@ const Edit: React.FC = () => {
     const [form] = Form.useForm();
     const context = useContext(Context)
     const navigate = useNavigate();
+    const [manualExtend , setmanualExtend] = useState<boolean>(true)
 
     const [bailLabel , setBailLabel] = useState({
         firstBail,
@@ -75,7 +76,10 @@ const Edit: React.FC = () => {
                   date: dayjs(values.contract.date).locale('fa').format('YYYY-MM-DD'),
                   national_id: values.contract.national_id,
                   sex: values.contract.sex,
-                  expireDate: values.contract.extensionManual ?  dayjs(values.contract.extensionManual).locale('fa').format('YYYY-MM-DD') : dayjs(values.contract.expireDate).add(values.contract.extension, "month").locale('fa').format('YYYY-MM-DD'),
+                  expireDate: values.contract.extensionManual ?  dayjs(values.contract.extensionManual)
+                  .locale('fa').format('YYYY-MM-DD') :
+                  dayjs(values.contract.expireDate).add(values.contract.extension, "month")
+                      .locale('fa').format('YYYY-MM-DD'),
                   office: values.contract.office,
                   job: values.contract.job,
                   approvedPrice: `${values.contract.approvedPrice}`.replace(/\B(?=(\d{3})+(?!\d))/g, ','),
@@ -98,6 +102,7 @@ const Edit: React.FC = () => {
                         if (data.status === 200) {
                               message.success('ثبت شد');
                               setLoading(false)
+                              navigate('/personal')
                         }else if (data.status === 405) {
                             message.error('عدم ثبت');
                             setLoading(false)
@@ -157,6 +162,13 @@ const Edit: React.FC = () => {
                 name="contract"
                 layout="vertical"
                 onFinish={onFinish}
+                onValuesChange={(changedValues, values) => {
+                    if (values.contract.extension === 'سایر'){
+                        setmanualExtend(false)
+                    }else {
+                        setmanualExtend(true)
+                    }
+                }}
                 validateMessages={validateMessages}
               >
                         <Form.Item name={['contract', 'id']} style={{margin:10}} label="شماره ثبت">
@@ -254,19 +266,20 @@ const Edit: React.FC = () => {
                           <Checkbox>اقرارنامه تحویل داده شده</Checkbox>
                         </Form.Item>
                       <Divider>تمدید</Divider>
-                          <Form.Item  name={['contract', 'extensionManual']} className='register-form-personal' label="تمدید دستی">
+                          <Form.Item  name={['contract', 'extension']} className='register-form-personal' label="مدت تمدید">
+                              <Select
+                                  placeholder="انتخاب کنید"
+                                  options={[
+                                      { value: 3, label: '3 ماه' }
+                                      ,{ value: 6, label: '6 ماه' }
+                                      ,{ value: 12, label: '1 سال' }
+                                      ,{ value: 'سایر', label: 'سایر' }
+                                  ]}
+                                  />
+                          </Form.Item>
+                          <Form.Item style={{ display: `${manualExtend ? 'none': ''}` }} name={['contract', 'extensionManual']} className='register-form-personal' label="تمدید دستی">
                             <DatePickerJalali/>
                           </Form.Item>
-                      <Form.Item name={['contract', 'extension']} className='register-form-personal' label="مدت تمدید">
-                          <Select
-                              placeholder="انتخاب کنید"
-                              options={[
-                                  { value: 3, label: '3 ماه' }
-                                  ,{ value: 6, label: '6 ماه' }
-                                  ,{ value: 12, label: '1 سال' }
-                              ]}
-                              />
-                      </Form.Item>
                          <Form.Item>
                                 <Form.Item style={{margin:8}}>
                                     <ConfigProvider theme={{

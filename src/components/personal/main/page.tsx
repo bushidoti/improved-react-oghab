@@ -333,7 +333,7 @@ const MainPersonal: React.FC = () => {
     },{
       align:"center",
       title: 'شماره پرونده',
-      width: '4%',
+      width: '4.55%',
       dataIndex: 'caseNumber',
       key: 'caseNumber',
       filteredValue: filteredInfo.caseNumber || null,

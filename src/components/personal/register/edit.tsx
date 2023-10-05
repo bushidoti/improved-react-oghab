@@ -1,5 +1,5 @@
 import React, {useContext, useEffect, useState} from 'react';
-import {message, Button, Form, Input, InputNumber, Select, ConfigProvider} from 'antd';
+import {message, Button, Form, Input, InputNumber, Select, ConfigProvider, Divider, Checkbox} from 'antd';
 import {DatePicker as DatePickerJalali} from "antd-jalali";
 import Url from "../../api-configue";
 import axios from "axios";
@@ -86,6 +86,10 @@ const Edit: React.FC = () => {
                   typeBail: values.contract.typeBail,
                   firstBail: values.contract.firstBail,
                   secondBail: values.contract.secondBail,
+                  clearedDate: values.contract.clearedDate ? dayjs(values.contract.clearedDate).locale('fa').format('YYYY-MM-DD') : null,
+                  affidavitStatus: values.contract.affidavitStatus,
+                  clearedStatus: !!values.contract.clearedDate,
+                  receivedDocument: values.contract.receivedDocument,
              }, {
                 headers: {
                     'Authorization': 'Bearer ' + localStorage.getItem('access_token'),
@@ -111,7 +115,6 @@ const Edit: React.FC = () => {
                 }
               })
         const data = await response.json()
-        // @ts-ignore
         form.setFieldsValue({
                contract: {
                   id: data.id,
@@ -127,8 +130,13 @@ const Edit: React.FC = () => {
                   commitmentPrice: data.commitmentPrice,
                   typeBail: data.typeBail,
                   firstBail: data.firstBail,
-                  secondBail: data.secondBail, // @ts-ignore
+                  secondBail: data.secondBail,
+                  receivedDocument: data.receivedDocument,
+                  affidavitStatus: data.affidavitStatus,
+                                                  // @ts-ignore
                   expireDate: dayjs(data.expireDate, { jalali: true }),
+                                                 // @ts-ignore
+                  clearedDate: data.clearedDate ? dayjs(data.clearedDate, { jalali: true }) : null,
                 },
         });
       }
@@ -237,6 +245,18 @@ const Edit: React.FC = () => {
                       <Form.Item name={['contract', 'expireDate']} className='register-form-personal' label="تاریخ پایان قرارداد" rules={[{ required: true }]}>
                         <DatePickerJalali/>
                       </Form.Item>
+                      <Divider>تسویه</Divider>
+                        <Form.Item name={['contract', 'clearedDate']} className='register-form-personal' label="تاریخ تسویه">
+                            <DatePickerJalali/>
+                        </Form.Item>
+                        <Form.Item name={['contract', 'receivedDocument']} valuePropName="checked" className='register-form-personal'>
+                          <Checkbox>مدارک تحویل داده شده</Checkbox>
+                        </Form.Item>
+                        <Form.Item name={['contract', 'affidavitStatus']} valuePropName="checked" className='register-form-personal'>
+                          <Checkbox>اقرارنامه تحویل داده شده</Checkbox>
+                        </Form.Item>
+                      <Divider>تمدید</Divider>
+
                          <Form.Item>
                                 <Form.Item style={{margin:8}}>
                                     <ConfigProvider theme={{
@@ -260,6 +280,7 @@ const Edit: React.FC = () => {
                               </Form.Item>
                          </Form.Item>
                     </Form.Item>
+
             </Form>
         );
 }

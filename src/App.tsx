@@ -27,7 +27,21 @@ const App: React.FC = () => {
   const [compress, setCompress] = useState('');
   const [compressed, setCompressed] = useState('');
   const [currentPersonal , setCurrentPersonal] = useState<number>(0)
+  const [permission, setPermission] = useState('');
 
+
+
+    useEffect(() => {
+            (async () => {
+                if (isLogged){
+                const {data} = (await axios.get(`${Url}/permission/`, {
+                    headers: {
+                        'Authorization': 'Bearer ' + localStorage.getItem('access_token'),
+                    }
+                }));
+              setPermission(data.message);}
+        })()
+    }, [isLogged]);
 
 
    useEffect(() => {
@@ -41,7 +55,6 @@ const App: React.FC = () => {
                       setFullName(data.message);
                 })()
         }
-
     }, [isLogged]);
 
     useEffect(() => {
@@ -75,8 +88,7 @@ const App: React.FC = () => {
 
 
       if (document.readyState === "complete"){
-
-                  var wsImpl = window.WebSocket || window.MozWebSocket;
+                  const wsImpl = window.WebSocket || window.MozWebSocket;
 
                   window.ws = new wsImpl('ws://localhost:8181/');
 
@@ -150,6 +162,7 @@ const App: React.FC = () => {
                   isLogged,
                   currentPersonal,
                   setCurrentPersonal,
+                  permission,
                   office
               }}>
                 {isLogged ?

@@ -8,5 +8,6 @@ export const Context = createContext({
     office:'',
     compressed:'',
     currentPersonal:0,
-    scan:''
+    scan:'',
+    permission:''
 })

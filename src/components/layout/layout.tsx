@@ -38,6 +38,7 @@ import MainProduct from "../warhouse/product/main/page";
 import MainProperty from "../warhouse/property/main/page";
 import Edit from "../personal/register/edit";
 import Home from "../home/home";
+import PageNotFound from "../notfound/not_found";
 
 
 const { Header, Content, Footer, Sider } = Layout;
@@ -106,38 +107,40 @@ const items: MenuItem[] = [
    getItem(<Link to='../logout'>خروج</Link>, '21', <PoweroffOutlined />),
 ];
 
-const breadcrumbNameMap: Record<string, string> = {
-  '/contract': 'قراردادها',
-  '/personal': 'مدارک اشخاص',
-  '/document': 'اسناد اموال',
-  '/warhouse': 'انبارداری',
-  '/contactus': 'تماس با ما',
-  '/warhouse/product': 'انبار',
-  '/warhouse/property': 'اموال',
-  '/contract/register': 'ثبت',
-  '/contract/report': 'گزارش',
-  '/contract/upload': 'بارگذاری',
-  '/personal/register': 'ثبت',
-  '/personal/report': 'گزارش',
-  '/personal/upload': 'بارگذاری',
-  '/document/register': 'ثبت',
-  '/document/report': 'گزارش',
-  '/document/upload': 'بارگذاری',
-  '/warhouse/product/register': 'ثبت',
-  '/warhouse/product/report': 'گزارش',
-  '/warhouse/property/register': 'ثبت',
-  '/warhouse/property/report': 'گزارش',
-  '/warhouse/property/sent': 'ارسالی',
-  '/warhouse/property/recycle': 'بایگانی',
-  '/warhouse/handling': 'انبارگردانی',
-
-};
 
 
 const LayoutForm: React.FC = () => {
   const [collapsed, setCollapsed] = useState(true);
   const location = useLocation();
   const context = useContext(Context)
+  const breadcrumbNameMap: Record<string, string> = {
+          '/contract': 'قراردادها',
+          '/personal': 'مدارک اشخاص',
+          '/document': 'اسناد اموال',
+          '/warhouse': 'انبارداری',
+          '/contactus': 'تماس با ما',
+          '/warhouse/product': 'انبار',
+          '/warhouse/property': 'اموال',
+          '/contract/register': 'ثبت',
+          '/contract/report': 'گزارش',
+          '/contract/upload': 'بارگذاری',
+          '/personal/register': 'ثبت',
+          '/personal/report': 'گزارش',
+          '/personal/edit': 'ویرایش',
+          '/personal/upload': 'بارگذاری',
+          '/document/register': 'ثبت',
+          '/document/report': 'گزارش',
+          '/document/upload': 'بارگذاری',
+          '/warhouse/product/register': 'ثبت',
+          '/warhouse/product/report': 'گزارش',
+          '/warhouse/property/register': 'ثبت',
+          '/warhouse/property/report': 'گزارش',
+          '/warhouse/property/sent': 'ارسالی',
+          '/warhouse/property/recycle': 'بایگانی',
+          '/warhouse/handling': 'انبارگردانی',
+
+        };
+
   const pathSnippets = location.pathname.split('/').filter((i) => i);
   const extraBreadcrumbItems = pathSnippets.map((_, index) => {
     const url = `/${pathSnippets.slice(0, index + 1).join('/')}`;
@@ -210,6 +213,8 @@ const LayoutForm: React.FC = () => {
                           <Route path={'/contactus'} element={<Contactus/>}/>
                           <Route path={'/'} element={<Home/>}/>
                           <Route path={'/logout'} element={<Logout/>}/>
+                           <Route path="*" element={<PageNotFound />} />
+
                  </Routes>
               </div>
             </Content>

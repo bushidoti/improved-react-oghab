@@ -561,6 +561,7 @@ const MainPersonal: React.FC = () => {
           <Table
               bordered columns={columns}
               dataSource={contract}
+              tableLayout={"fixed"}
               scroll={{ x: 3000 , y:'60vh'}}
               rowKey="id"
               onChange={handleChange}

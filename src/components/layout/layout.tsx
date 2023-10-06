@@ -37,6 +37,7 @@ import MainWarehouse from "../warhouse/main/page";
 import MainProduct from "../warhouse/product/main/page";
 import MainProperty from "../warhouse/property/main/page";
 import Edit from "../personal/register/edit";
+import Home from "../home/home";
 
 
 const { Header, Content, Footer, Sider } = Layout;
@@ -181,7 +182,7 @@ const LayoutForm: React.FC = () => {
             </Header>
             <Content style={{ margin: '0 16px', overflow: 'initial' }}>
               <Breadcrumb separator=">" style={{ margin: '16px 0' }} items={breadcrumbItems}/>
-              <div style={{ padding: 24, minHeight: '100vh', background: colorBgContainer }}>
+              <div style={{ padding: 24, background: colorBgContainer }}>
                  <Routes>
                           <Route path={'/contract'} element={<MainContract/>}/>
                           <Route path={'/contract/register'} element={<RegisterContract/>}/>
@@ -207,6 +208,7 @@ const LayoutForm: React.FC = () => {
                           <Route path={'/warhouse/property/recycle'} element={<RecycleProperty/>}/>
                           <Route path={'/warhouse/handling'} element={<Handling/>}/>
                           <Route path={'/contactus'} element={<Contactus/>}/>
+                          <Route path={'/'} element={<Home/>}/>
                           <Route path={'/logout'} element={<Logout/>}/>
                  </Routes>
               </div>

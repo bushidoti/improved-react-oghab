@@ -135,11 +135,7 @@ const App: React.FC = () => {
 
 
 
-    // function scanImage() {
-    //           if (document.readyState === "complete"){
-    //                          window.ws.send("1100");
-    //           }
-    //    }
+
 
   return (
       <Fragment>

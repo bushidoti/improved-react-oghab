@@ -182,6 +182,11 @@ export default function UploadPersonal() {
         [])
 
 
+      function scanImage() {
+              if (document.readyState === "complete"){
+                           window.ws.send("1100");
+             }
+       }
 
   return (
       <Form
@@ -227,15 +232,11 @@ export default function UploadPersonal() {
                                         colorPrimary:'#faad14'
                                         }
                                 }}>
-                   <Form.Item
-                      rules={[{ required: true, message: 'Street is required' }]}
-                    >
-                      <Button type={"primary"}>اسکن</Button>
+                   <Form.Item>
+                      <Button type={"primary"} onClick={scanImage}>اسکن</Button>
                     </Form.Item>
              </ConfigProvider>
-        <Form.Item
-          rules={[{ required: true, message: 'Street is required' }]}
-        >
+        <Form.Item>
           <Button type={"primary"} htmlType={"submit"} loading={loading} danger={loading}>بارگذاری</Button>
         </Form.Item>
         <Form.Item

@@ -6,6 +6,7 @@ import axios from "axios";
 import dayjs from "dayjs";
 import {Context} from "../../../context";
 import {useNavigate} from "react-router-dom";
+import ReceiveDoc from "../upload/receive_doc";
 /* eslint-disable no-template-curly-in-string */
 const validateMessages = {
   required: '${label} مورد نیاز است !',
@@ -157,6 +158,7 @@ const Edit: React.FC = () => {
 
 
     return (
+        <>
             <Form form={form}
                 autoComplete="off"
                 name="contract"
@@ -280,6 +282,8 @@ const Edit: React.FC = () => {
                           <Form.Item style={{ display: `${manualExtend ? 'none': ''}` }} name={['contract', 'extensionManual']} className='register-form-personal' label="تمدید دستی">
                             <DatePickerJalali/>
                           </Form.Item>
+                         <Divider>مشاهده مدارک</Divider>
+                         <ReceiveDoc/>
                          <Form.Item>
                                 <Form.Item style={{margin:8}}>
                                     <ConfigProvider theme={{
@@ -303,8 +307,9 @@ const Edit: React.FC = () => {
                               </Form.Item>
                          </Form.Item>
                     </Form.Item>
-
             </Form>
+
+            </>
         );
 }
 

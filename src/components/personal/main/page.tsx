@@ -2,7 +2,7 @@ import { SearchOutlined } from '@ant-design/icons';
 import React, {useContext, useEffect, useRef, useState} from 'react';
 import Highlighter from "react-highlight-words";
 import type {InputRef, TableProps} from 'antd';
-import {Badge, Button, Input, Space, Table} from 'antd';
+import {Badge, Button, Input, Select, Space, Table} from 'antd';
 import axios from "axios";
 import type { ColumnType, ColumnsType } from 'antd/es/table';
 import type {FilterConfirmProps, FilterValue, SorterResult} from 'antd/es/table/interface';
@@ -80,7 +80,7 @@ const MainPersonal: React.FC = () => {
   const [sortedInfo, setSortedInfo] = useState<SorterResult<DataType>>({});
   const date = new DateObject({ calendar: persian })
   const navigate = useNavigate();
-
+  const [filteredColumns ,  setFilteredColumns] = useState<string[]>([])
   const fetchData = async () => {
         await axios.get(`${Url}/api/persons/?fields=affidavitStatus,id,type,full_name,expireDate,date,national_id,caseNumber,sex,office,job,approvedPrice,commitmentPrice,typeBail,firstBail,secondBail,clearedStatus,clearedDate,receivedDocument,&office=${context.permission === 'مدیر اداری' || context.permission === 'مشاهده' ? '' : context.office}` , {
              headers: {
@@ -287,7 +287,7 @@ const MainPersonal: React.FC = () => {
       sortOrder: sortedInfo.columnKey === 'id' ? sortedInfo.order : null,
       sortDirections: ['descend', 'ascend'],
       filteredValue: filteredInfo.id || null,
-      render: (value, record) =>
+      render: (_value, record) =>
           <>
           {(() => {
             if (record.clearedStatus){
@@ -335,7 +335,7 @@ const MainPersonal: React.FC = () => {
       key: 'full_name',
       ...getColumnSearchProps('full_name'),
       filteredValue: filteredInfo.full_name || null,
-       render: (value, record) => <Button type={"link"} onClick={() => {
+       render: (_value, record) => <Button type={"link"} onClick={() => {
         context.setCurrentPersonal(record.id)
         navigate(`/personal/edit/${record.id}`)
       }}>{record.full_name}</Button>,
@@ -436,20 +436,21 @@ const MainPersonal: React.FC = () => {
     },{
       align:"center",
       title: 'مشخصه وثیقه',
+      dataIndex: 'Bails',
       children:[
         {
           dataIndex: 'firstBail',
           key: 'firstBail',
           align:"center",
           width: '10%',
-          render: (value, record) => handleTypeFirstBail(record.typeBail) + ' : ' + record.firstBail ,
+          render: (_value, record) => handleTypeFirstBail(record.typeBail) + ' : ' + record.firstBail ,
 
         },{
           dataIndex: 'secondBail',
           key: 'secondBail',
           align:"center",
           width: '10%',
-          render: (value, record) => handleTypeSecondBail(record.typeBail) + ' : ' + record.secondBail ,
+          render: (_value, record) => handleTypeSecondBail(record.typeBail) + ' : ' + record.secondBail ,
         }
       ],
     },{
@@ -465,7 +466,7 @@ const MainPersonal: React.FC = () => {
           }
       ],
       filteredValue: filteredInfo.expireDate || null,
-      onFilter: (value, record) =>
+      onFilter: (_value, record) =>
           date.format('YYYY-MM-DD').replaceAll('/' , '-') > record.expireDate,
     },{
       align:"center",
@@ -480,9 +481,9 @@ const MainPersonal: React.FC = () => {
           }
       ],
       filteredValue: filteredInfo.clearedStatus || null,
-      onFilter: (value, record) =>
+      onFilter: (_value, record) =>
           record.clearedStatus,
-      render: (value, record) => record.clearedStatus ?
+      render: (_value, record) => record.clearedStatus ?
           <Badge status="success"/> : <Badge status="error"/> ,
     },{
       align:"center",
@@ -496,7 +497,7 @@ const MainPersonal: React.FC = () => {
       width: '5%',
       dataIndex: 'receivedDocument',
       key: 'receivedDocument',
-      render: (value, record) => record.receivedDocument ? <Badge status="success"/> : <Badge status="error"/> ,
+      render: (_value, record) => record.receivedDocument ? <Badge status="success"/> : <Badge status="error"/> ,
 
     },{
       align:"center",
@@ -504,7 +505,7 @@ const MainPersonal: React.FC = () => {
       width: '5%',
       dataIndex: 'affidavitStatus',
       key: 'affidavitStatus',
-      render: (value, record) => record.affidavitStatus ? <Badge status="success"/> : <Badge status="error"/> ,
+      render: (_value, record) => record.affidavitStatus ? <Badge status="success"/> : <Badge status="error"/> ,
 
     },{
       align:"center",
@@ -539,6 +540,7 @@ const MainPersonal: React.FC = () => {
     ],
       filteredValue: filteredInfo.office || null,
       onFilter: (value, record) => record.office === value,
+
     }
   ];
 
@@ -556,6 +558,35 @@ const MainPersonal: React.FC = () => {
     setSortedInfo(sorter as SorterResult<DataType>);
   };
 
+
+  const onChange = (value: string[]) => {
+    setFilteredColumns(value as  string[])
+  };
+
+
+  const options = [
+    { label: 'شماره ثبت', value: 'id' },
+    { label: 'وضعیت', value: 'type' },
+    { label: 'نام و نشان', value: 'full_name' },
+    { label: 'شماره پرونده', value: 'caseNumber' },
+    { label: 'جنسیت', value: 'sex' },
+    { label: 'تاریخ استخدام', value: 'date' },
+    { label: 'کد ملی', value: 'national_id' },
+    { label: 'محل کار', value: 'office' },
+    { label: 'شغل', value: 'job' },
+    { label: 'تضمین مصوب', value: 'approvedPrice' },
+    { label: 'مبلغ تضمین', value: 'commitmentPrice' },
+    { label: 'وثیقه تضمین', value: 'typeBail' },
+    { label: 'مشخصه وثیقه', value: 'Bails' },
+    { label: 'تاریخ پایان قرارداد', value: 'expireDate' },
+    { label: 'وضعیت تسویه', value: 'clearedStatus' },
+    { label: 'تاریخ تسویه', value: 'clearedDate' },
+    { label: 'وضعیت مدرک', value: 'receivedDocument' },
+    { label: 'وضعیت اقرارنامه', value: 'affidavitStatus' },
+  ];
+
+
+
   return (
       <>
          <Space style={{ marginBottom: 16 }}>
@@ -567,9 +598,19 @@ const MainPersonal: React.FC = () => {
                 filename={"پرسنل.csv"}
                 data={contract}
                 headers={headers}>اکسل <FileExcelOutlined /></CSVLink></Button>
+            <Select
+                mode="multiple"
+                allowClear
+                style={{ width: 500 }}
+                placeholder="ستون هایی که میخواهید نمایش داده نشود انتخاب کنید."
+                onChange={onChange}
+                options={options}
+            />
           </Space>
           <Table
-              bordered columns={columns}
+                // @ts-ignore
+
+              bordered columns={columns.filter(col => !filteredColumns.includes(col.dataIndex))}
               dataSource={contract}
               tableLayout={"fixed"}
               scroll={{ x: 3010 , y:'60vh'}}

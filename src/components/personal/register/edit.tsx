@@ -77,10 +77,7 @@ const Edit: React.FC = () => {
                   date: dayjs(values.contract.date).locale('fa').format('YYYY-MM-DD'),
                   national_id: values.contract.national_id,
                   sex: values.contract.sex,
-                  expireDate: values.contract.extensionManual ?  dayjs(values.contract.extensionManual)
-                  .locale('fa').format('YYYY-MM-DD') :
-                  dayjs(values.contract.expireDate).add(values.contract.extension, "month")
-                      .locale('fa').format('YYYY-MM-DD'),
+                  expireDate: values.contract.extensionManual ?  dayjs(values.contract.extensionManual).locale('fa').format('YYYY-MM-DD') : dayjs(values.contract.expireDate).add(values.contract.extension || 0, "month").locale('fa').format('YYYY-MM-DD'),
                   office: values.contract.office,
                   job: values.contract.job,
                   approvedPrice: `${values.contract.approvedPrice}`.replace(/\B(?=(\d{3})+(?!\d))/g, ','),
@@ -101,48 +98,58 @@ const Edit: React.FC = () => {
          return response
               }).then(async data => {
                         if (data.status === 200) {
-                              message.success('ثبت شد');
+                              message.success('ویرایش شد');
                               setLoading(false)
                               navigate('/personal')
-                        }else if (data.status === 405) {
-                            message.error('عدم ثبت');
+                        }
+                }).catch((error) => {
+                   if (error.request.status === 403){
+                        navigate('/no_access')
+                   }else if (error.request.status === 405) {
+                            message.error('عدم ویرایش');
                             setLoading(false)
                         }
-                })
+        })
     };
 
 
     const fetchData = async () => {
-        const response = await fetch(`${Url}/api/persons/${context.currentPersonal}/?fields=affidavitStatus,id,type,full_name,expireDate,date,national_id,sex,office,caseNumber,job,approvedPrice,commitmentPrice,typeBail,firstBail,secondBail,clearedStatus,clearedDate,receivedDocument`, {
+        await axios.get(`${Url}/api/persons/${context.currentPersonal}/?fields=affidavitStatus,id,type,full_name,expireDate,date,national_id,sex,office,caseNumber,job,approvedPrice,commitmentPrice,typeBail,firstBail,secondBail,clearedStatus,clearedDate,receivedDocument,&office=${context.permission === 'مدیر اداری' ? '' : context.office}`, {
                 headers: {
                   'Authorization': 'Bearer ' + localStorage.getItem('access_token'),
                 }
-              })
-        const data = await response.json()
-        form.setFieldsValue({
+              }).then(response => {
+          return response
+              }).then(async data => {
+                     form.setFieldsValue({
                contract: {
-                  id: data.id,
-                  type: data.type,
-                  full_name: data.full_name,
-                  caseNumber: data.caseNumber,
-                  national_id: data.national_id,
-                  sex: data.sex,
-                  office: data.office,         // @ts-ignore
-                  date: dayjs(data.date, { jalali: true }),
-                  job: data.job,
-                  approvedPrice: data.approvedPrice,
-                  commitmentPrice: data.commitmentPrice,
-                  typeBail: data.typeBail,
-                  firstBail: data.firstBail,
-                  secondBail: data.secondBail,
-                  receivedDocument: data.receivedDocument,
-                  affidavitStatus: data.affidavitStatus,
+                  id: data.data.id,
+                  type: data.data.type,
+                  full_name: data.data.full_name,
+                  caseNumber: data.data.caseNumber,
+                  national_id: data.data.national_id,
+                  sex: data.data.sex,
+                  office: data.data.office,         // @ts-ignore
+                  date: dayjs(data.data.date, { jalali: true }),
+                  job: data.data.job,
+                  approvedPrice: data.data.approvedPrice,
+                  commitmentPrice: data.data.commitmentPrice,
+                  typeBail: data.data.typeBail,
+                  firstBail: data.data.firstBail,
+                  secondBail: data.data.secondBail,
+                  receivedDocument: data.data.receivedDocument,
+                  affidavitStatus: data.data.affidavitStatus,
                                                   // @ts-ignore
-                  expireDate: dayjs(data.expireDate, { jalali: true }),
+                  expireDate: dayjs(data.data.expireDate, { jalali: true }),
                                                  // @ts-ignore
-                  clearedDate: data.clearedDate ? dayjs(data.clearedDate, { jalali: true }) : null,
+                  clearedDate: data.data.clearedDate ? dayjs(data.data.clearedDate, { jalali: true }) : null,
                 },
         });
+                }).catch((error) => {
+                   if (error.request.status === 403){
+                        navigate('/no_access')
+                   }
+        })
       }
 
       useEffect(() => {

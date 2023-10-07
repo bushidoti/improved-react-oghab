@@ -4,6 +4,7 @@ import {DatePicker as DatePickerJalali} from "antd-jalali";
 import Url from "../../api-configue";
 import axios from "axios";
 import dayjs from "dayjs";
+import {useNavigate} from "react-router-dom";
 
 
 
@@ -27,7 +28,7 @@ let secondBail = ' '
 
 const Register: React.FC = () => {
     const [form] = Form.useForm();
-
+    const navigate = useNavigate();
     const [bailLabel , setBailLabel] = useState({
         firstBail,
         secondBail
@@ -95,11 +96,15 @@ const Register: React.FC = () => {
                               setCurrentStep(currentStep+1)
                               await handleResetSubmit()
                               setLoading(false)
-                        }else if (data.status === 400) {
-                            message.error('عدم ثبت');
-                            setLoading(false)
-                            await handleResetSubmit()
                         }
+                }).catch(async (error) => {
+                    if (error.request.status === 403) {
+                        navigate('/no_access')
+                    } else if (error.request.status === 400) {
+                        message.error('عدم ثبت');
+                        setLoading(false)
+                        await handleResetSubmit()
+                    }
                 })
     };
 
@@ -109,17 +114,23 @@ const Register: React.FC = () => {
     }
 
     const fetchLastData = async () => {
-        const response = await fetch(`${Url}/api/persons/?fields=id`, {
+         await axios.get(`${Url}/api/persons/?fields=id`, {
                 headers: {
                   'Authorization': 'Bearer ' + localStorage.getItem('access_token'),
                 }
-              })
-        const data = await response.json()
-        form.setFieldsValue({
-               contract: {
-                  id: data.slice(-1)[0].id + 1,
-                },
-        });
+              }).then(response => {
+          return response
+              }).then(async data => {
+                       form.setFieldsValue({
+                           contract: {
+                              id: data.data.slice(-1)[0].id + 1,
+                            },
+                    });
+                }).catch((error) => {
+                   if (error.request.status === 403){
+                        navigate('/no_access')
+                   }
+        })
       }
 
       useEffect(() => {
@@ -140,7 +151,6 @@ const Register: React.FC = () => {
                 layout="vertical"
                 onFinish={onFinish}
                 validateMessages={validateMessages}
-
               >
                         <Form.Item name={['contract', 'id']} style={{margin:10}} label="شماره ثبت">
                           <InputNumber disabled/>

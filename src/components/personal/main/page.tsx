@@ -2,7 +2,8 @@ import { SearchOutlined } from '@ant-design/icons';
 import React, {useContext, useEffect, useRef, useState} from 'react';
 import Highlighter from "react-highlight-words";
 import type {InputRef, TableProps} from 'antd';
-import {Badge, Button, Input, Space, Table } from 'antd';
+import {Badge, Button, Input, Space, Table} from 'antd';
+import axios from "axios";
 import type { ColumnType, ColumnsType } from 'antd/es/table';
 import type {FilterConfirmProps, FilterValue, SorterResult} from 'antd/es/table/interface';
 import Url from "../../api-configue";
@@ -81,16 +82,21 @@ const MainPersonal: React.FC = () => {
   const navigate = useNavigate();
 
   const fetchData = async () => {
-        await fetch(`${Url}/api/persons/?fields=affidavitStatus,id,type,full_name,expireDate,date,national_id,caseNumber,sex,office,job,approvedPrice,commitmentPrice,typeBail,firstBail,secondBail,clearedStatus,clearedDate,receivedDocument` , {
+        await axios.get(`${Url}/api/persons/?fields=affidavitStatus,id,type,full_name,expireDate,date,national_id,caseNumber,sex,office,job,approvedPrice,commitmentPrice,typeBail,firstBail,secondBail,clearedStatus,clearedDate,receivedDocument,&office=${context.permission === 'مدیر اداری' ? '' : context.office}` , {
              headers: {
                   'Authorization': 'Bearer ' + localStorage.getItem('access_token'),
                 }
-        }).then(res => res.json()).then(data => {
-            setContracts(data)
-        }
-        )
+        }).then(response => {
+          return response
+              }).then(async data => {
+                   setContracts(data.data)
+                })
         .finally(() => {
             setLoading(false)
+        }).catch((error) => {
+                   if (error.request.status === 403){
+                        navigate('/no_access')
+                   }
         })
       }
 
@@ -102,7 +108,7 @@ const MainPersonal: React.FC = () => {
             void fetchData()
           },
           // eslint-disable-next-line react-hooks/exhaustive-deps
-          [])
+          [context.office])
 
   const handleSearch = (
     selectedKeys: string[],
@@ -281,22 +287,26 @@ const MainPersonal: React.FC = () => {
       sortOrder: sortedInfo.columnKey === 'id' ? sortedInfo.order : null,
       sortDirections: ['descend', 'ascend'],
       filteredValue: filteredInfo.id || null,
-      render: (value, record, index) =>
+      render: (value, record) =>
           <>
-            <Space>
-              {date.format('YYYY-MM-DD').replaceAll('/' , '-') > record.expireDate ?
-                  <>
-                  <Badge  color="red" status="processing"/> {record.id}
-                  </> :  record.id}
-              {record.clearedStatus ?
-                  <>
-                    <Badge color="green" status="processing"/> {record.id}
-                  </>
-
-                  : ''}
-            </Space>
+          {(() => {
+            if (record.clearedStatus){
+              return (
+                  <Space>
+                        <Badge color="green" status="processing"/> {record.id}
+                  </Space>
+              )
+            }else if (date.format('YYYY-MM-DD').replaceAll('/' , '-') > record.expireDate){
+              return (
+                  <Space>
+                      <Badge  color="red" status="processing"/> {record.id}
+                  </Space>
+              )
+            }else {
+              return record.id
+            }
+          })()}
           </>
-
     },{
       align:"center",
       title: 'وضعیت',
@@ -325,7 +335,7 @@ const MainPersonal: React.FC = () => {
       key: 'full_name',
       ...getColumnSearchProps('full_name'),
       filteredValue: filteredInfo.full_name || null,
-       render: (value, record, index) => <Button type={"link"} onClick={() => {
+       render: (value, record) => <Button type={"link"} onClick={() => {
         context.setCurrentPersonal(record.id)
         navigate(`/personal/edit/${record.id}`)
       }}>{record.full_name}</Button>,
@@ -432,14 +442,14 @@ const MainPersonal: React.FC = () => {
           key: 'firstBail',
           align:"center",
           width: '10%',
-          render: (value, record, index) => handleTypeFirstBail(record.typeBail) + ' : ' + record.firstBail ,
+          render: (value, record) => handleTypeFirstBail(record.typeBail) + ' : ' + record.firstBail ,
 
         },{
           dataIndex: 'secondBail',
           key: 'secondBail',
           align:"center",
           width: '10%',
-          render: (value, record, index) => handleTypeSecondBail(record.typeBail) + ' : ' + record.secondBail ,
+          render: (value, record) => handleTypeSecondBail(record.typeBail) + ' : ' + record.secondBail ,
         }
       ],
     },{
@@ -460,7 +470,7 @@ const MainPersonal: React.FC = () => {
     },{
       align:"center",
       title: 'وضعیت تسویه',
-      width: '5%',
+      width: '5.10%',
       dataIndex: 'clearedStatus',
       key: 'clearedStatus',
       filters: [
@@ -472,7 +482,7 @@ const MainPersonal: React.FC = () => {
       filteredValue: filteredInfo.clearedStatus || null,
       onFilter: (value, record) =>
           record.clearedStatus,
-      render: (value, record, index) => record.clearedStatus ?
+      render: (value, record) => record.clearedStatus ?
           <Badge status="success"/> : <Badge status="error"/> ,
     },{
       align:"center",
@@ -486,7 +496,7 @@ const MainPersonal: React.FC = () => {
       width: '5%',
       dataIndex: 'receivedDocument',
       key: 'receivedDocument',
-      render: (value, record, index) => record.receivedDocument ? <Badge status="success"/> : <Badge status="error"/> ,
+      render: (value, record) => record.receivedDocument ? <Badge status="success"/> : <Badge status="error"/> ,
 
     },{
       align:"center",
@@ -494,7 +504,7 @@ const MainPersonal: React.FC = () => {
       width: '5%',
       dataIndex: 'affidavitStatus',
       key: 'affidavitStatus',
-      render: (value, record, index) => record.affidavitStatus ? <Badge status="success"/> : <Badge status="error"/> ,
+      render: (value, record) => record.affidavitStatus ? <Badge status="success"/> : <Badge status="error"/> ,
 
     },{
       align:"center",
@@ -562,7 +572,7 @@ const MainPersonal: React.FC = () => {
               bordered columns={columns}
               dataSource={contract}
               tableLayout={"fixed"}
-              scroll={{ x: 3000 , y:'60vh'}}
+              scroll={{ x: 3010 , y:'60vh'}}
               rowKey="id"
               onChange={handleChange}
               loading={loading}

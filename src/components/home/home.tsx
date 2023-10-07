@@ -3,12 +3,12 @@ import {Carousel, Image} from 'antd';
 
 const contentStyle: React.CSSProperties = {
   maxHeight:'80vh',
-  width:'60vw',
+  width:'80vw',
   borderRadius:20
 };
 
 const Home: React.FC = () => (
-  <Carousel style={{width:'60vw', margin:"auto"}} autoplay effect="fade">
+  <Carousel style={{width:'80vw', margin:"auto"}} autoplay effect="fade">
     <div>
       <Image
           style={contentStyle}

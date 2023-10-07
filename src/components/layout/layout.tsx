@@ -39,6 +39,7 @@ import MainProperty from "../warhouse/property/main/page";
 import Edit from "../personal/register/edit";
 import Home from "../home/home";
 import PageNotFound from "../notfound/not_found";
+import NoAccess from "../noaccess/no_access";
 
 
 const { Header, Content, Footer, Sider } = Layout;
@@ -213,6 +214,7 @@ const LayoutForm: React.FC = () => {
                           <Route path={'/contactus'} element={<Contactus/>}/>
                           <Route path={'/'} element={<Home/>}/>
                           <Route path={'/logout'} element={<Logout/>}/>
+                          <Route path={'/no_access'} element={<NoAccess/>}/>
                            <Route path="*" element={<PageNotFound />} />
 
                  </Routes>

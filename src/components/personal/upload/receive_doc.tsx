@@ -2,6 +2,8 @@ import {Button, ConfigProvider, Image, Select, Space} from "antd";
 import {useContext, useState} from "react";
 import Url from "../../api-configue";
 import {Context} from "../../../context";
+import {useNavigate} from "react-router-dom";
+import axios from "axios";
 
 const ReceiveDoc = () => {
         const [subDocument , setSubDocument] = useState<object[]>([])
@@ -10,6 +12,7 @@ const ReceiveDoc = () => {
         const [visible, setVisible] = useState(false);
         const [file, setFile] = useState('')
         const [selected, setSelected] = useState('')
+        const navigate = useNavigate();
 
         const options = [
           { value: 'شناسنامه', label: 'شناسنامه' },
@@ -23,40 +26,48 @@ const ReceiveDoc = () => {
       ];
          const onFinish = async () => {
                 setLoading(true)
-                await fetch(`${Url}/api/persons/${context.currentPersonal}/?fields=${selected}` , {
+                await axios.get(`${Url}/api/persons/${context.currentPersonal}/?fields=${selected}` , {
                 headers: {
                   'Authorization': 'Bearer ' + localStorage.getItem('access_token'),
                 }
-                      }).then(res => res.json()).then(data => {
-                              fetch(Object.values(data)[0] as string).then(response => {
+                      }).then(response => {
+          return response
+              }).then(async data => {
+                               fetch(Object.values(data.data)[0] as string).then(response => {
                                     response.blob().then(() => {
                                         let alink = document.createElement('a');
-                                        alink.href = Object.values(data)[0] as string;
+                                        alink.href = Object.values(data.data)[0] as string;
                                         alink.download = `${selected}.jpg`
                                         alink.click();
                                     })
                                 })
-                        }
-                        )
-                        .finally(() => {
-                            setLoading(false)
-                        })
+                }).finally(() => {
+                                setLoading(false)
+                        }).catch((error) => {
+                   if (error.request.status === 403){
+                        navigate('/no_access')
+                   }
+               })
          };
 
           const onPreview = async () => {
                 setLoading(true)
-                await fetch(`${Url}/api/persons/${context.currentPersonal}/?fields=${selected}` , {
+                 await axios.get(`${Url}/api/persons/${context.currentPersonal}/?fields=${selected}` , {
                 headers: {
                   'Authorization': 'Bearer ' + localStorage.getItem('access_token'),
                 }
-                      }).then(res => res.json()).then(data => {
-                             setFile(Object.values(data)[0] as string)
-                        }
-                        )
-                        .finally(() => {
+                      }).then(response => {
+          return response
+              }).then(async data => {
+                            setFile(Object.values(data.data)[0] as string)
+                }).finally(() => {
                             setLoading(false)
                             setVisible(true)
-                        })
+                        }).catch((error) => {
+                   if (error.request.status === 403){
+                        navigate('/no_access')
+                   }
+               })
          };
 
         const onValuesChange = (value: string) => {

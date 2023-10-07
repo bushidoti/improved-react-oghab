@@ -3,6 +3,7 @@ import {useContext, useEffect, useState} from "react";
 import Url from "../../api-configue";
 import axios from "axios";
 import {Context} from "../../../context";
+import {useNavigate} from "react-router-dom";
 
 export default function UploadPersonal() {
       const [subDocument , setSubDocument] = useState<object[]>([])
@@ -11,6 +12,7 @@ export default function UploadPersonal() {
       const [listPersonal, setListPersonal] = useState<any[]>([])
       const [loading, setLoading] = useState<boolean>(false);
       const context = useContext(Context)
+      const navigate = useNavigate();
 
       const options = [
           { value: 'شناسنامه', label: 'شناسنامه' },
@@ -144,14 +146,20 @@ export default function UploadPersonal() {
           }
       }
      const fetchDataList = async () => {
-           const response = await fetch(`${Url}/api/persons/?fields=id,full_name`, {
+           await axios.get(`${Url}/api/persons/?fields=id,full_name,&office=${context.permission === 'مدیر اداری' ? '' : context.office}`, {
 
                  headers: {
                   'Authorization': 'Bearer ' + localStorage.getItem('access_token'),
                 }
-            })
-               const data = await response.json()
-               setListPersonal(data)
+            }).then(response => {
+          return response
+              }).then(async data => {
+                             setListPersonal(data.data)
+                }).catch((error) => {
+                   if (error.request.status === 403){
+                        navigate('/no_access')
+                   }
+        })
       }
 
       const onFinish = async (values: any) => {
@@ -167,11 +175,15 @@ export default function UploadPersonal() {
                         if (data.status === 200) {
                               message.success('ثبت شد');
                               setLoading(false)
-                        }else if (data.status === 400) {
+                        }
+                }).catch((error) => {
+                   if (error.request.status === 403){
+                        navigate('/no_access')
+                   }else if (error.request.status === 400) {
                             message.error('عدم ثبت');
                             setLoading(false)
-                        }
-                })
+                    }
+        })
     };
 
       useEffect(() => {

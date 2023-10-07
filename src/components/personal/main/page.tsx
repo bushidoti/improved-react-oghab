@@ -565,14 +565,10 @@ const MainPersonal: React.FC = () => {
 
 
   const options = [
-    { label: 'شماره ثبت', value: 'id' },
-    { label: 'وضعیت', value: 'type' },
-    { label: 'نام و نشان', value: 'full_name' },
     { label: 'شماره پرونده', value: 'caseNumber' },
     { label: 'جنسیت', value: 'sex' },
     { label: 'تاریخ استخدام', value: 'date' },
     { label: 'کد ملی', value: 'national_id' },
-    { label: 'محل کار', value: 'office' },
     { label: 'شغل', value: 'job' },
     { label: 'تضمین مصوب', value: 'approvedPrice' },
     { label: 'مبلغ تضمین', value: 'commitmentPrice' },
@@ -602,6 +598,7 @@ const MainPersonal: React.FC = () => {
                 mode="multiple"
                 allowClear
                 style={{ width: 500 }}
+                maxTagCount={2}
                 placeholder="ستون هایی که میخواهید نمایش داده نشود انتخاب کنید."
                 onChange={onChange}
                 options={options}

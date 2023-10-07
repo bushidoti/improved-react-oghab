@@ -114,7 +114,7 @@ const Edit: React.FC = () => {
 
 
     const fetchData = async () => {
-        await axios.get(`${Url}/api/persons/${context.currentPersonal}/?fields=affidavitStatus,id,type,full_name,expireDate,date,national_id,sex,office,caseNumber,job,approvedPrice,commitmentPrice,typeBail,firstBail,secondBail,clearedStatus,clearedDate,receivedDocument,&office=${context.permission === 'مدیر اداری' ? '' : context.office}`, {
+        await axios.get(`${Url}/api/persons/${context.currentPersonal}/?fields=affidavitStatus,id,type,full_name,expireDate,date,national_id,sex,office,caseNumber,job,approvedPrice,commitmentPrice,typeBail,firstBail,secondBail,clearedStatus,clearedDate,receivedDocument`, {
                 headers: {
                   'Authorization': 'Bearer ' + localStorage.getItem('access_token'),
                 }

@@ -594,16 +594,19 @@ const MainPersonal: React.FC = () => {
                 filename={"پرسنل.csv"}
                 data={contract}
                 headers={headers}>اکسل <FileExcelOutlined /></CSVLink></Button>
-            <Select
+          </Space>
+        <Space style={{ marginBottom: 16, marginRight: 16}}>
+           <Select
                 mode="multiple"
                 allowClear
-                style={{ width: 500 }}
+                style={{ width: 400 }}
                 maxTagCount={2}
                 placeholder="ستون هایی که میخواهید نمایش داده نشود انتخاب کنید."
                 onChange={onChange}
                 options={options}
             />
-          </Space>
+        </Space>
+
           <Table
                 // @ts-ignore
 

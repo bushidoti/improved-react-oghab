@@ -36,3 +36,28 @@ body {
     margin: 8px;
     width: 233px;
 }
+
+@media print {
+  @page {
+    size: landscape;
+    margin: 4mm;
+  }
+}
+
+.table {
+  border: 1px solid black;
+      border-collapse: collapse;
+  width: 100%;
+}
+.th {
+      border: 1px solid black;
+
+}
+
+.td {
+      border: 1px solid black;
+      text-align: center;
+
+
+}
+

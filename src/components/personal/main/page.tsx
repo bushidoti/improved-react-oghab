@@ -20,6 +20,7 @@ import {Context} from "../../../context";
 import {useNavigate} from "react-router-dom";
 import qs from 'qs';
 import {useReactToPrint} from "react-to-print";
+import TablePrint from "./table";
 
 interface DataType {
   key: React.Key;
@@ -90,7 +91,7 @@ const MainPersonal: React.FC = () => {
      });
 
   const fetchData = async () => {
-        await axios.get(`${Url}/api/persons/?fields=affidavitStatus,id,type,full_name,expireDate,date,national_id,caseNumber,sex,office,job,approvedPrice,commitmentPrice,typeBail,firstBail,secondBail,clearedStatus,clearedDate,receivedDocument,&${qs.stringify(filteredInfo , {encode: false , arrayFormat: 'repeat' })}&office=${context.permission === 'مدیر اداری' || context.permission === 'مشاهده' ? '' : context.office}` , {
+        await axios.get(`${Url}/api/persons/?fields=affidavitStatus,id,type,full_name,expireDate,date,national_id,caseNumber,sex,office,job,approvedPrice,commitmentPrice,typeBail,firstBail,secondBail,clearedStatus,clearedDate,receivedDocument,&office=${context.permission === 'مدیر اداری' ? '' : context.office}&${qs.stringify(filteredInfo , {encode: false , arrayFormat: 'comma' })}` , {
              headers: {
                   'Authorization': 'Bearer ' + localStorage.getItem('access_token'),
                 }
@@ -107,7 +108,6 @@ const MainPersonal: React.FC = () => {
                    }
         })
       }
-
 
   useEffect(() => {
             void fetchData()
@@ -625,59 +625,7 @@ const MainPersonal: React.FC = () => {
               pagination={{position:["bottomCenter"]}}
               // rowClassName={(record, index) =>  date.format('YYYY-MM-DD').replaceAll('/' , '-') > record.expireDate  ? 'table-expired-rows' :  ''}
           />
-      <div className= 'm-4 table-responsive text-nowrap rounded-3'  style={{display:'none'}}>
-        <table className="table table-hover table-fixed text-center align-middle table-bordered border-primary bg-light"
-                           ref={componentPDF} style={{direction:'rtl' , fontSize:'.56vw'}}>
-                         <thead>
-                            <tr>
-                                <th className= 'th' scope="col">ردیف</th>
-                                <th className= 'th' scope="col">شماره ثبت</th>
-                                <th className= 'th' scope="col">وضعیت</th>
-                                <th className= 'th' scope="col">نام و نشان</th>
-                                <th className= 'th' scope="col">جنسیت</th>
-                                <th className= 'th' scope="col">تاریخ استخدام</th>
-                                <th className= 'th' scope="col">کد ملی</th>
-                                <th className= 'th' scope="col">محل کار</th>
-                                <th className= 'th' scope="col">شغل</th>
-                                <th className= 'th' scope="col">تضمین مصوب</th>
-                                <th className= 'th' scope="col">مبلغ تضمین</th>
-                                <th className= 'th' scope="col">وثیقه تضمین</th>
-                                <th className= 'th' scope="col">مشخصه وثیقه</th>
-                                <th className= 'th' scope="col">تاریخ پایان قرارداد</th>
-                                <th className= 'th' scope="col">وضعیت تسویه</th>
-                                <th className= 'th' scope="col">تاریخ تسویه</th>
-                                <th className= 'th' scope="col">وضعیت مدرک</th>
-                                <th className= 'th' scope="col">وضعیت اقرارنامه</th>
-                            </tr>
-                         </thead>
-
-                        <tbody>
-                            {contract.map((data,i) => (
-                                <tr key={data.id} style={{backgroundColor:`${(data.clearedStatus ? 'hsl(0, 100%, 80%)' : null)  || ( date.format().replaceAll('/' , '-') >  data.expireDate  ? 'hsla(48,100%,50%,0.6)'  : null) }`}}>
-                                    <th className= 'th' scope="row">{i+1}</th>
-                                    <td className= 'td'>{data.id}</td>
-                                    <td className= 'td'>{data.type}</td>
-                                    <td className= 'td'>{data.full_name}</td>
-                                    <td className= 'td'>{data.sex}</td>
-                                    <td className= 'td'>{data.date}</td>
-                                    <td className= 'td'>{data.national_id}</td>
-                                    <td className= 'td'>{data.office}</td>
-                                    <td className= 'td'>{data.job}</td>
-                                    <td className= 'td'>{data.approvedPrice}</td>
-                                    <td className= 'td'>{data.commitmentPrice}</td>
-                                    <td className= 'td'>{data.typeBail}</td>
-                                    <td className= 'td'>{data.firstBail} _ {data.secondBail}</td>
-                                    <td className= 'td'>{data.expireDate}</td>
-                                    <td className= 'td'>{data.clearedStatus ? 'تسویه شده' : 'تسویه نشده'}</td>
-                                    <td className= 'td'>{data.clearedDate}</td>
-                                    <td className= 'td'>{data.receivedDocument ? 'تحویل داده شده' : 'تحویل داده نشده'}</td>
-                                    <td className= 'td'>{data.affidavitStatus ? 'تحویل داده شده' : 'تحویل داده نشده'}</td>
-                                </tr>
-                                ))
-                            }
-                        </tbody>
-                    </table>
-                        </div>
+        <TablePrint componentPDF={componentPDF} contract={contract}/>
       </>
   )
 };

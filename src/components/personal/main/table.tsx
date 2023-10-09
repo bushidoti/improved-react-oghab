@@ -5,8 +5,8 @@ import persian from "react-date-object/calendars/persian";
 const TablePrint = (props: { componentPDF: React.LegacyRef<HTMLTableElement> | undefined , contract: any[];}) => {
   const date = new DateObject({ calendar: persian })
   return (
-        <div className= 'm-4 table-responsive text-nowrap rounded-3'  style={{display:'none'}}>
-        <table className="table table-hover table-fixed text-center align-middle table-bordered border-primary bg-light"
+        <div  style={{display:'none'}}>
+        <table className="table"
                            ref={props.componentPDF} style={{direction:'rtl' , fontSize:'.56vw'}}>
                          <thead>
                             <tr>

@@ -27,6 +27,7 @@ const App: React.FC = () => {
   const [compress, setCompress] = useState('');
   const [compressed, setCompressed] = useState('');
   const [currentPersonal , setCurrentPersonal] = useState<number>(0)
+  const [currentProduct , setCurrentProduct] = useState<number>(0)
   const [permission, setPermission] = useState('');
 
 
@@ -157,6 +158,8 @@ const App: React.FC = () => {
               <Context.Provider value={{
                   setLogged,
                   fullName,
+                  setCurrentProduct,
+                  currentProduct,
                   scan,
                   compressed,
                   isLogged,

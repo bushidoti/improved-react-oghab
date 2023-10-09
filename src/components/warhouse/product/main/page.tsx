@@ -49,7 +49,8 @@ const MainProduct: React.FC = () => {
      });
 
   const fetchData = async () => {
-        await axios.get(`${Url}/api/product/?inventory=${context.permission === 'مدیر' || context.permission === 'مشاهده' ? '' : context.office}&${qs.stringify(filteredInfo , {encode: false , arrayFormat: 'comma' })}` , {
+        await axios.get(
+            `${Url}/api/product/?inventory=${context.permission === 'مدیر' || context.permission === 'مشاهده' ? '' : context.office}&${qs.stringify(filteredInfo , {encode: false , arrayFormat: 'comma' })}` , {
              headers: {
                   'Authorization': 'Bearer ' + localStorage.getItem('access_token'),
                 }
@@ -57,27 +58,17 @@ const MainProduct: React.FC = () => {
           return response
               }).then(async data => {
                    setProduct(data.data)
-                })
-        .finally(() => {
-            setLoading(false)
-        }).catch((error) => {
-                   if (error.request.status === 403){
-                        navigate('/no_access')
-                   }
-        })
-      }
-
-   const fetchDataSub= async () => {
-        await axios.get(`${Url}/api/allproducts/?fields=product,input,output,document_code,document_type,systemID,date,operator,afterOperator,obsolete,consumable,buyer,inventory,receiver,amendment,id` , {
-             headers: {
-                  'Authorization': 'Bearer ' + localStorage.getItem('access_token'),
+                }).then(async response => {
+            return await axios.get(`${Url}/api/allproducts/?fields=product,input,output,id`, {
+                headers: {
+                    'Authorization': 'Bearer ' + localStorage.getItem('access_token'),
                 }
+            })
         }).then(response => {
           return response
               }).then(async data => {
                    setProductSub(data.data)
-                })
-        .finally(() => {
+                }).finally(() => {
             setLoading(false)
         }).catch((error) => {
                    if (error.request.status === 403){
@@ -86,9 +77,10 @@ const MainProduct: React.FC = () => {
         })
       }
 
+
+
   useEffect(() => {
             void fetchData()
-            void fetchDataSub()
           },
           // eslint-disable-next-line react-hooks/exhaustive-deps
           [context.office , JSON.stringify(filteredInfo)])

@@ -5,7 +5,7 @@ import type {InputRef, TableProps} from 'antd';
 import {Button, Input, Space, Table} from 'antd';
 import axios from "axios";
 import type { ColumnType, ColumnsType } from 'antd/es/table';
-import type {FilterConfirmProps, FilterValue, SorterResult} from 'antd/es/table/interface';
+import type {FilterConfirmProps, FilterValue} from 'antd/es/table/interface';
 import Url from "../../../api-configue";
 import 'dayjs/locale/fa';
 import {Context} from "../../../../context";
@@ -13,16 +13,28 @@ import {useNavigate} from "react-router-dom";
 import {useReactToPrint} from "react-to-print";
 import TablePrint from "./table";
 import qs from "qs";
+import {DatePicker as DatePickerJalali, JalaliLocaleListener} from "antd-jalali";
+import dayjs from "dayjs";
+import Edit from "./edit";
 
 interface DataType {
   key: React.Key;
-  code: number;
-  name: string;
-  category: string;
-  inventory: string;
-  input: string;
-  output: string;
-  left: string;
+  index: number;
+  product: number;
+  output: number;
+  input: number;
+  count: number;
+  document_type: string;
+  document_code: string;
+  date: string;
+  scale: string;
+  operator: string;
+  afterOperator: number;
+  consumable: string;
+  buyer: string;
+  seller: string;
+  receiver: string;
+  amendment: string;
 }
 
 
@@ -31,7 +43,7 @@ type DataIndex = keyof DataType;
 
 
 
-const MainProduct: React.FC = () => {
+const Card: React.FC = () => {
   const [searchText, setSearchText] = useState('');
   const [searchedColumn, setSearchedColumn] = useState('');
   const searchInput = useRef<InputRef>(null);
@@ -39,7 +51,6 @@ const MainProduct: React.FC = () => {
   const context = useContext(Context)
   const [loading, setLoading] = useState(true);
   const [filteredInfo, setFilteredInfo] = useState<Record<string, FilterValue | null>>({});
-  const [sortedInfo, setSortedInfo] = useState<SorterResult<DataType>>({});
   const navigate = useNavigate();
   const componentPDF= useRef(null);
   const [productSub, setProductSub] = useState<any[]>([])
@@ -50,7 +61,7 @@ const MainProduct: React.FC = () => {
 
   const fetchData = async () => {
         await axios.get(
-            `${Url}/api/product/?inventory=${context.permission === 'مدیر' || context.permission === 'مشاهده' ? '' : context.office}&${qs.stringify(filteredInfo , {encode: false , arrayFormat: 'comma' })}` , {
+            `${Url}/api/product/${context.currentProduct}` , {
              headers: {
                   'Authorization': 'Bearer ' + localStorage.getItem('access_token'),
                 }
@@ -59,7 +70,7 @@ const MainProduct: React.FC = () => {
               }).then(async data => {
                    setProduct(data.data)
                 }).then(async () => {
-            return await axios.get(`${Url}/api/allproducts/?fields=product,input,output,id`, {
+            return await axios.get(`${Url}/api/allproducts/?fields=product,seller,input,output,document_code,document_type,date,operator,afterOperator,obsolete,consumable,buyer,receiver,amendment,id,scale,&product=${context.currentProduct}&${qs.stringify(filteredInfo , {encode: false , arrayFormat: 'comma' })}`, {
                 headers: {
                     'Authorization': 'Bearer ' + localStorage.getItem('access_token'),
                 }
@@ -78,12 +89,11 @@ const MainProduct: React.FC = () => {
       }
 
 
-
   useEffect(() => {
             void fetchData()
           },
           // eslint-disable-next-line react-hooks/exhaustive-deps
-          [context.office , JSON.stringify(filteredInfo)])
+          [JSON.stringify(filteredInfo)])
 
   const handleSearch = (
     selectedKeys: string[],
@@ -102,12 +112,24 @@ const MainProduct: React.FC = () => {
 
   const handleSearchPlaceHolder = (dataIndex: DataIndex) => {
 
-    if (dataIndex === "code") {
+    if (dataIndex === "product") {
       return 'کد کالا'
-    }else if (dataIndex === "name") {
-      return 'نام و نشانی'
-    }else if (dataIndex === "category") {
-      return 'گروه'
+    }else if (dataIndex === "document_type") {
+      return 'نوع سند'
+    }else if (dataIndex === "document_code") {
+      return 'شناسه سند'
+    }else if (dataIndex === "buyer") {
+      return 'خریدار'
+    }else if (dataIndex === "seller") {
+      return 'فروشنده'
+    }else if (dataIndex === "receiver") {
+      return 'گیرنده'
+    }else if (dataIndex === "amendment") {
+      return 'اصلاحیه'
+    }else if (dataIndex === "scale") {
+      return 'مقیاس'
+    }else if (dataIndex === "consumable") {
+      return 'مورد مصرف'
     }
   }
 
@@ -120,6 +142,18 @@ const MainProduct: React.FC = () => {
       <div style={{ padding: 8 }} onKeyDown={(e) => e.stopPropagation()}>
 
 
+            {dataIndex === "date" ?
+              <>
+                 <JalaliLocaleListener/>
+                   <DatePickerJalali
+                       onChange={function(dateString : string){
+                         setSelectedKeys(dayjs(dateString).locale('fa').format('YYYY-MM-DD') ? [dayjs(dateString).locale('fa').format('YYYY-MM-DD')] : [])
+                       }}
+                        onPressEnter={() => handleSearch(selectedKeys as string[], confirm, dataIndex)}
+                   />
+              </>
+
+            :
               <Input
               ref={searchInput}
               placeholder={`جستجو ${handleSearchPlaceHolder(dataIndex)}`}
@@ -130,6 +164,7 @@ const MainProduct: React.FC = () => {
               onPressEnter={() => handleSearch(selectedKeys as string[], confirm, dataIndex)}
               style={{ marginBottom: 8, display: 'block' }}
             />
+        }
 
 
 
@@ -204,127 +239,123 @@ const MainProduct: React.FC = () => {
   const columns: ColumnsType<DataType> = [
     {
       align:"center",
-      title: 'کد کالا',
-      dataIndex: 'code',
+      title: 'ردیف',
+      dataIndex: 'index',
+      fixed:"left",
       width: '4.88%',
-      key: 'code',
-      ...getColumnSearchProps('code'),
-      sorter: (a, b) => a.code - b.code,
-      sortOrder: sortedInfo.columnKey === 'code' ? sortedInfo.order : null,
-      sortDirections: ['descend', 'ascend'],
-      filteredValue: filteredInfo.code || null,
+      key: 'index',
+      render : (_value, _record, index) => index + 1,
     },{
       align:"center",
-      title: 'نام کالا',
-      dataIndex: 'name',
+      title: 'کد کالا',
+      dataIndex: 'product',
+      width: '5%',
+      key: 'product',
+    },{
+      align:"center",
+      title: 'نوع سند',
+      dataIndex: 'document_type',
+      width: '5%',
+      key: 'document_type',
+      ...getColumnSearchProps('document_type'),
+      filteredValue: filteredInfo.document_type || null,
+    },{
+      align:"center",
+      title: 'شناسه سند',
+      dataIndex: 'document_code',
       width: '7%',
-      key: 'name',
-      ...getColumnSearchProps('name'),
-      filteredValue: filteredInfo.name || null,
-       render: (_value, record) => <Button type={"link"} onClick={() => {
-        context.setCurrentProduct(record.code)
-        navigate(`/warhouse/product/edit/${record.code}`)
-      }}>{record.name}</Button>,
-
+      key: 'document_code',
+      ...getColumnSearchProps('document_code'),
+      filteredValue: filteredInfo.document_code || null,
     },{
       align:"center",
-      title: 'گروه',
-      width: '4.55%',
-      dataIndex: 'category',
-      key: 'category',
+      title: 'تاریخ',
+      dataIndex: 'date',
+      width: '5%',
+      key: 'date',
+      ...getColumnSearchProps('date'),
+      filteredValue: filteredInfo.date || null,
+    },{
+      align:"center",
+      title: 'عملیات',
+      dataIndex: 'operator',
+      width: '6%',
+      key: 'operator',
       filters: [
           {
-            text: 'اداری',
-            value: 'اداری',
+            text: 'ورود',
+            value: 'ورود',
           },{
-            text: 'ترابری',
-            value: 'ترابری',
+            text: 'خروج',
+            value: 'خروج',
           },{
-            text: 'تاسیسات',
-            value: 'تاسیسات',
-          },{
-            text: 'تجهیزات',
-            value: 'تجهیزات',
-          },{
-            text: 'آشپزخانه',
-            value: 'آشپزخانه',
-          },{
-            text: 'آبدارخانه',
-            value: 'آبدارخانه',
-          },{
-            text: 'بهداشتی',
-            value: 'بهداشتی',
-          },{
-            text: 'پشتیبانی',
-            value: 'پشتیبانی',
-          },
-      ],
-      filteredValue: filteredInfo.category || null,
-      onFilter: (value, record) => record.category === value,
-    },{
-      align:"center",
-      title: 'ورود',
-      width: '4.55%',
-      dataIndex: 'input',
-      key: 'input',
-      render: (_value, record) =>
-        (productSub.filter(productSub =>
-            productSub.product ===  record.code).reduce((a,v) =>   a + v.input , 0 ))
-      ,
-    },{
-      align:"center",
-      title: 'خروج',
-      width: '4.55%',
-      dataIndex: 'output',
-      key: 'output',
-      render: (_value, record) =>
-        (productSub.filter(productSub =>
-            productSub.product ===  record.code).reduce((a,v) =>   a + v.output , 0 ))
-    ,
-    },{
-      align:"center",
-      title: 'مانده',
-      width: '4.55%',
-      dataIndex: 'left',
-      key: 'left',
-      render: (_value, record) =>
-        (productSub.filter(productSub =>
-           productSub.product ===  record.code).reduce((a,v) =>   a + v.input , 0 ))
-        - (productSub.filter(productSub =>
-           productSub.product ===  record.code).reduce((a,v) =>   a + v.output , 0 ))
-    ,
-    },{
-      align:"center",
-      title: 'انبار',
-      width: '4.55%',
-      dataIndex: 'inventory',
-      key: 'inventory',
-      filters: [
-          {
-            text: 'دفتر مرکزی',
-            value: 'دفتر مرکزی',
-          },{
-            text: 'چابهار',
-            value: 'چابهار',
-          },{
-            text: 'دزفول',
-            value: 'دزفول',
-          },{
-            text: 'جاسک',
-            value: 'جاسک',
-          },{
-            text: 'بیشه کلا',
-            value: 'بیشه کلا',
-          },{
-            text: 'اورهال تهران',
-            value: 'اورهال تهران',
-          },{
-            text: 'اورهال اصفهان',
-            value: 'اورهال اصفهان',
+            text: 'ثبت اولیه',
+            value: 'ثبت اولیه',
           }
       ],
-        filteredValue:  context.permission === 'مدیر' || context.permission === 'مشاهده' ? filteredInfo.inventory  || null : [context.office] || null,
-        onFilter: (value, record) => record.inventory === value,
+      onFilter: (value, record) => record.operator === value,
+      filteredValue: filteredInfo.operator || null,
+    },{
+      align:"center",
+      title: 'مقیاس',
+      dataIndex: 'scale',
+      width: '7%',
+      key: 'scale',
+      ...getColumnSearchProps('scale'),
+      filteredValue: filteredInfo.scale || null,
+    },{
+      align:"center",
+      title: 'تعداد',
+      dataIndex: 'count',
+      width: '5%',
+      key: 'count',
+        render:(_value, record) => record.operator === 'خروج' ? record.output : record.input
+    },{
+      align:"center",
+      title: 'موجودی',
+      dataIndex: 'afterOperator',
+      width: '5%',
+      key: 'afterOperator',
+    },{
+      align:"center",
+      title: 'مورد مصرف',
+      dataIndex: 'consumable',
+      width: '7%',
+      key: 'consumable',
+      ...getColumnSearchProps('consumable'),
+      filteredValue: filteredInfo.consumable || null,
+    },{
+      align:"center",
+      title: 'خریدار',
+      dataIndex: 'buyer',
+      width: '7%',
+      key: 'buyer',
+      ...getColumnSearchProps('buyer'),
+      filteredValue: filteredInfo.buyer || null,
+    },{
+      align:"center",
+      title: 'فروشنده',
+      dataIndex: 'seller',
+      width: '7%',
+      key: 'seller',
+      ...getColumnSearchProps('seller'),
+      filteredValue: filteredInfo.seller || null,
+    },{
+      align:"center",
+      title: 'گیرنده',
+      dataIndex: 'receiver',
+      width: '7%',
+      key: 'receiver',
+      ...getColumnSearchProps('receiver'),
+      filteredValue: filteredInfo.receiver || null,
+    },{
+      align:"center",
+      title: 'اصلاحیه',
+      dataIndex: 'amendment',
+      width: '7%',
+      key: 'amendment',
+      ...getColumnSearchProps('amendment'),
+      filteredValue: filteredInfo.amendment || null,
     }
   ];
 
@@ -334,16 +365,15 @@ const MainProduct: React.FC = () => {
 
   const clearAll = () => {
     setFilteredInfo({});
-    setSortedInfo({});
   };
 
-  const handleChange: TableProps<DataType>['onChange'] = (_pagination, filters, sorter) => {
+  const handleChange: TableProps<DataType>['onChange'] = (_pagination, filters) => {
     setFilteredInfo(filters);
-    setSortedInfo(sorter as SorterResult<DataType>);
   };
 
   return (
       <>
+         <Edit/>
          <Space style={{ marginBottom: 16 }}>
             <Button onClick={clearFilters}>پاک کردن فیتلر ها</Button>
             <Button onClick={clearAll}>پاک کردن فیلتر و مرتب کننده ها</Button>
@@ -351,20 +381,19 @@ const MainProduct: React.FC = () => {
 
           </Space>
           <Table
-                // @ts-ignore
               bordered columns={columns}
-              dataSource={product}
+              dataSource={productSub}
               tableLayout={"fixed"}
-              scroll={{y:'60vh'}}
-              rowKey="code"
+              scroll={{ x: 3010 , y:'60vh'}}
+              rowKey="id"
               onChange={handleChange}
               loading={loading}
               pagination={{position:["bottomCenter"]}}
-              // rowClassName={(record, index) =>  date.format('YYYY-MM-DD').replaceAll('/' , '-') > record.expireDate  ? 'table-expired-rows' :  ''}
           />
-        <TablePrint componentPDF={componentPDF} contract={product} productSub={productSub}/>
+          <TablePrint componentPDF={componentPDF} contract={product} productSub={productSub}/>
+
       </>
   )
 };
 
-export default MainProduct;
+export default Card;

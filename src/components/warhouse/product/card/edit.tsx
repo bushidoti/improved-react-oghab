@@ -75,7 +75,7 @@ const Edit: React.FC = () => {
                 },
         });
                 }).then(async () => {
-            return await axios.get(`${Url}/api/consumable-list`, {
+            return await axios.get(`${Url}/api/category-list`, {
                 headers: {
                     'Authorization': 'Bearer ' + localStorage.getItem('access_token'),
                 }
@@ -100,29 +100,6 @@ const Edit: React.FC = () => {
 
 
 
-    const options = [
-         { value: 'اداری', label: 'اداری' }
-        ,{ value: 'موتور پول', label: 'موتور پول' }
-        ,{ value: 'مهندسی', label: 'مهندسی' }
-        ,{ value: 'مالی', label: 'مالی' }
-        ,{ value: 'آموزش', label: 'آموزش' }
-        ,{ value: 'ایستگاه', label: 'ایستگاه' }
-        ,{ value: 'حقوقی', label: 'حقوقی' }
-        ,{ value: 'بازرگانی', label: 'بازرگانی' }
-        ,{ value: 'تدارکات', label: 'تدارکات' }
-        ,{ value: 'حراست', label: 'حراست' }
-        ,{ value: 'تاسیسات', label: 'تاسیسات' }
-        ,{ value: 'آبدارخانه', label: 'آبدارخانه' }
-        ,{ value: 'مدیریت', label: 'مدیریت' }
-        ,{ value: 'عملیات', label: 'عملیات' }
-        ,{ value: 'خدمات فرودگاهی', label: 'خدمات فرودگاهی' }
-        ,{ value: 'پشتیبانی', label: 'پشتیبانی' }
-        ,{ value: 'ایمنی', label: 'ایمنی' }
-        ,{ value: 'سپاه', label: 'سپاه' }
-        ,{ value: 'دیسپج', label: 'دیسپج' }
-        ,{ value: 'پلیس', label: 'پلیس' }
-    ]
-
     const filterOption = (input: string, option?: { label: string; value: string }) =>
    (option?.label ?? '').toLowerCase().includes(input.toLowerCase());
 
@@ -132,7 +109,7 @@ const Edit: React.FC = () => {
 
       const addItem = async (e: React.MouseEvent<HTMLButtonElement | HTMLAnchorElement>) => {
           await axios.post(
-              `${Url}/api/consumable-list/`, {
+              `${Url}/api/category-list/`, {
                   value: name,
               }, {
                   headers: {
@@ -141,10 +118,9 @@ const Edit: React.FC = () => {
               }).then(response => {
               return response
           }).then(async data => {
-              if (data.status === 200) {
+              if (data.status === 201) {
                   message.success('اضافه شد');
-                  setLoading(false)
-                  navigate('/warhouse/product')
+                  await fetchData()
               }
           }).catch((error) => {
               if (error.request.status === 403) {

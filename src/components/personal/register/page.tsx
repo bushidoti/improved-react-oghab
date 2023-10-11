@@ -16,7 +16,7 @@ const RegisterPersonal: React.FC = () => {
         const steps = [
           {
             title: 'ثبت مشخصات',
-            content: (<Register/>),
+            content: (<Register setCurrentStep={setCurrentStep} currentStep={currentStep}/>),
           },
           {
             title: 'بارگذاری مدارک',

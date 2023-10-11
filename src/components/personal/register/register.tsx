@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {Dispatch, SetStateAction, useEffect, useState} from 'react';
 import {message, Button, Form, Input, InputNumber, Select, ConfigProvider} from 'antd';
 import {DatePicker as DatePickerJalali} from "antd-jalali";
 import Url from "../../api-configue";
@@ -26,7 +26,7 @@ let secondBail = ' '
 
 
 
-const Register: React.FC = () => {
+const Register = (props: {  currentStep: number , setCurrentStep: Dispatch<SetStateAction<number>>;}) => {
     const [form] = Form.useForm();
     const navigate = useNavigate();
     const [bailLabel , setBailLabel] = useState({
@@ -34,7 +34,6 @@ const Register: React.FC = () => {
         secondBail
     })
     const [loading, setLoading] = useState<boolean>(false);
-    const [currentStep, setCurrentStep] = useState<number>(0);
 
 
     const handleBailsLabel = (values: any) => {
@@ -93,7 +92,7 @@ const Register: React.FC = () => {
               }).then(async data => {
                         if (data.status === 201) {
                               message.success('ثبت شد');
-                              setCurrentStep(currentStep+1)
+                              props.setCurrentStep(props.currentStep+1)
                               await handleResetSubmit()
                               setLoading(false)
                         }

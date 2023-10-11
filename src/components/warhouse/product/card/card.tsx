@@ -2,7 +2,7 @@ import { SearchOutlined } from '@ant-design/icons';
 import React, {useContext, useEffect, useRef, useState} from 'react';
 import Highlighter from "react-highlight-words";
 import type {InputRef, TableProps} from 'antd';
-import {Button, Input, Space, Table} from 'antd';
+import {Button, Form, Input, Space, Table} from 'antd';
 import axios from "axios";
 import type { ColumnType, ColumnsType } from 'antd/es/table';
 import type {FilterConfirmProps, FilterValue} from 'antd/es/table/interface';
@@ -53,7 +53,10 @@ const Card: React.FC = () => {
   const [filteredInfo, setFilteredInfo] = useState<Record<string, FilterValue | null>>({});
   const navigate = useNavigate();
   const componentPDF= useRef(null);
+  const [optionConsumable, setOptionConsumable] = useState<any[]>([]);
   const [productSub, setProductSub] = useState<any[]>([])
+  const [form] = Form.useForm();
+
   const generatePDF= useReactToPrint({
         content: ()=>componentPDF.current,
         documentTitle:"کالا ها",
@@ -79,6 +82,32 @@ const Card: React.FC = () => {
           return response
               }).then(async data => {
                    setProductSub(data.data)
+                }).then(async () => {
+            return await axios.get(`${Url}/api/consumable-list`, {
+                headers: {
+                    'Authorization': 'Bearer ' + localStorage.getItem('access_token'),
+                }
+            })
+        }).then(response => {
+          return response
+              }).then(async data => {
+                   setOptionConsumable(data.data)
+                }).then(async () => {
+            return await axios.get(`${Url}/api/product/${context.currentProduct}`, {
+                headers: {
+                    'Authorization': 'Bearer ' + localStorage.getItem('access_token'),
+                }
+            })
+        }).then(response => {
+          return response
+              }).then(async data => {
+                     form.setFieldsValue({
+               product: {
+                  name: data.data.name,
+                  scale: data.data.scale,
+                  category: data.data.category,
+                },
+        });
                 }).finally(() => {
             setLoading(false)
         }).catch((error) => {
@@ -322,8 +351,9 @@ const Card: React.FC = () => {
       dataIndex: 'consumable',
       width: '7%',
       key: 'consumable',
-      ...getColumnSearchProps('consumable'),
-      filteredValue: filteredInfo.consumable || null,
+      filters: optionConsumable.map((item) => ({ text: item.value, value: item.value })),
+      filteredValue: filteredInfo.category || null,
+      onFilter: (value, record) => record.consumable === value,
     },{
       align:"center",
       title: 'خریدار',
@@ -373,7 +403,7 @@ const Card: React.FC = () => {
 
   return (
       <>
-         <Edit/>
+         <Edit form={form}/>
          <Space style={{ marginBottom: 16 }}>
             <Button onClick={clearFilters}>پاک کردن فیتلر ها</Button>
             <Button onClick={clearAll}>پاک کردن فیلتر و مرتب کننده ها</Button>
@@ -383,6 +413,7 @@ const Card: React.FC = () => {
           <Table
               bordered columns={columns}
               dataSource={productSub}
+              title={() => form.getFieldValue(['product' , 'name'])}
               tableLayout={"fixed"}
               scroll={{ x: 3010 , y:'60vh'}}
               rowKey="id"
@@ -390,7 +421,7 @@ const Card: React.FC = () => {
               loading={loading}
               pagination={{position:["bottomCenter"]}}
           />
-          <TablePrint componentPDF={componentPDF} contract={product} productSub={productSub}/>
+          <TablePrint componentPDF={componentPDF} contract={product} productSub={productSub} form={form}/>
 
       </>
   )

@@ -1,6 +1,31 @@
-export default function RegisterProduct() {
+import {Tabs} from "antd";
 
+export default function RegisterProduct() {
+  const items = [
+      {
+          label: `ثبت اولیه / ورود`,
+          key: '1',
+          children: `Content of Tab Pane 1`,
+      },{
+          label: `خروج`,
+          key: '2',
+          children: `Content of Tab Pane 2`,
+      },{
+          label: `انتقال`,
+          key: '3',
+          children: `Content of Tab Pane 2`,
+      },{
+          label: `دریافت`,
+          key: '4',
+          children: `Content of Tab Pane 2`,
+      }
+  ];
   return (
-         <p>register</p>
+         <Tabs
+          defaultActiveKey="1"
+          centered
+          type="card"
+          items={items}
+        />
   )
 }

@@ -18,14 +18,13 @@ const validateMessages = {
 
 
 
-const Edit: React.FC = () => {
-    const [form] = Form.useForm();
+const Edit = (props: {  form: any;}) => {
     const context = useContext(Context)
     const navigate = useNavigate();
     const [loading, setLoading] = useState<boolean>(false);
-    const [option, setOption] = useState<any[]>([]);
     const inputRef = useRef<InputRef>(null);
     const [name, setName] = useState('');
+    const [option, setOption] = useState<any[]>([]);
 
 
     const onFinish = async (values: any) => {
@@ -60,27 +59,11 @@ const Edit: React.FC = () => {
 
 
     const fetchData = async () => {
-        await axios.get(`${Url}/api/product/${context.currentProduct}`, {
+        await axios.get(`${Url}/api/category-list`, {
                 headers: {
                   'Authorization': 'Bearer ' + localStorage.getItem('access_token'),
                 }
               }).then(response => {
-          return response
-              }).then(async data => {
-                     form.setFieldsValue({
-               product: {
-                  name: data.data.name,
-                  scale: data.data.scale,
-                  category: data.data.category,
-                },
-        });
-                }).then(async () => {
-            return await axios.get(`${Url}/api/category-list`, {
-                headers: {
-                    'Authorization': 'Bearer ' + localStorage.getItem('access_token'),
-                }
-            })
-        }).then(response => {
           return response
               }).then(async data => {
                    setOption(data.data)
@@ -138,7 +121,7 @@ const Edit: React.FC = () => {
 
     return (
         <>
-            <Form form={form}
+            <Form form={props.form}
                 autoComplete="off"
                 name="product"
                 layout="horizontal"
@@ -146,7 +129,7 @@ const Edit: React.FC = () => {
                 validateMessages={validateMessages}
               >
                   <Form.Item>
-                      <Form.Item name={['product', 'name']} className='register-form-personal' label="نام کالا" rules={[{ required: true }]}>
+                      <Form.Item name={['product', 'name']} className='register-form-personal'  style={{ width: 300 }} label="نام کالا" rules={[{ required: true }]}>
                             <Input />
                       </Form.Item>
                       <Form.Item name={['product', 'category']} style={{ width: 300 }} className='register-form-personal' label="گروه کالا" rules={[{ required: true }]}>
@@ -158,17 +141,17 @@ const Edit: React.FC = () => {
                                         <>
                                           {menu}
                                           <Divider style={{ margin: '8px 0' }} />
-                                          <Space style={{ padding: '0 8px 4px' }}>
+                                          <Space style={{ margin: 10 }}>
                                             <Input
-                                              placeholder="آیتم مورد نظر را بنویسید."
+                                              placeholder="آیتم مورد نظر را بنویسید"
                                               ref={inputRef}
                                               value={name}
                                               onChange={onNameChange}
                                             />
+                                           <Button type="primary" icon={<PlusOutlined />} onClick={addItem}/>
+
                                           </Space>
-                                            <Button type="text" icon={<PlusOutlined />} onClick={addItem}>
-                                              اضافه کردن به لیست
-                                            </Button>
+
                                         </>
                                       )}
                                   options={option.map((item) => ({ label: item.value, value: item.value }))}

@@ -47,10 +47,11 @@ const MainProduct: React.FC = () => {
         content: ()=>componentPDF.current,
         documentTitle:"کالا ها",
      });
+  const [optionCategory, setOptionCategory] = useState<any[]>([]);
 
   const fetchData = async () => {
         await axios.get(
-            `${Url}/api/product/?inventory=${context.permission === 'مدیر' || context.permission === 'مشاهده' ? '' : context.office}&${qs.stringify(filteredInfo , {encode: false , arrayFormat: 'comma' })}` , {
+            `${Url}/api/product/?${qs.stringify(filteredInfo , {encode: false , arrayFormat: 'comma' })}&inventory=${context.permission === 'مدیر' || context.permission === 'مشاهده' ? qs.stringify(filteredInfo , {encode: false , arrayFormat: 'comma' }) : context.office}` , {
              headers: {
                   'Authorization': 'Bearer ' + localStorage.getItem('access_token'),
                 }
@@ -68,6 +69,16 @@ const MainProduct: React.FC = () => {
           return response
               }).then(async data => {
                    setProductSub(data.data)
+                }).then(async () => {
+            return await axios.get(`${Url}/api/category-list`, {
+                headers: {
+                    'Authorization': 'Bearer ' + localStorage.getItem('access_token'),
+                }
+            })
+        }).then(response => {
+          return response
+              }).then(async data => {
+                   setOptionCategory(data.data)
                 }).finally(() => {
             setLoading(false)
         }).catch((error) => {
@@ -76,7 +87,6 @@ const MainProduct: React.FC = () => {
                    }
         })
       }
-
 
 
   useEffect(() => {
@@ -105,9 +115,7 @@ const MainProduct: React.FC = () => {
     if (dataIndex === "code") {
       return 'کد کالا'
     }else if (dataIndex === "name") {
-      return 'نام و نشانی'
-    }else if (dataIndex === "category") {
-      return 'گروه'
+      return 'نام کالا'
     }
   }
 
@@ -232,33 +240,7 @@ const MainProduct: React.FC = () => {
       width: '4.55%',
       dataIndex: 'category',
       key: 'category',
-      filters: [
-          {
-            text: 'اداری',
-            value: 'اداری',
-          },{
-            text: 'ترابری',
-            value: 'ترابری',
-          },{
-            text: 'تاسیسات',
-            value: 'تاسیسات',
-          },{
-            text: 'تجهیزات',
-            value: 'تجهیزات',
-          },{
-            text: 'آشپزخانه',
-            value: 'آشپزخانه',
-          },{
-            text: 'آبدارخانه',
-            value: 'آبدارخانه',
-          },{
-            text: 'بهداشتی',
-            value: 'بهداشتی',
-          },{
-            text: 'پشتیبانی',
-            value: 'پشتیبانی',
-          },
-      ],
+      filters: optionCategory.map((item) => ({ text: item.value, value: item.value })),
       filteredValue: filteredInfo.category || null,
       onFilter: (value, record) => record.category === value,
     },{

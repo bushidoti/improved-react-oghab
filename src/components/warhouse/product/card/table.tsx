@@ -1,11 +1,16 @@
 import React from "react";
 
-const TablePrint = (props: { componentPDF: React.LegacyRef<HTMLTableElement> | undefined , contract: any[] , productSub: any[];}) => {
+const TablePrint = (props: { componentPDF: React.LegacyRef<HTMLTableElement> | undefined , contract: any[] , productSub: any[] , form : any;}) => {
   return (
         <div className= 'm-4 table-responsive text-nowrap rounded-3'  style={{display:'none'}}>
         <table className="table table-hover table-fixed text-center align-middle table-bordered border-primary bg-light"
                            ref={props.componentPDF} style={{direction:'rtl' , fontSize:'.56vw'}}>
                          <thead>
+                             <tr>
+                                    <td colSpan={13} className= 'td'>
+                                        {props.form.getFieldValue(['product' , 'name'])}
+                                    </td>
+                             </tr>
                             <tr>
                                 <th className= 'th' scope="col">ردیف</th>
                                 <th className= 'th' scope="col">سند</th>

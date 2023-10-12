@@ -173,7 +173,6 @@ const InputForm: React.FC = () => {
       name="InputForm"
       autoComplete="off"
     >
-
         <>
               <Form.Item name={'code'} style={{margin:10}} label="کد کالای جدید">
                       <InputNumber disabled/>
@@ -182,7 +181,7 @@ const InputForm: React.FC = () => {
                   <Form.List name={['products']}>
 
                     {(subFields, subOpt) => (
-                      <Flex wrap="wrap" vertical gap={16}>
+                      <Flex vertical>
                         {subFields.map((subField) => (
                           <Space key={subField.key}>
                             <Form.Item name={[subField.name, 'name']} style={{ width: 300 }}>
@@ -279,6 +278,9 @@ const InputForm: React.FC = () => {
 
                           </Space>
                         ))}
+                        <Button type={"primary"} style={{marginBottom:10}} block htmlType="submit">
+                          ثبت
+                        </Button>
                         <Button type="dashed" onClick={() => subOpt.add()} block>
                           اضافه کردن سطر +
                         </Button>

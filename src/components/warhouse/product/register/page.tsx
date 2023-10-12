@@ -1,11 +1,12 @@
 import {Tabs} from "antd";
+import InputForm from "./input";
 
 export default function RegisterProduct() {
   const items = [
       {
           label: `ثبت اولیه / ورود`,
           key: '1',
-          children: `Content of Tab Pane 1`,
+          children: <InputForm/>,
       },{
           label: `خروج`,
           key: '2',

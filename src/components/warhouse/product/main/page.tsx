@@ -225,6 +225,7 @@ const MainProduct: React.FC = () => {
       align:"center",
       title: 'نام کالا',
       dataIndex: 'name',
+      ellipsis:true,
       width: '7%',
       key: 'name',
       ...getColumnSearchProps('name'),

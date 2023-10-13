@@ -20,13 +20,10 @@ import axios from "axios";
 import {Context} from "../../../../context";
 import dayjs from "dayjs";
 
-const InputForm: React.FC = () => {
+const OutputForm: React.FC = () => {
   const [form] = Form.useForm();
   const inputRef = useRef<InputRef>(null);
   const [name, setName] = useState('');
-  const [productName, setProductName] = useState('');
-  const [productScale, setProductScale] = useState('');
-  const [productCategory, setProductCategory] = useState('');
   const [option, setOption] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [listProduct, setListProduct] = useState<any[]>([]);
@@ -34,7 +31,6 @@ const InputForm: React.FC = () => {
   const navigate = useNavigate();
   const [visible, setVisible] = useState(false);
   const context = useContext(Context)
-  const [autoIncrement, setAutoIncrement] = useState<number>()
   const [autoIncrementFactor, setAutoIncrementFactor] = useState<number>()
 
   const filterOption = (input: string, option?: { label: string; value: string }) =>
@@ -44,17 +40,10 @@ const InputForm: React.FC = () => {
         setName(event.target.value);
       };
 
-   const onProductNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setProductName(event.target.value);
-      };
-
-    const onProductScaleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setProductScale(event.target.value);
-      };
 
 
    const fetchData = async () => {
-        await axios.get(`${Url}/api/category-list`, {
+        await axios.get(`${Url}/api/consumable-list`, {
                 headers: {
                   'Authorization': 'Bearer ' + localStorage.getItem('access_token'),
                 }
@@ -83,7 +72,7 @@ const InputForm: React.FC = () => {
               }).then(async data => {
                     setAllProduct(data.data)
                 }).then(async () => {
-            return await axios.get(`${Url}/api/autoincrementproduct/?inventory=${context.office}`, {
+            return await axios.get(`${Url}/api/autoincrementproductcheck/?inventory=${context.office}`, {
                 headers: {
                     'Authorization': 'Bearer ' + localStorage.getItem('access_token'),
                 }
@@ -92,21 +81,7 @@ const InputForm: React.FC = () => {
           return response
               }).then(async data => {
                     form.setFieldsValue({
-                              code: data.data[0].increment,
-                    });
-                    setAutoIncrement(data.data[0].id)
-
-                }).then(async () => {
-            return await axios.get(`${Url}/api/autoincrementproductfactor/?inventory=${context.office}`, {
-                headers: {
-                    'Authorization': 'Bearer ' + localStorage.getItem('access_token'),
-                }
-            })
-        }).then(response => {
-          return response
-              }).then(async data => {
-                    form.setFieldsValue({
-                              FactorID: data.data[0].increment,
+                              CheckID: data.data[0].increment,
                     });
                     setAutoIncrementFactor(data.data[0].id)
 
@@ -118,9 +93,111 @@ const InputForm: React.FC = () => {
       }
 
 
+       useEffect(() => {
+           void fetchData()
+          },
+          // eslint-disable-next-line react-hooks/exhaustive-deps
+        [context.office])
+
+
+     const handleResetSubmit = async () => {
+        form.resetFields()
+        await fetchData()
+     }
+
+
+    const onFinish = async () => {
+         new Promise(resolve => resolve (
+              form.getFieldValue(['products']).map(async (product: { product: number; }, i: number) => {
+                    form.setFieldsValue({
+                               products: {
+                              [i]: {
+                                  afterOperator: (allProduct.filter((products: { product: number; }) => products.product ===  product.product).reduce((a: any, v: { input: any; }) =>   a + v.input , 0 ))
+                                    - (allProduct.filter((products: { product: number; }) => products.product ===  product.product).reduce((a: any, v: { output: any; }) =>   a + v.output , 0 )) - form.getFieldValue(['products'])[i].output,
+                              }
+                          }
+                          });
+               })
+         )).then(
+            form.getFieldValue(['products']).map((obj:
+                                              {
+                                                  document_code: string ,
+                                                  document_type:string ,
+                                                  receiver:string;
+                                                  systemID:string;
+                                                  operator:string;
+                                                  date:string;
+                                              }) => {
+                obj.document_code = form.getFieldValue(['document_code'])
+                obj.document_type = form.getFieldValue(['document_type'])
+                obj.receiver = form.getFieldValue(['receiver'])
+                obj.systemID = form.getFieldValue(['CheckID'])
+                obj.operator = 'خروج'
+                obj.date = dayjs().locale('fa').format('YYYY-MM-DD')
+                return obj;
+            })
+        ).then(() => setLoading(true)).then(async () => {
+                await axios.post(
+                    `${Url}/api/allproducts/`, form.getFieldValue(['products']), {
+                        headers: {
+                            'Authorization': 'Bearer ' + localStorage.getItem('access_token'),
+                        }
+                    }).then(response => {
+                    return response
+                }).then(async data => {
+                    if (data.status === 201) {
+                        message.success('ثبت شد');
+                        setLoading(false)
+                    }
+                }).catch(async (error) => {
+                    if (error.request.status === 403) {
+                        navigate('/no_access')
+                    } else if (error.request.status === 400) {
+                        message.error('عدم ثبت');
+                        setLoading(false)
+                        await handleResetSubmit()
+                    }
+                }).then(async () => {
+                    return await axios.post(`${Url}/api/checksproduct/`, {
+                        code: form.getFieldValue(['CheckID']),
+                        inventory: context.office,
+                        checks: context.compressed,
+                    }, {
+                        headers: {
+                            'Authorization': 'Bearer ' + localStorage.getItem('access_token'),
+                        }
+                    })
+                }).then(response => {
+                    return response
+                }).then(async data => {
+                    if (data.status === 201) {
+                        message.success('فاکتور ثبت شد.');
+                    }
+                }).then(async () => {
+                    return await axios.put(`${Url}/api/autoincrementproductcheck/${autoIncrementFactor}/`, {
+                        increment: form.getFieldValue(['CheckID']) + 1
+                    }, {
+                        headers: {
+                            'Authorization': 'Bearer ' + localStorage.getItem('access_token'),
+                        }
+                    })
+                }).then(response => {
+                    return response
+                }).then(async data => {
+                    if (data.status === 200) {
+                        message.success('شمارنده شماره فاکتور بروز شد');
+                        await fetchData()
+                        await handleResetSubmit()
+
+                    }
+                })
+            }
+        )
+    };
+
    const addItem = async (e: React.MouseEvent<HTMLButtonElement | HTMLAnchorElement>) => {
           await axios.post(
-              `${Url}/api/category-list/`, {
+              `${Url}/api/consumable-list/`, {
                   value: name,
               }, {
                   headers: {
@@ -147,168 +224,6 @@ const InputForm: React.FC = () => {
               }
           })
       };
-
-   const addItemProduct = async (e: React.MouseEvent<HTMLButtonElement | HTMLAnchorElement>) => {
-          await axios.post(
-              `${Url}/api/product/`, {
-                  code: form.getFieldValue(['code']),
-                  name: productName,
-                  category: productCategory,
-                  scale: productScale,
-                  inventory: context.office,
-              }, {
-                  headers: {
-                      'Authorization': 'Bearer ' + localStorage.getItem('access_token'),
-                  }
-              }).then(response => {
-              return response
-          }).then(async data => {
-              if (data.status === 201) {
-                  message.success('اضافه شد');
-                  await fetchData()
-                  setProductCategory('')
-                  setProductName('')
-                  setProductScale('')
-                  e.preventDefault()
-                  setTimeout(() => {
-                      inputRef.current?.focus();
-                  }, 0)
-              }
-          }).then(async () => {
-            return await axios.put(`${Url}/api/autoincrementproduct/${autoIncrement}/`, {
-                increment:form.getFieldValue(['code']) + 1
-            } ,{
-                headers: {
-                    'Authorization': 'Bearer ' + localStorage.getItem('access_token'),
-                }
-            })
-        }).then(response => {
-              return response
-          }).then(async data => {
-              if (data.status === 200) {
-                  message.success('کد کالا بروز شد');
-                  await fetchData()
-                  e.preventDefault()
-                  setTimeout(() => {
-                      inputRef.current?.focus();
-                  }, 0)
-              }
-          }).catch((error) => {
-              if (error.request.status === 403) {
-                  navigate('/no_access')
-              }
-          })
-      };
-
-
-       useEffect(() => {
-           void fetchData()
-          },
-          // eslint-disable-next-line react-hooks/exhaustive-deps
-        [context.office])
-
-
-     const handleResetSubmit = async () => {
-        form.resetFields()
-        await fetchData()
-     }
-
-
-    const onFinish = async () => {
-         new Promise(resolve => resolve (
-              form.getFieldValue(['products']).map(async (product: { product: number; }, i: number) => {
-                    form.setFieldsValue({
-                               products: {
-                              [i]: {
-                                  afterOperator: (allProduct.filter((products: { product: number; }) => products.product ===  product.product).reduce((a: any, v: { input: any; }) =>   a + v.input , 0 ))
-                                    - (allProduct.filter((products: { product: number; }) => products.product ===  product.product).reduce((a: any, v: { output: any; }) =>   a + v.output , 0 )) + form.getFieldValue(['products'])[i].input,
-                              }
-                          }
-                          });
-               })
-         )).then(
-            form.getFieldValue(['products']).map((obj:
-                                                  { document_code: string ,
-                                                      document_type:string ,
-                                                      buyer:string,
-                                                      seller:string;
-                                                      receiver:string;
-                                                      systemID:string;
-                                                      operator:string;
-                                                      date:string;
-                                                  }) => {
-                obj.document_code = form.getFieldValue(['document_code'])
-                obj.document_type = form.getFieldValue(['document_type'])
-                obj.buyer = form.getFieldValue(['buyer'])
-                obj.seller = form.getFieldValue(['seller'])
-                obj.receiver = form.getFieldValue(['receiver'])
-                obj.systemID = form.getFieldValue(['FactorID'])
-                obj.operator = 'ورود'
-                obj.date = dayjs().locale('fa').format('YYYY-MM-DD')
-                return obj;
-            })
-        ).then(() => setLoading(true)).then(async () => {
-                await axios.post(
-                    `${Url}/api/allproducts/`, form.getFieldValue(['products']), {
-                        headers: {
-                            'Authorization': 'Bearer ' + localStorage.getItem('access_token'),
-                        }
-                    }).then(response => {
-                    return response
-                }).then(async data => {
-                    if (data.status === 201) {
-                        message.success('ثبت شد');
-                        setLoading(false)
-                    }
-                }).catch(async (error) => {
-                    if (error.request.status === 403) {
-                        navigate('/no_access')
-                    } else if (error.request.status === 400) {
-                        message.error('عدم ثبت');
-                        setLoading(false)
-                        await handleResetSubmit()
-                    }
-                }).then(async () => {
-                    return await axios.post(`${Url}/api/factorsproduct/`, {
-                        code: form.getFieldValue(['FactorID']),
-                        inventory: context.office,
-                        factor: context.compressed,
-                    }, {
-                        headers: {
-                            'Authorization': 'Bearer ' + localStorage.getItem('access_token'),
-                        }
-                    })
-                }).then(response => {
-                    return response
-                }).then(async data => {
-                    if (data.status === 201) {
-                        message.success('فاکتور ثبت شد.');
-                    }
-                }).then(async () => {
-                    return await axios.put(`${Url}/api/autoincrementproductfactor/${autoIncrementFactor}/`, {
-                        increment: form.getFieldValue(['FactorID']) + 1
-                    }, {
-                        headers: {
-                            'Authorization': 'Bearer ' + localStorage.getItem('access_token'),
-                        }
-                    })
-                }).then(response => {
-                    return response
-                }).then(async data => {
-                    if (data.status === 200) {
-                        message.success('شمارنده شماره فاکتور بروز شد');
-                        await fetchData()
-                        await handleResetSubmit()
-
-                    }
-                })
-            }
-        )
-
-
-
-    };
-
      function scanImage() {
           if (document.readyState === "complete"){
                window.ws.send("1100");
@@ -318,23 +233,20 @@ const InputForm: React.FC = () => {
     <Form
       form={form}
       onFinish={onFinish}
-      name="InputForm"
+      name="OutputForm"
       layout={"vertical"}
       autoComplete="off"
     >
         <>
             <Form.Item>
-              <Form.Item name={'code'}  style={{margin:8 , display:'inline-block'}} label="کد کالای جدید">
-                      <InputNumber disabled/>
-              </Form.Item>
-                  <Form.Item name={'FactorID'}  style={{margin:8 , display:'inline-block'}} label="شماره ثبت فاکتور">
+                  <Form.Item name={'CheckID'}  style={{margin:8 , display:'inline-block'}} label="شماره ثبت حواله">
                           <InputNumber disabled/>
                   </Form.Item>
               <Form.Item name={['document_type']} className='register-form-personal' label="نوع مدرک" rules={[{ required: true }]}>
                           <Select
                           placeholder="انتخاب کنید"
                           options={[
-                              { value: 'فاکتور', label: 'فاکتور' }
+                              { value: 'حواله', label: 'حواله' }
                               ,{ value: 'متفرقه', label: 'متفرقه' }
                               ,{ value: 'انبارگردانی', label: 'انبارگردانی' }
                               ,{ value: 'سند', label: 'سند' }
@@ -347,14 +259,7 @@ const InputForm: React.FC = () => {
                 <Form.Item name={'receiver'} className='register-form-personal' label="نام گیرنده" rules={[{ required: true }]}>
                         <Input placeholder='نام گیرنده'/>
                 </Form.Item>
-                    <>
-                        <Form.Item name={'buyer'} className='register-form-personal' label="خریدار">
-                                 <Input placeholder='نام خریدار'/>
-                        </Form.Item>
-                        <Form.Item name={'seller'} className='register-form-personal' label="فروشنده">
-                                    <Input placeholder='فروشنده'/>
-                        </Form.Item>
-                    </>
+
 
                  <Form.Item style={{margin: 8 , display:'inline-block'}} label="فایل">
                      <Space.Compact>
@@ -421,65 +326,44 @@ const InputForm: React.FC = () => {
                                                   })
                                               })
                                           }}
-                                          dropdownRender={(menu) => (
-                                                <>
-                                                  {menu}
-                                                  <Divider style={{ margin: '8px 0' }} />
-                                                  <Space style={{ margin: 10 }}>
-                                                    <Input
-                                                      placeholder="نام کالا"
-                                                      ref={inputRef}
-                                                      value={productName}
-                                                      onChange={onProductNameChange}
-                                                    />
-                                                        <Input
-                                                          placeholder="مقایس"
-                                                          ref={inputRef}
-                                                          value={productScale}
-                                                          onChange={onProductScaleChange}
-                                                        />
-                                                    </Space>
-                                                     <Select placeholder="گروه" style={{ marginBottom:10 }}
-                                                          optionFilterProp="children"
-                                                          showSearch
-                                                          getPopupContainer={trigger => trigger.parentElement}
-                                                          onChange={value => setProductCategory(value)}
-                                                          filterOption={filterOption}
-                                                          dropdownRender={(menu) => (
-                                                                <>
-                                                                  {menu}
-                                                                  <Divider style={{ margin: '8px 0' }} />
-                                                                  <Space style={{ margin: 10 }}>
-                                                                    <Input
-                                                                      placeholder="آیتم مورد نظر را بنویسید"
-                                                                      ref={inputRef}
-                                                                      value={name}
-                                                                      onChange={onNameChange}
-                                                                    />
-                                                                   <Button type="primary" icon={<PlusOutlined />} onClick={addItem}/>
-
-                                                                  </Space>
-
-                                                                </>
-                                                              )}
-                                                          options={option.map((item) => ({ label: item.value, value: item.value }))}
-                                                          />
-                                                                   <Button type="primary" block icon={<PlusOutlined />} onClick={addItemProduct}/>
-                                                                </>
-                                                              )}
-                                                          options={listProduct.map((item) => ({ label: item.name, value: item.code }))}
-                                                      />
+                                          options={listProduct.map((item) => ({ label: item.name, value: item.code }))}
+                                          />
                             </Form.Item>
                             <Form.Item name={[subField.name, 'category']} style={{ width: 250 }} label='گروه'>
                               <Input placeholder="گروه"
                                   disabled
                               />
                             </Form.Item>
-                            <Form.Item name={[subField.name, 'input']} rules={[{ required: true }]} label='تعداد'>
+                            <Form.Item name={[subField.name, 'output']} rules={[{ required: true }]} label='تعداد'>
                               <InputNumber min={1} placeholder="تعداد" />
                             </Form.Item>
                             <Form.Item name={[subField.name, 'scale']} style={{ width: 150 }} label='مقیاس'>
                               <Input placeholder="مقیاس" disabled/>
+                            </Form.Item>
+                            <Form.Item name={[subField.name, 'consumable']} style={{ width: 250 }} label='مورد مصرف' rules={[{ required: true }]}>
+                              <Select placeholder="انتخاب کنید"
+                                 optionFilterProp="children"
+                                 showSearch
+                                 filterOption={filterOption}
+                                 dropdownRender={(menu) => (
+                                        <>
+                                              {menu}
+                                              <Divider style={{ margin: '8px 0' }} />
+                                              <Space style={{ margin: 10 }}>
+                                                <Input
+                                                  placeholder="آیتم مورد نظر را بنویسید"
+                                                  ref={inputRef}
+                                                  value={name}
+                                                  onChange={onNameChange}
+                                                />
+                                               <Button type="primary" icon={<PlusOutlined />} onClick={addItem}/>
+
+                                              </Space>
+
+                                            </>
+                                      )}
+                                 options={option.map((item) => ({ label: item.value, value: item.value }))}
+                              />
                             </Form.Item>
                             <Form.Item  label=' '>
                             <CloseOutlined
@@ -509,4 +393,4 @@ const InputForm: React.FC = () => {
   );
 };
 
-export default InputForm;
+export default OutputForm;

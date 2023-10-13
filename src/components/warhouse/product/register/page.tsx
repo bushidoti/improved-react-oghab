@@ -1,5 +1,6 @@
 import {Tabs} from "antd";
 import InputForm from "./input";
+import OutputForm from "./output";
 
 export default function RegisterProduct() {
   const items = [
@@ -10,7 +11,7 @@ export default function RegisterProduct() {
       },{
           label: `خروج`,
           key: '2',
-          children: `Content of Tab Pane 2`,
+          children: <OutputForm/>,
       },{
           label: `انتقال`,
           key: '3',

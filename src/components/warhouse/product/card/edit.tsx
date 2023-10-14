@@ -1,9 +1,8 @@
-import React, {useContext, useEffect, useRef, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {message, Button, Form, Input, ConfigProvider, Select, Divider, Space, InputRef} from 'antd';
 import Url from "../../../api-configue";
 import axios from "axios";
 import { PlusOutlined } from '@ant-design/icons';
-import {Context} from "../../../../context";
 import {useNavigate} from "react-router-dom";
 /* eslint-disable no-template-curly-in-string */
 const validateMessages = {
@@ -19,7 +18,6 @@ const validateMessages = {
 
 
 const Edit = (props: {  form: any;}) => {
-    const context = useContext(Context)
     const navigate = useNavigate();
     const [loading, setLoading] = useState<boolean>(false);
     const inputRef = useRef<InputRef>(null);
@@ -30,8 +28,8 @@ const Edit = (props: {  form: any;}) => {
     const onFinish = async (values: any) => {
         setLoading(true)
         await axios.put(
-            `${Url}/api/product/${context.currentProduct}/`,{
-                  code: context.currentProduct,
+            `${Url}/api/product/${props.form.getFieldValue(['product' , 'code'])}/`,{
+                  code: props.form.getFieldValue(['product' , 'code']),
                   name: values.product.name,
                   scale: values.product.scale,
                   category: values.product.category,

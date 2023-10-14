@@ -8,7 +8,7 @@ const TablePrint = (props: { componentPDF: React.LegacyRef<HTMLTableElement> | u
                          <thead>
                              <tr>
                                     <td colSpan={13} className= 'td'>
-                                        {props.form.getFieldValue(['product' , 'name'])}
+                                        {props.form.getFieldValue(['product' , 'name']) + ' ------- کد کالا ' + props.form.getFieldValue(['product' , 'code'])}
                                     </td>
                              </tr>
                             <tr>

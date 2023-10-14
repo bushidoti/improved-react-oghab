@@ -20,7 +20,6 @@ import Edit from "./edit";
 interface DataType {
   key: React.Key;
   index: number;
-  product: number;
   output: number;
   input: number;
   count: number;
@@ -104,6 +103,7 @@ const Card: React.FC = () => {
               }).then(async data => {
                      form.setFieldsValue({
                product: {
+                  code: data.data.code,
                   name: data.data.name,
                   scale: data.data.scale,
                   category: data.data.category,
@@ -142,9 +142,7 @@ const Card: React.FC = () => {
 
   const handleSearchPlaceHolder = (dataIndex: DataIndex) => {
 
-    if (dataIndex === "product") {
-      return 'کد کالا'
-    }else if (dataIndex === "document_type") {
+    if (dataIndex === "document_type") {
       return 'نوع سند'
     }else if (dataIndex === "document_code") {
       return 'شناسه سند'
@@ -265,7 +263,6 @@ const Card: React.FC = () => {
       ),
   });
 
-
   const columns: ColumnsType<DataType> = [
     {
       align:"center",
@@ -275,12 +272,6 @@ const Card: React.FC = () => {
       width: '4.88%',
       key: 'index',
       render : (_value, _record, index) => index + 1,
-    },{
-      align:"center",
-      title: 'کد کالا',
-      dataIndex: 'product',
-      width: '5%',
-      key: 'product',
     },{
       align:"center",
       title: 'نوع سند',
@@ -420,7 +411,7 @@ const Card: React.FC = () => {
           <Table
               bordered columns={columns}
               dataSource={productSub}
-              title={() => form.getFieldValue(['product' , 'name'])}
+              title={() => form.getFieldValue(['product' , 'name']) + ' ------- کد کالا ' + form.getFieldValue(['product' , 'code'])}
               tableLayout={"fixed"}
               scroll={{ x: 3010 , y:'60vh'}}
               rowKey="id"

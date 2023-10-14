@@ -208,6 +208,22 @@ const SendForm: React.FC = () => {
                         }
                     }
                 ).then(
+             form.getFieldValue(['products']).map((obj:
+                                              {
+                                                  receiver:string;
+                                                  sender:string;
+                                                  input:number;
+                                                  date:string;
+                                                  output:number;
+                                                  consumable:string;
+                                              }) => {
+                obj.receiver = obj.consumable
+                obj.input = obj.output
+                obj.sender = context.office
+                obj.date = dayjs().locale('fa').format('YYYY-MM-DD')
+                return obj;
+            })
+        ).then(
                          async () => {
                                 return await axios.post(`${Url}/api/transmission/`, form.getFieldValue(['products']), {
                                     headers: {

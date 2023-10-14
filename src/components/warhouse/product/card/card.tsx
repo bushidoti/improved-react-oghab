@@ -27,6 +27,7 @@ interface DataType {
   document_type: string;
   document_code: string;
   date: string;
+  systemID: number;
   scale: string;
   operator: string;
   afterOperator: number;
@@ -73,7 +74,7 @@ const Card: React.FC = () => {
               }).then(async data => {
                    setProduct(data.data)
                 }).then(async () => {
-            return await axios.get(`${Url}/api/allproducts/?fields=product,seller,input,output,document_code,document_type,date,operator,afterOperator,obsolete,consumable,buyer,receiver,amendment,id,scale,&product=${context.currentProduct}&${qs.stringify(filteredInfo , {encode: false , arrayFormat: 'comma' })}`, {
+            return await axios.get(`${Url}/api/allproducts/?fields=product,seller,systemID,input,output,document_code,document_type,date,operator,afterOperator,obsolete,consumable,buyer,receiver,amendment,id,scale,&product=${context.currentProduct}&${qs.stringify(filteredInfo , {encode: false , arrayFormat: 'comma' })}`, {
                 headers: {
                     'Authorization': 'Bearer ' + localStorage.getItem('access_token'),
                 }
@@ -288,6 +289,12 @@ const Card: React.FC = () => {
       key: 'document_type',
       ...getColumnSearchProps('document_type'),
       filteredValue: filteredInfo.document_type || null,
+    },{
+      align:"center",
+      title: 'شماره ثبت سیستم',
+      dataIndex: 'systemID',
+      width: '5%',
+      key: 'systemID',
     },{
       align:"center",
       title: 'شناسه سند',

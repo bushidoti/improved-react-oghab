@@ -367,7 +367,7 @@ const SendForm: React.FC = () => {
                                   disabled
                               />
                             </Form.Item>
-                            <Form.Item name={[subField.name, 'input']} rules={[{ required: true }]} label='تعداد'>
+                            <Form.Item name={[subField.name, 'output']} rules={[{ required: true }]} label='تعداد'>
                               <InputNumber min={1} placeholder="تعداد" />
                             </Form.Item>
                             <Form.Item name={[subField.name, 'scale']} style={{ width: 150 }} label='مقیاس'>

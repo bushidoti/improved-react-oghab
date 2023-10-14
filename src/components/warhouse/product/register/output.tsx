@@ -30,6 +30,7 @@ const OutputForm: React.FC = () => {
   const [allProduct, setAllProduct] = useState<any[]>([]);
   const navigate = useNavigate();
   const [visible, setVisible] = useState(false);
+  const [isCheck, setIsCheck] = useState(false);
   const context = useContext(Context)
   const [autoIncrementFactor, setAutoIncrementFactor] = useState<number>()
 
@@ -104,6 +105,8 @@ const OutputForm: React.FC = () => {
         form.resetFields()
         await fetchData()
      }
+
+
 
 
     const onFinish = async () => {
@@ -235,6 +238,13 @@ const OutputForm: React.FC = () => {
       onFinish={onFinish}
       name="OutputForm"
       layout={"vertical"}
+      onValuesChange={(changedValues, values) => {
+          if (changedValues){
+             if ( values.document_type === 'حواله'){
+                 setIsCheck(true)
+             }else setIsCheck(false)
+          }
+      }}
       autoComplete="off"
     >
         <>
@@ -246,20 +256,24 @@ const OutputForm: React.FC = () => {
                           <Select
                           placeholder="انتخاب کنید"
                           options={[
-                              { value: 'حواله', label: 'حواله' }
+                               { value: 'حواله', label: 'حواله' }
                               ,{ value: 'متفرقه', label: 'متفرقه' }
                               ,{ value: 'انبارگردانی', label: 'انبارگردانی' }
                               ,{ value: 'سند', label: 'سند' }
                           ]}
                           />
               </Form.Item>
-               <Form.Item name={'document_code'} className='register-form-personal' label="شناسه مدرک" rules={[{ required: true }]}>
+                {!isCheck ?
+
+                          <Form.Item name={'document_code'} className='register-form-personal'  label="شناسه مدرک" rules={[{ required: true }]}>
                         <Input placeholder='شناسه مدرک'/>
                </Form.Item>
-                <Form.Item name={'receiver'} className='register-form-personal' label="نام گیرنده" rules={[{ required: true }]}>
-                        <Input placeholder='نام گیرنده'/>
-                </Form.Item>
-
+                    : null }
+                {isCheck ?
+                    <Form.Item name={'receiver'} className='register-form-personal' label="نام گیرنده" rules={[{ required: true }]}>
+                            <Input placeholder='نام گیرنده'/>
+                    </Form.Item>
+                : null }
 
                  <Form.Item style={{margin: 8 , display:'inline-block'}} label="فایل">
                      <Space.Compact>
@@ -298,9 +312,7 @@ const OutputForm: React.FC = () => {
                         <>
                       <Flex vertical gap={20}>
                         {subFields.map((subField) => (
-
                           <Space key={subField.key} size={20}>
-
                             <Form.Item name={[subField.name, 'product']} style={{ width: 300 }} label='نام کالا' rules={[{ required: true }]}>
                                   <Select placeholder="انتخاب کنید"
                                           optionFilterProp="children"

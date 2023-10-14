@@ -36,6 +36,7 @@ const InputForm: React.FC = () => {
   const context = useContext(Context)
   const [autoIncrement, setAutoIncrement] = useState<number>()
   const [autoIncrementFactor, setAutoIncrementFactor] = useState<number>()
+  const [isFactor, setIsFactor] = useState(false);
 
   const filterOption = (input: string, option?: { label: string; value: string }) =>
    (option?.label ?? '').toLowerCase().includes(input.toLowerCase());
@@ -321,15 +322,26 @@ const InputForm: React.FC = () => {
       name="InputForm"
       layout={"vertical"}
       autoComplete="off"
+      onValuesChange={(changedValues, values) => {
+          if (changedValues){
+             if ( values.document_type === 'فاکتور'){
+                 setIsFactor(true)
+             }else setIsFactor(false)
+          }
+      }}
     >
         <>
             <Form.Item>
               <Form.Item name={'code'}  style={{margin:8 , display:'inline-block'}} label="کد کالای جدید">
                       <InputNumber disabled/>
               </Form.Item>
-                  <Form.Item name={'FactorID'}  style={{margin:8 , display:'inline-block'}} label="شماره ثبت فاکتور">
-                          <InputNumber disabled/>
-                  </Form.Item>
+
+                {isFactor ?
+                     <Form.Item name={'FactorID'}  style={{margin:8 , display:'inline-block'}} label="شماره ثبت فاکتور">
+                                  <InputNumber disabled/>
+                      </Form.Item>
+                    : null}
+
               <Form.Item name={['document_type']} className='register-form-personal' label="نوع مدرک" rules={[{ required: true }]}>
                           <Select
                           placeholder="انتخاب کنید"
@@ -347,14 +359,16 @@ const InputForm: React.FC = () => {
                 <Form.Item name={'receiver'} className='register-form-personal' label="نام گیرنده" rules={[{ required: true }]}>
                         <Input placeholder='نام گیرنده'/>
                 </Form.Item>
+                    {isFactor ?
                     <>
-                        <Form.Item name={'buyer'} className='register-form-personal' label="خریدار">
+                        <Form.Item name={'buyer'} className='register-form-personal' label="خریدار" rules={[{ required: true }]}>
                                  <Input placeholder='نام خریدار'/>
                         </Form.Item>
-                        <Form.Item name={'seller'} className='register-form-personal' label="فروشنده">
+                        <Form.Item name={'seller'} className='register-form-personal' label="فروشنده" rules={[{ required: true }]}>
                                     <Input placeholder='فروشنده'/>
                         </Form.Item>
                     </>
+                    : null}
 
                  <Form.Item style={{margin: 8 , display:'inline-block'}} label="فایل">
                      <Space.Compact>

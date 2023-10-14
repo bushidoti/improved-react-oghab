@@ -55,6 +55,7 @@ const InputForm: React.FC = () => {
 
 
    const fetchData = async () => {
+       setLoading(true)
         await axios.get(`${Url}/api/category-list`, {
                 headers: {
                   'Authorization': 'Bearer ' + localStorage.getItem('access_token'),
@@ -115,7 +116,8 @@ const InputForm: React.FC = () => {
                    if (error.request.status === 403){
                         navigate('/no_access')
                    }
-        })
+        }).finally(() => setLoading(false)
+        )
       }
 
 
@@ -460,6 +462,7 @@ const InputForm: React.FC = () => {
                                                               [i]: {
                                                                   scale: data.data[0].scale,
                                                                   category: data.data[0].category,
+                                                                  name: data.data[0].name,
                                                               }
                                                           }
                                                       });

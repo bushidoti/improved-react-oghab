@@ -20,7 +20,7 @@ import axios from "axios";
 import {Context} from "../../../../context";
 import dayjs from "dayjs";
 
-const OutputForm: React.FC = () => {
+const SendForm: React.FC = () => {
   const [form] = Form.useForm();
   const inputRef = useRef<InputRef>(null);
   const [name, setName] = useState('');
@@ -30,7 +30,6 @@ const OutputForm: React.FC = () => {
   const [allProduct, setAllProduct] = useState<any[]>([]);
   const navigate = useNavigate();
   const [visible, setVisible] = useState(false);
-  const [isCheck, setIsCheck] = useState(false);
   const context = useContext(Context)
   const [autoIncrementFactor, setAutoIncrementFactor] = useState<number>()
 
@@ -84,6 +83,7 @@ const OutputForm: React.FC = () => {
               }).then(async data => {
                     form.setFieldsValue({
                               CheckID: data.data[0].increment,
+                              document_type: 'حواله',
                     });
                     setAutoIncrementFactor(data.data[0].id)
 
@@ -129,6 +129,7 @@ const OutputForm: React.FC = () => {
                                                   document_code: string ,
                                                   document_type:string ,
                                                   receiver:string;
+                                                  sender:string;
                                                   systemID:string;
                                                   operator:string;
                                                   date:string;
@@ -136,8 +137,9 @@ const OutputForm: React.FC = () => {
                 obj.document_code = form.getFieldValue(['document_code'])
                 obj.document_type = form.getFieldValue(['document_type'])
                 obj.receiver = form.getFieldValue(['receiver'])
-                obj.systemID = isCheck ? form.getFieldValue(['CheckID']) : ''
+                obj.systemID =  form.getFieldValue(['CheckID'])
                 obj.operator = 'خروج'
+                obj.sender = context.office
                 obj.date = dayjs().locale('fa').format('YYYY-MM-DD')
                 return obj;
             })
@@ -163,36 +165,28 @@ const OutputForm: React.FC = () => {
                         await handleResetSubmit()
                     }
                 }).then(
-                    isCheck  ?
-                             async () => {
-                                    return await axios.post(`${Url}/api/checksproduct/`, {
-                                        code: form.getFieldValue(['CheckID']),
-                                        inventory: context.office,
-                                        checks: context.compressed,
-                                    }, {
-                                        headers: {
-                                            'Authorization': 'Bearer ' + localStorage.getItem('access_token'),
-                                        }
-                                    })
-                                }
-                        : null
+                         async () => {
+                                return await axios.post(`${Url}/api/checksproduct/`, {
+                                    code: form.getFieldValue(['CheckID']),
+                                    inventory: context.office,
+                                    checks: context.compressed,
+                                }, {
+                                    headers: {
+                                        'Authorization': 'Bearer ' + localStorage.getItem('access_token'),
+                                    }
+                                })
+                            }
                 ).then(
-                    isCheck  ?
                     response => {
                     return response
                         }
-                    : null
-
                 ).then(
-                    isCheck  ?
                     async data => {
                     if (data.status === 201) {
-                        message.success('فاکتور ثبت شد.');
+                        message.success('حواله ثبت شد.');
                         }
                     }
-                : null
                 ).then(
-                    isCheck  ?
                     async () => {
                     return await axios.put(`${Url}/api/autoincrementproductcheck/${autoIncrementFactor}/`, {
                         increment: form.getFieldValue(['CheckID']) + 1
@@ -202,26 +196,47 @@ const OutputForm: React.FC = () => {
                         }
                         })
                     }
-                    : null
                 ).then(
-                  isCheck  ?
                             response => {
                             return response
                         }
-                  : null
                 ).then(
-                   isCheck  ?
                         async data => {
                         if (data.status === 200) {
                             message.success('شمارنده حواله بروز شد');
 
                         }
                     }
-                : null
+                ).then(
+                         async () => {
+                                return await axios.post(`${Url}/api/transmission/`, form.getFieldValue(['products']), {
+                                    headers: {
+                                        'Authorization': 'Bearer ' + localStorage.getItem('access_token'),
+                                    }
+                                })
+                            }
+                ).then(
+                    response => {
+                    return response
+                        }
+                ).then(
+                    async data => {
+                    if (data.status === 201) {
+                        message.success('انتقال یافت');
+                        }
+                    }
                 ).then(async () => {
                         await handleResetSubmit()
                     }
-                )
+                ).catch(async (error) => {
+                    if (error.request.status === 403) {
+                        navigate('/no_access')
+                    } else if (error.request.status === 500) {
+                        message.error('عدم ثبت');
+                        setLoading(false)
+                        await handleResetSubmit()
+                    }
+                })
             }
         )
     };
@@ -264,48 +279,18 @@ const OutputForm: React.FC = () => {
     <Form
       form={form}
       onFinish={onFinish}
-      name="OutputForm"
+      name="SendForm"
       layout={"vertical"}
-      onValuesChange={(changedValues, values) => {
-          if (changedValues){
-             if ( values.document_type === 'حواله'){
-                 setIsCheck(true)
-             }else setIsCheck(false)
-          }
-      }}
       autoComplete="off"
     >
         <>
             <Form.Item>
-                {isCheck ?
                   <Form.Item name={'CheckID'}  style={{margin:8 , display:'inline-block'}} label="شماره ثبت حواله">
                           <InputNumber disabled/>
                   </Form.Item>
-                : null }
-
               <Form.Item name={['document_type']} className='register-form-personal' label="نوع مدرک" rules={[{ required: true }]}>
-                          <Select
-                          placeholder="انتخاب کنید"
-                          options={[
-                               { value: 'حواله', label: 'حواله' }
-                              ,{ value: 'متفرقه', label: 'متفرقه' }
-                              ,{ value: 'انبارگردانی', label: 'انبارگردانی' }
-                              ,{ value: 'سند', label: 'سند' }
-                          ]}
-                          />
+                      <Input disabled/>
               </Form.Item>
-                {!isCheck ?
-
-                          <Form.Item name={'document_code'} className='register-form-personal'  label="شناسه مدرک" rules={[{ required: true }]}>
-                        <Input placeholder='شناسه مدرک'/>
-               </Form.Item>
-                    : null }
-                {isCheck ?
-                    <Form.Item name={'receiver'} className='register-form-personal' label="نام گیرنده" rules={[{ required: true }]}>
-                            <Input placeholder='نام گیرنده'/>
-                    </Form.Item>
-                : null }
-                {isCheck ?
                     <>
                         <Form.Item style={{margin: 8 , display:'inline-block'}} label="فایل">
                              <Space.Compact>
@@ -338,8 +323,6 @@ const OutputForm: React.FC = () => {
                          />
                     </>
 
-                : null }
-
 
 
             </Form.Item>
@@ -368,8 +351,8 @@ const OutputForm: React.FC = () => {
                                                           products: {
                                                               [i]: {
                                                                   scale: data.data[0].scale,
-                                                                  category: data.data[0].category,
                                                                   name: data.data[0].name,
+                                                                  category: data.data[0].category,
                                                               }
                                                           }
                                                       });
@@ -384,7 +367,7 @@ const OutputForm: React.FC = () => {
                                   disabled
                               />
                             </Form.Item>
-                            <Form.Item name={[subField.name, 'output']} rules={[{ required: true }]} label='تعداد'>
+                            <Form.Item name={[subField.name, 'input']} rules={[{ required: true }]} label='تعداد'>
                               <InputNumber min={1} placeholder="تعداد" />
                             </Form.Item>
                             <Form.Item name={[subField.name, 'scale']} style={{ width: 150 }} label='مقیاس'>
@@ -443,4 +426,4 @@ const OutputForm: React.FC = () => {
   );
 };
 
-export default OutputForm;
+export default SendForm;

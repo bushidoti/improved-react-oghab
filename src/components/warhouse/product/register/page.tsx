@@ -2,6 +2,7 @@ import {Tabs} from "antd";
 import InputForm from "./input";
 import OutputForm from "./output";
 import SendForm from "./send";
+import Receive from "./receive";
 
 export default function RegisterProduct() {
   const items = [
@@ -20,7 +21,7 @@ export default function RegisterProduct() {
       },{
           label: `دریافت`,
           key: '4',
-          children: `Content of Tab Pane 2`,
+          children: <Receive/>,
       }
   ];
   return (

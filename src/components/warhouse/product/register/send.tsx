@@ -1,15 +1,13 @@
-import React, {useContext, useEffect, useRef, useState} from 'react';
-import {CloseOutlined, PlusOutlined} from '@ant-design/icons';
+import React, {useContext, useEffect, useState} from 'react';
+import {CloseOutlined} from '@ant-design/icons';
 import {
     Button,
     ConfigProvider,
-    Divider,
     Flex,
     Form,
     Image,
     Input,
     InputNumber,
-    InputRef,
     message,
     Select,
     Space
@@ -22,9 +20,6 @@ import dayjs from "dayjs";
 
 const SendForm: React.FC = () => {
   const [form] = Form.useForm();
-  const inputRef = useRef<InputRef>(null);
-  const [name, setName] = useState('');
-  const [option, setOption] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [listProduct, setListProduct] = useState<any[]>([]);
   const [allProduct, setAllProduct] = useState<any[]>([]);
@@ -32,33 +27,41 @@ const SendForm: React.FC = () => {
   const [visible, setVisible] = useState(false);
   const context = useContext(Context)
   const [autoIncrementFactor, setAutoIncrementFactor] = useState<number>()
-
+  const option = [
+          {
+            label: 'دفتر مرکزی',
+            value: 'دفتر مرکزی',
+          },{
+            label: 'چابهار',
+            value: 'چابهار',
+          },{
+            label: 'دزفول',
+            value: 'دزفول',
+          },{
+            label: 'جاسک',
+            value: 'جاسک',
+          },{
+            label: 'بیشه کلا',
+            value: 'بیشه کلا',
+          },{
+            label: 'اورهال تهران',
+            value: 'اورهال تهران',
+          },{
+            label: 'اورهال اصفهان',
+            value: 'اورهال اصفهان',
+          }
+      ]
   const filterOption = (input: string, option?: { label: string; value: string }) =>
    (option?.label ?? '').toLowerCase().includes(input.toLowerCase());
-
-   const onNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setName(event.target.value);
-      };
-
 
 
    const fetchData = async () => {
         setLoading(true)
-        await axios.get(`${Url}/api/consumable-list`, {
+        await axios.get(`${Url}/api/product/?inventory=${context.office}`, {
                 headers: {
                   'Authorization': 'Bearer ' + localStorage.getItem('access_token'),
                 }
               }).then(response => {
-          return response
-              }).then(async data => {
-                   setOption(data.data)
-                }).then(async () => {
-            return await axios.get(`${Url}/api/product/?inventory=${context.office}`, {
-                headers: {
-                    'Authorization': 'Bearer ' + localStorage.getItem('access_token'),
-                }
-            })
-        }).then(response => {
           return response
               }).then(async data => {
                     setListProduct(data.data)
@@ -126,20 +129,20 @@ const SendForm: React.FC = () => {
          )).then(
             form.getFieldValue(['products']).map((obj:
                                               {
-                                                  document_code: string ,
                                                   document_type:string ,
                                                   receiver:string;
                                                   sender:string;
                                                   systemID:string;
                                                   operator:string;
                                                   date:string;
+                                                  consumable:string;
+
                                               }) => {
-                obj.document_code = form.getFieldValue(['document_code'])
                 obj.document_type = form.getFieldValue(['document_type'])
-                obj.receiver = form.getFieldValue(['receiver'])
                 obj.systemID =  form.getFieldValue(['CheckID'])
                 obj.operator = 'خروج'
                 obj.sender = context.office
+                obj.receiver = obj.consumable
                 obj.date = dayjs().locale('fa').format('YYYY-MM-DD')
                 return obj;
             })
@@ -257,35 +260,7 @@ const SendForm: React.FC = () => {
         )
     };
 
-   const addItem = async (e: React.MouseEvent<HTMLButtonElement | HTMLAnchorElement>) => {
-          await axios.post(
-              `${Url}/api/consumable-list/`, {
-                  value: name,
-              }, {
-                  headers: {
-                      'Authorization': 'Bearer ' + localStorage.getItem('access_token'),
-                  }
-              }).then(response => {
-              return response
-          }).then(async data => {
-              if (data.status === 201) {
-                  message.success('اضافه شد');
-                  await fetchData()
-                  setName('');
-                  e.preventDefault();
-                  setTimeout(() => {
-                      inputRef.current?.focus();
-                  }, 0);
 
-              }
-          }).catch((error) => {
-              if (error.request.status === 403) {
-                  navigate('/no_access')
-              } else if (error.request.status === 405) {
-                  message.error('موجود است!');
-              }
-          })
-      };
      function scanImage() {
           if (document.readyState === "complete"){
                window.ws.send("1100");
@@ -394,23 +369,6 @@ const SendForm: React.FC = () => {
                                  optionFilterProp="children"
                                  showSearch
                                  filterOption={filterOption}
-                                 dropdownRender={(menu) => (
-                                        <>
-                                              {menu}
-                                              <Divider style={{ margin: '8px 0' }} />
-                                              <Space style={{ margin: 10 }}>
-                                                <Input
-                                                  placeholder="آیتم مورد نظر را بنویسید"
-                                                  ref={inputRef}
-                                                  value={name}
-                                                  onChange={onNameChange}
-                                                />
-                                               <Button type="primary" icon={<PlusOutlined />} onClick={addItem}/>
-
-                                              </Space>
-
-                                            </>
-                                      )}
                                  options={option.map((item) => ({ label: item.value, value: item.value }))}
                               />
                             </Form.Item>

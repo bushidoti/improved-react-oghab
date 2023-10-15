@@ -31,7 +31,7 @@ const Receive: React.FC = () => {
   const [product, setProduct] = useState<any[]>([])
   const inputRef = useRef<InputRef>(null);
   const [productName, setProductName] = useState('');
-  const [recieverName, setRecieverName] = useState('');
+  const [receiverName, setReceiverName] = useState('');
   const [productScale, setProductScale] = useState('');
   const [productCategory, setProductCategory] = useState('');
   const [name, setName] = useState('');
@@ -55,7 +55,7 @@ const Receive: React.FC = () => {
 
 
   const onRecieverNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setRecieverName(event.target.value);
+        setReceiverName(event.target.value);
       };
 
 
@@ -324,6 +324,7 @@ const Receive: React.FC = () => {
 
   const handleResetSubmit = async () => {
         await fetchData()
+        setReceiverName('')
      }
 
 
@@ -348,7 +349,7 @@ const Receive: React.FC = () => {
                 obj.document_code = `فاکتور در ${obj.sender} ثبت شده است ارسال شده با شماره حواله ${obj.systemID}`
                 obj.document_type = 'فاکتور'
                 obj.buyer = obj.sender
-                obj.receiver = recieverName
+                obj.receiver = receiverName
                 obj.systemID = ''
                 obj.afterOperator = (allProduct.filter((products: { product: number; }) => products.product ===  obj.product).reduce((a: any, v: { input: any; }) =>   a + v.input , 0 ))
                                     - (allProduct.filter((products: { product: number; }) => products.product ===  obj.product).reduce((a: any, v: { output: any; }) =>   a + v.output , 0 )) + obj.input
@@ -400,6 +401,7 @@ const Receive: React.FC = () => {
                         }
                 ).then(async () => {
                         await handleResetSubmit()
+
                     }
                 )
             }

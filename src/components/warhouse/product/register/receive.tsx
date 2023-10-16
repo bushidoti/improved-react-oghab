@@ -336,7 +336,6 @@ const Receive: React.FC = () => {
                               document_code: string ,
                               document_type:string ,
                               buyer:string,
-                              seller:string;
                               receiver:string;
                               systemID:string;
                               operator:string;

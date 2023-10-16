@@ -2,7 +2,7 @@ import { SearchOutlined } from '@ant-design/icons';
 import React, {useContext, useEffect, useRef, useState} from 'react';
 import Highlighter from "react-highlight-words";
 import type {InputRef, TableProps} from 'antd';
-import {Button, Input, Space, Table} from 'antd';
+import {Button, Input, Select, Space, Table} from 'antd';
 import axios from "axios";
 import type { ColumnType, ColumnsType } from 'antd/es/table';
 import type {FilterConfirmProps, FilterValue} from 'antd/es/table/interface';
@@ -60,6 +60,7 @@ const ReportProduct: React.FC = () => {
   const [productSub, setProductSub] = useState<any[]>([])
   const [optionCategory, setOptionCategory] = useState<any[]>([]);
   const context = useContext(Context)
+  const [filteredColumns ,  setFilteredColumns] = useState<string[]>([])
 
   const generatePDF= useReactToPrint({
         content: ()=>componentPDF.current,
@@ -161,6 +162,10 @@ const ReportProduct: React.FC = () => {
   }
 
 
+
+  const onChange = (value: string[]) => {
+    setFilteredColumns(value as  string[])
+  };
 
 
   const getColumnSearchProps = (dataIndex: DataIndex): ColumnType<DataType> => ({
@@ -457,16 +462,72 @@ const ReportProduct: React.FC = () => {
     setFilteredInfo(filters);
   };
 
+
+    const options = [
+        { label: 'گروه', value: 'category' },
+        { label: 'نوع سند', value: 'document_type' },
+        { label: 'شماره ثبت سیستم', value: 'systemID' },
+        { label: 'شناسه سند', value: 'document_code' },
+        { label: 'تاریخ', value: 'date' },
+        { label: 'عملیات', value: 'operator' },
+        { label: 'مورد مصرف', value: 'consumable' },
+        { label: 'خریدار', value: 'buyer' },
+        { label: 'فروشنده', value: 'seller' },
+        { label: 'گیرنده', value: 'receiver' },
+        { label: 'اصلاحیه', value: 'amendment' },
+      ];
+
+
+  const optionsDoc=[
+                      {
+                        value: 'حواله',
+                        label: 'حواله',
+                      },
+                      {
+                        value: 'فاکتور',
+                        label: 'فاکتور',
+                      },
+                      {
+                        value: 'سیستم',
+                        label: 'سیستم',
+                      },
+                      {
+                        value: 'انبارگردانی',
+                        label: 'انبارگردانی',
+                      }
+                    ]
   return (
       <>
          <Space style={{ marginBottom: 16 }}>
             <Button onClick={clearFilters}>پاک کردن فیتلر ها</Button>
             <Button onClick={clearAll}>پاک کردن فیلتر و مرتب کننده ها</Button>
             <Button onClick={generatePDF}>چاپ</Button>
-
+           <Space.Compact>
+              <Select
+                    style={{width:170}}
+                    loading={loading}
+                    placeholder="مدرک مورد نظر"
+                    options={optionsDoc}
+                  />
+              <Input placeholder={'شناسه مدرک'} onChange={(e) => context.setCurrentProductFactor(Number(e.target.value))}/>
+              <Button type={"primary"} loading={loading} onClick={() => navigate(`/warhouse/product/factor/${context.currentProductFactor}`)}>مشاهده</Button>
+           </Space.Compact>
+          </Space>
+           <Space style={{ marginBottom: 16, marginRight: 16}}>
+               <Select
+                    mode="multiple"
+                    allowClear
+                    style={{ width: 400 }}
+                    maxTagCount={2}
+                    placeholder="ستون هایی که میخواهید نمایش داده نشود انتخاب کنید."
+                    onChange={onChange}
+                    options={options}
+                />
           </Space>
           <Table
-              bordered columns={columns}
+              bordered
+              // @ts-ignore
+              columns={columns.filter(col => !filteredColumns.includes(col.dataIndex))}
               dataSource={productSub}
               tableLayout={"fixed"}
               scroll={{ x: 3010 , y:'60vh'}}
@@ -476,7 +537,6 @@ const ReportProduct: React.FC = () => {
               pagination={{position:["bottomCenter"]}}
           />
           <TablePrint componentPDF={componentPDF} contract={product} productSub={productSub}/>
-
       </>
   )
 };

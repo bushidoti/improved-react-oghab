@@ -614,8 +614,9 @@ const MainPersonal: React.FC = () => {
         </Space>
 
           <Table
-                // @ts-ignore
-              bordered columns={columns.filter(col => !filteredColumns.includes(col.dataIndex))}
+              bordered
+              // @ts-ignore
+              columns={columns.filter(col => !filteredColumns.includes(col.dataIndex))}
               dataSource={contract}
               tableLayout={"fixed"}
               scroll={{ x: 3010 , y:'60vh'}}

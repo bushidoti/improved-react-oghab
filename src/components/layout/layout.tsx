@@ -41,6 +41,8 @@ import Home from "../home/home";
 import PageNotFound from "../notfound/not_found";
 import NoAccess from "../noaccess/no_access";
 import Card from "../warhouse/product/card/card";
+import ProductFactor from "../warhouse/product/report/factor";
+import ProductCheck from "../warhouse/product/report/check";
 
 
 const { Header, Content, Footer, Sider } = Layout;
@@ -205,6 +207,8 @@ const LayoutForm: React.FC = () => {
                           <Route path={'/warhouse'} element={<MainWarehouse/>}/>
                           <Route path={'/warhouse/product'} element={<MainProduct/>}/>
                           <Route path={`/warhouse/product/edit/${context.currentProduct}`} element={<Card />}/>
+                          <Route path={`/warhouse/product/factor/${context.currentProductFactor}`} element={<ProductFactor />}/>
+                          <Route path={`/warhouse/product/check/${context.currentProductCheck}`} element={<ProductCheck />}/>
                           <Route path={'/warhouse/product/register'} element={<RegisterProduct/>}/>
                           <Route path={'/warhouse/product/report'} element={<ReportProduct/>}/>
                           <Route path={'/warhouse/property'} element={<MainProperty/>}/>

@@ -28,6 +28,8 @@ const App: React.FC = () => {
   const [compressed, setCompressed] = useState('');
   const [currentPersonal , setCurrentPersonal] = useState<number>(0)
   const [currentProduct , setCurrentProduct] = useState<number>(0)
+  const [currentProductFactor , setCurrentProductFactor] = useState<number>(0)
+  const [currentProductCheck , setCurrentProductCheck] = useState<number>(0)
   const [permission, setPermission] = useState('');
 
 
@@ -159,6 +161,10 @@ const App: React.FC = () => {
                   setLogged,
                   fullName,
                   setCurrentProduct,
+                  setCurrentProductCheck,
+                  currentProductCheck,
+                  setCurrentProductFactor,
+                  currentProductFactor,
                   currentProduct,
                   scan,
                   compressed,

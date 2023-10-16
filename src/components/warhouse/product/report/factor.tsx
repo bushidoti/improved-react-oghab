@@ -121,7 +121,7 @@ const ProductFactor: React.FC = () => {
           },
           // eslint-disable-next-line react-hooks/exhaustive-deps
           [])
-    console.log(Factor?.jsonData)
+
   return (
       <>
         <Space.Compact style={{marginBottom:16}}>

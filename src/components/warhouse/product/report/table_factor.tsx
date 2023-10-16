@@ -48,7 +48,7 @@ const TableFactorPrint = (props: { componentPDF: React.LegacyRef<HTMLTableElemen
                                 </tr>
                                 ))
                             }
-                            <tr className='bg-light'>
+                            <tr>
                                   <td className= 'td' style={{padding:15}} colSpan={5} >مهر و امضای خریدار</td>
                                   <td className= 'td' style={{padding:15}} colSpan={5} >مهر و امضای گیرنده</td>
                             </tr>

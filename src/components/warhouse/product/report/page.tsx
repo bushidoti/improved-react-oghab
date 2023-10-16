@@ -503,14 +503,14 @@ const ReportProduct: React.FC = () => {
                     placeholder="مدرک مورد نظر"
                     options={optionsDoc}
                   />
-              <Input placeholder={'شناسه مدرک'} onChange={(e) => {
+              <Input placeholder={'شناسه مدرک'} disabled={selectedDoc === ''} onChange={(e) => {
                   if (selectedDoc === 'فاکتور'){
                             context.setCurrentProductFactor(Number(e.target.value))
                   }else if (selectedDoc === 'حواله'){
                             context.setCurrentProductCheck(Number(e.target.value))
                   }
               }}/>
-              <Button type={"primary"} loading={loading} onClick={() => {
+              <Button type={"primary"} loading={loading} disabled={selectedDoc === ''} onClick={() => {
                   if (selectedDoc === 'فاکتور'){
                         navigate(`/warhouse/product/factor/${context.currentProductFactor}`)
                   }else if (selectedDoc === 'حواله'){

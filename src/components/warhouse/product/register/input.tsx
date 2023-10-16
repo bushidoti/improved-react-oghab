@@ -278,6 +278,7 @@ const InputForm: React.FC = () => {
                                 code: form.getFieldValue(['FactorID']),
                                 inventory: context.office,
                                 factor: context.compressed,
+                                jsonData: form.getFieldValue(['products']),
                             }, {
                                 headers: {
                                     'Authorization': 'Bearer ' + localStorage.getItem('access_token'),

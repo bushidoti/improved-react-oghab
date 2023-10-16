@@ -169,6 +169,7 @@ const OutputForm: React.FC = () => {
                                         code: form.getFieldValue(['CheckID']),
                                         inventory: context.office,
                                         checks: context.compressed,
+                                        jsonData: form.getFieldValue(['products']),
                                     }, {
                                         headers: {
                                             'Authorization': 'Bearer ' + localStorage.getItem('access_token'),

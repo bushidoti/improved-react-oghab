@@ -49,6 +49,7 @@ type DataIndex = keyof DataType;
 
 const ReportProduct: React.FC = () => {
   const [searchText, setSearchText] = useState('');
+  const [selectedDoc, setSelectedDoc] = useState('');
   const [searchedColumn, setSearchedColumn] = useState('');
   const searchInput = useRef<InputRef>(null);
   const [product, setProduct] = useState<any[]>([])
@@ -486,14 +487,6 @@ const ReportProduct: React.FC = () => {
                       {
                         value: 'فاکتور',
                         label: 'فاکتور',
-                      },
-                      {
-                        value: 'سیستم',
-                        label: 'سیستم',
-                      },
-                      {
-                        value: 'انبارگردانی',
-                        label: 'انبارگردانی',
                       }
                     ]
   return (
@@ -506,11 +499,24 @@ const ReportProduct: React.FC = () => {
               <Select
                     style={{width:170}}
                     loading={loading}
+                    onChange={value => setSelectedDoc(value)}
                     placeholder="مدرک مورد نظر"
                     options={optionsDoc}
                   />
-              <Input placeholder={'شناسه مدرک'} onChange={(e) => context.setCurrentProductFactor(Number(e.target.value))}/>
-              <Button type={"primary"} loading={loading} onClick={() => navigate(`/warhouse/product/factor/${context.currentProductFactor}`)}>مشاهده</Button>
+              <Input placeholder={'شناسه مدرک'} onChange={(e) => {
+                  if (selectedDoc === 'فاکتور'){
+                            context.setCurrentProductFactor(Number(e.target.value))
+                  }else if (selectedDoc === 'حواله'){
+                            context.setCurrentProductCheck(Number(e.target.value))
+                  }
+              }}/>
+              <Button type={"primary"} loading={loading} onClick={() => {
+                  if (selectedDoc === 'فاکتور'){
+                        navigate(`/warhouse/product/factor/${context.currentProductFactor}`)
+                  }else if (selectedDoc === 'حواله'){
+                        navigate(`/warhouse/product/check/${context.currentProductCheck}`)
+                  }
+              }}>مشاهده</Button>
            </Space.Compact>
           </Space>
            <Space style={{ marginBottom: 16, marginRight: 16}}>

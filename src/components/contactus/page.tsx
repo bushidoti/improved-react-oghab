@@ -1,6 +1,6 @@
 export default function Contactus() {
 
-  return (
-         <p>contactus</p>
-  )
+    return (
+        <p>contactus</p>
+    )
 }

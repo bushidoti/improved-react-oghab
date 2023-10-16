@@ -1,6 +1,6 @@
 export default function Handling() {
 
-  return (
-         <p>Handling</p>
-  )
+    return (
+        <p>Handling</p>
+    )
 }

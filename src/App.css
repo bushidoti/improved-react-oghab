@@ -2,29 +2,30 @@ body {
     background-color: #b5f5ec;
 
 }
+
 .login-form-button {
-  width: 100%;
+    width: 100%;
 }
 
 .login-form {
-  position: absolute;
-  width: 50vw;
-  top: 25vh;
-  padding: 2vw;
-  left: 25vw;
-  border-radius: 25px ;
-  background-color: #e6f4ff;
-  box-shadow: 4px 5px 25px ;
+    position: absolute;
+    width: 50vw;
+    top: 25vh;
+    padding: 2vw;
+    left: 25vw;
+    border-radius: 25px;
+    background-color: #e6f4ff;
+    box-shadow: 4px 5px 25px;
 }
 
-.message-login{
+.message-login {
     direction: rtl;
 }
 
 .span-header {
-  background-color: #f4ffb8;
-  border-radius: 25px;
-  padding: 10px 20px;
+    background-color: #f4ffb8;
+    border-radius: 25px;
+    padding: 10px 20px;
 }
 
 .table-expired-rows {
@@ -38,25 +39,26 @@ body {
 }
 
 @media print {
-  @page {
-    size: landscape;
-    margin: 4mm;
-  }
+    @page {
+        size: landscape;
+        margin: 4mm;
+    }
 }
 
 .table {
-  border: 1px solid black;
-      border-collapse: collapse;
-  width: 100%;
+    border: 1px solid black;
+    border-collapse: collapse;
+    width: 100%;
 }
+
 .th {
-      border: 1px solid black;
+    border: 1px solid black;
 
 }
 
 .td {
-      border: 1px solid black;
-      text-align: center;
+    border: 1px solid black;
+    text-align: center;
 
 
 }

@@ -1,6 +1,6 @@
 export default function RegisterContract() {
 
-  return (
-           <p>register</p>
-  )
+    return (
+        <p>register</p>
+    )
 }

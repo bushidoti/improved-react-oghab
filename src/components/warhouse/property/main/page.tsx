@@ -1,6 +1,6 @@
 export default function MainProperty() {
 
-  return (
-           <p>main</p>
-  )
+    return (
+        <p>main</p>
+    )
 }

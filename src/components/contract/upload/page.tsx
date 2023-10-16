@@ -1,6 +1,6 @@
 export default function UploadContract() {
 
-  return (
-         <p>upload</p>
-  )
+    return (
+        <p>upload</p>
+    )
 }

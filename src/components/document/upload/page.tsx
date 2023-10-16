@@ -1,6 +1,6 @@
 export default function UploadDocument() {
 
-  return (
-           <p>upload</p>
-  )
+    return (
+        <p>upload</p>
+    )
 }

@@ -1,6 +1,6 @@
 export default function ReportProperty() {
 
-  return (
-         <p>report</p>
-  )
+    return (
+        <p>report</p>
+    )
 }

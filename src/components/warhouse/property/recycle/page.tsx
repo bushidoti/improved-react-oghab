@@ -1,6 +1,6 @@
 export default function RecycleProperty() {
 
-  return (
-         <p>recycle</p>
-  )
+    return (
+        <p>recycle</p>
+    )
 }

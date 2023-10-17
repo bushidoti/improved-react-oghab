@@ -129,12 +129,14 @@ const SendForm: React.FC = () => {
                                                           sender: string;
                                                           systemID: string;
                                                           operator: string;
+                                                          checkCode: number;
                                                           date: string;
                                                           consumable: string;
 
                                                       }) => {
                 obj.document_type = form.getFieldValue(['document_type'])
                 obj.systemID = form.getFieldValue(['CheckID'])
+                obj.checkCode = form.getFieldValue(['CheckID'])
                 obj.operator = 'خروج'
                 obj.sender = context.office
                 obj.receiver = obj.consumable
@@ -143,7 +145,12 @@ const SendForm: React.FC = () => {
             })
         ).then(() => setLoading(true)).then(async () => {
                 await axios.post(
-                    `${Url}/api/allproducts/`, form.getFieldValue(['products']), {
+                    `${Url}/api/checksproduct/`, {
+                            code: form.getFieldValue(['CheckID']),
+                            inventory: context.office,
+                            checks: context.compressed,
+                            jsonData: form.getFieldValue(['products']),
+                        }, {
                         headers: {
                             'Authorization': 'Bearer ' + localStorage.getItem('access_token'),
                         }
@@ -151,7 +158,7 @@ const SendForm: React.FC = () => {
                     return response
                 }).then(async data => {
                     if (data.status === 201) {
-                        message.success('ثبت شد');
+                        message.success('حواله ثبت شد.');
                         setLoading(false)
                     }
                 }).catch(async (error) => {
@@ -162,14 +169,11 @@ const SendForm: React.FC = () => {
                         setLoading(false)
                         await handleResetSubmit()
                     }
-                }).then(
+                })
+            }
+        ).then(
                     async () => {
-                        return await axios.post(`${Url}/api/checksproduct/`, {
-                            code: form.getFieldValue(['CheckID']),
-                            inventory: context.office,
-                            checks: context.compressed,
-                            jsonData: form.getFieldValue(['products']),
-                        }, {
+                        return await axios.post(`${Url}/api/allproducts/`, form.getFieldValue(['products']), {
                             headers: {
                                 'Authorization': 'Bearer ' + localStorage.getItem('access_token'),
                             }
@@ -182,7 +186,7 @@ const SendForm: React.FC = () => {
                 ).then(
                     async data => {
                         if (data.status === 201) {
-                            message.success('حواله ثبت شد.');
+                            message.success('ثبت شد.');
                         }
                     }
                 ).then(
@@ -252,8 +256,6 @@ const SendForm: React.FC = () => {
                         await handleResetSubmit()
                     }
                 })
-            }
-        )
     };
 
 

@@ -21,6 +21,7 @@ interface DataType {
     category: string;
     inventory: string;
     input: string;
+    scale: string;
     output: string;
     left: string;
 }
@@ -276,6 +277,12 @@ const MainProduct: React.FC = () => {
                 - (productSub.filter(productSub =>
                     productSub.product === record.code).reduce((a, v) => a + v.output, 0))
             ,
+        }, {
+            align: "center",
+            title: 'مقیاس',
+            width: '4.55%',
+            dataIndex: 'scale',
+            key: 'scale',
         }, {
             align: "center",
             title: 'انبار',

@@ -52,7 +52,7 @@ function getItem(
     label: React.ReactNode,
     key: React.Key,
     icon?: React.ReactNode,
-    children?: MenuItem[],
+    children?: MenuItem[] ,
     disabled?: boolean,
 
 ): MenuItem {
@@ -75,11 +75,11 @@ const LayoutForm: React.FC = () => {
     const context = useContext(Context)
     const items: MenuItem[] = [
     getItem(<Link to='/'>خانه</Link>, '1', <HomeOutlined/>),
-    getItem(<Link style={context.permission !== 'مدیر' ? {pointerEvents:'none'} : {}} to='https://api.oghab-asaluyeh.ir/admin/'>پنل مدیریت</Link>, '2', <PieChartOutlined/> ,  [] , context.permission !== 'مدیر'),
+    getItem(<Link target={"_blank"} style={context.permission !== 'مدیر' ? {pointerEvents:'none'} : {}} to='https://api.oghab-asaluyeh.ir/admin/'>پنل مدیریت</Link>, '2', <PieChartOutlined/> ,  undefined , context.permission !== 'مدیر'),
 
-    getItem(<Link style={context.permission !== 'مدیر' ? {pointerEvents:'none'} : {}} to='http://www.oghab-asaluyeh.ir:2082/cpsess6008508683/frontend/
+    getItem(<Link target={"_blank"} style={context.permission !== 'مدیر' ? {pointerEvents:'none'} : {}} to='http://www.oghab-asaluyeh.ir:2082/cpsess6008508683/frontend/
   jupiter/backup/wizard-backup-type.html?login=1&post_login=3837540636687'>بکاپ</Link>
-        , '3', <CloudSyncOutlined/> ,  [] , context.permission !== 'مدیر'),
+        , '3', <CloudSyncOutlined/> ,  undefined , context.permission !== 'مدیر'),
 
     getItem('مدیریت قراردادها', 'sub1', <SolutionOutlined/>, [
 

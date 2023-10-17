@@ -245,6 +245,7 @@ const InputForm: React.FC = () => {
                                                           buyer: string,
                                                           seller: string;
                                                           receiver: string;
+                                                          factorCode: number;
                                                           systemID: string;
                                                           operator: string;
                                                           date: string;
@@ -255,21 +256,30 @@ const InputForm: React.FC = () => {
                 obj.seller = form.getFieldValue(['seller'])
                 obj.receiver = form.getFieldValue(['receiver'])
                 obj.systemID = isFactor ? form.getFieldValue(['FactorID']) : ''
+                obj.factorCode = isFactor ? form.getFieldValue(['FactorID']) : ''
                 obj.operator = 'ورود'
                 obj.date = dayjs().locale('fa').format('YYYY-MM-DD')
                 return obj;
             })
-        ).then(() => setLoading(true)).then(async () => {
+        ).then(() => setLoading(true)).then(
+          isFactor ?
+            async () => {
                 await axios.post(
-                    `${Url}/api/allproducts/`, form.getFieldValue(['products']), {
+                    `${Url}/api/factorsproduct/`, {
+                                code: form.getFieldValue(['FactorID']),
+                                inventory: context.office,
+                                factor: context.compressed,
+                                jsonData: form.getFieldValue(['products']),
+                            }, {
                         headers: {
                             'Authorization': 'Bearer ' + localStorage.getItem('access_token'),
                         }
-                    }).then(response => {
+                    }).then(
+                        response => {
                     return response
                 }).then(async data => {
                     if (data.status === 201) {
-                        message.success('ثبت شد');
+                        message.success('فاکتور ثبت شد.');
                         setLoading(false)
                     }
                 }).catch(async (error) => {
@@ -280,35 +290,27 @@ const InputForm: React.FC = () => {
                         setLoading(false)
                         await handleResetSubmit()
                     }
-                }).then(
-                    isFactor ?
-                        async () => {
-                            return await axios.post(`${Url}/api/factorsproduct/`, {
-                                code: form.getFieldValue(['FactorID']),
-                                inventory: context.office,
-                                factor: context.compressed,
-                                jsonData: form.getFieldValue(['products']),
-                            }, {
+                })
+            }
+          : null
+        ).then(
+                 async () => {
+                            return await axios.post(`${Url}/api/allproducts/`, form.getFieldValue(['products']), {
                                 headers: {
                                     'Authorization': 'Bearer ' + localStorage.getItem('access_token'),
                                 }
                             })
                         }
-                        : null
                 ).then(
-                    isFactor ?
                         response => {
                             return response
                         }
-                        : null
                 ).then(
-                    isFactor ?
                         async data => {
                             if (data.status === 201) {
-                                message.success('فاکتور ثبت شد.');
+                                message.success('ثبت شد.');
                             }
                         }
-                        : null
                 ).then(
                     isFactor ?
                         async () => {
@@ -340,8 +342,6 @@ const InputForm: React.FC = () => {
                         await handleResetSubmit()
                     }
                 )
-            }
-        )
 
 
     };

@@ -135,6 +135,7 @@ const OutputForm: React.FC = () => {
                                                           document_type: string,
                                                           receiver: string;
                                                           systemID: string;
+                                                          checkCode: number;
                                                           operator: string;
                                                           date: string;
                                                       }) => {
@@ -142,13 +143,21 @@ const OutputForm: React.FC = () => {
                 obj.document_type = form.getFieldValue(['document_type'])
                 obj.receiver = form.getFieldValue(['receiver'])
                 obj.systemID = isCheck ? form.getFieldValue(['CheckID']) : ''
+                obj.checkCode = isCheck ? form.getFieldValue(['CheckID']) : ''
                 obj.operator = 'خروج'
                 obj.date = dayjs().locale('fa').format('YYYY-MM-DD')
                 return obj;
             })
-        ).then(() => setLoading(true)).then(async () => {
+        ).then(() => setLoading(true)).then(
+            isCheck ?
+            async () => {
                 await axios.post(
-                    `${Url}/api/allproducts/`, form.getFieldValue(['products']), {
+                    `${Url}/api/checksproduct/`, {
+                                code: form.getFieldValue(['CheckID']),
+                                inventory: context.office,
+                                checks: context.compressed,
+                                jsonData: form.getFieldValue(['products']),
+                            }, {
                         headers: {
                             'Authorization': 'Bearer ' + localStorage.getItem('access_token'),
                         }
@@ -156,7 +165,7 @@ const OutputForm: React.FC = () => {
                     return response
                 }).then(async data => {
                     if (data.status === 201) {
-                        message.success('ثبت شد');
+                        message.success('حواله ثبت شد.');
                         setLoading(false)
                     }
                 }).catch(async (error) => {
@@ -167,35 +176,27 @@ const OutputForm: React.FC = () => {
                         setLoading(false)
                         await handleResetSubmit()
                     }
-                }).then(
-                    isCheck ?
+                })
+            }
+          : null
+        ).then(
                         async () => {
-                            return await axios.post(`${Url}/api/checksproduct/`, {
-                                code: form.getFieldValue(['CheckID']),
-                                inventory: context.office,
-                                checks: context.compressed,
-                                jsonData: form.getFieldValue(['products']),
-                            }, {
+                            return await axios.post(`${Url}/api/allproducts/`, form.getFieldValue(['products']), {
                                 headers: {
                                     'Authorization': 'Bearer ' + localStorage.getItem('access_token'),
                                 }
                             })
                         }
-                        : null
                 ).then(
-                    isCheck ?
                         response => {
                             return response
                         }
-                        : null
                 ).then(
-                    isCheck ?
                         async data => {
                             if (data.status === 201) {
-                                message.success('فاکتور ثبت شد.');
+                                message.success('ثبت شد.');
                             }
                         }
-                        : null
                 ).then(
                     isCheck ?
                         async () => {
@@ -227,8 +228,6 @@ const OutputForm: React.FC = () => {
                         await handleResetSubmit()
                     }
                 )
-            }
-        )
     };
 
     const addItem = async (e: React.MouseEvent<HTMLButtonElement | HTMLAnchorElement>) => {

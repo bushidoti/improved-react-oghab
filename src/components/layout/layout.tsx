@@ -53,22 +53,33 @@ function getItem(
     key: React.Key,
     icon?: React.ReactNode,
     children?: MenuItem[],
+    disabled?: boolean,
+
 ): MenuItem {
     return {
         key,
         icon,
         children,
         label,
+        disabled,
+
     } as MenuItem;
 }
 
-const items: MenuItem[] = [
-    getItem(<Link to='/'>خانه</Link>, '1', <HomeOutlined/>),
-    getItem(<Link to='https://api.oghab-asaluyeh.ir/admin/'>پنل مدیریت</Link>, '2', <PieChartOutlined/>),
 
-    getItem(<Link to='http://www.oghab-asaluyeh.ir:2082/cpsess6008508683/frontend/
+
+
+const LayoutForm: React.FC = () => {
+    const [collapsed, setCollapsed] = useState(true);
+    const location = useLocation();
+    const context = useContext(Context)
+    const items: MenuItem[] = [
+    getItem(<Link to='/'>خانه</Link>, '1', <HomeOutlined/>),
+    getItem(<Link style={context.permission !== 'مدیر' ? {pointerEvents:'none'} : {}} to='https://api.oghab-asaluyeh.ir/admin/'>پنل مدیریت</Link>, '2', <PieChartOutlined/> ,  [] , context.permission !== 'مدیر'),
+
+    getItem(<Link style={context.permission !== 'مدیر' ? {pointerEvents:'none'} : {}} to='http://www.oghab-asaluyeh.ir:2082/cpsess6008508683/frontend/
   jupiter/backup/wizard-backup-type.html?login=1&post_login=3837540636687'>بکاپ</Link>
-        , '3', <CloudSyncOutlined/>),
+        , '3', <CloudSyncOutlined/> ,  [] , context.permission !== 'مدیر'),
 
     getItem('مدیریت قراردادها', 'sub1', <SolutionOutlined/>, [
 
@@ -83,15 +94,15 @@ const items: MenuItem[] = [
             getItem(<Link to='../personal/report'>گزارش</Link>, '8'),
             getItem(<Link to='../personal/upload'>باگذاری</Link>, '9'),
         ]),
-    ]),
+    ], !(context.permission === 'مدیر' || context.permission === 'اداری' || context.permission === 'مدیر اداری' || context.permission === 'مشاهده')),
 
-    getItem(<Link to='../document'>مدیریت اسناد</Link>, 'sub4', <FileOutlined/>, [
+    getItem(<Link style={!(context.permission === 'مدیر' || context.permission === 'اداری' || context.permission === 'مدیر اداری' || context.permission === 'مشاهده') ? {pointerEvents:'none'} : {}} to='../document'>مدیریت اسناد</Link>, 'sub4', <FileOutlined/>, [
         getItem(<Link to='../document/register'>ثبت اسناد اموال</Link>, '10'),
         getItem(<Link to='../document/report'>گزارش اسناد</Link>, '11'),
         getItem(<Link to='../document/upload'>باگذاری اسناد</Link>, '12')
-    ]),
+    ],!(context.permission === 'مدیر' || context.permission === 'اداری' || context.permission === 'مدیر اداری' || context.permission === 'مشاهده')),
 
-    getItem(<Link to='../warhouse'>انبارداری</Link>, 'sub5', <BarChartOutlined/>, [
+    getItem(<Link style={!(context.permission === 'مدیر' || context.permission === 'انباردار') ? {pointerEvents:'none'} : {}} to='../warhouse'>انبارداری</Link>, 'sub5', <BarChartOutlined/>, [
         getItem(<Link to='../warhouse/product'>انبار</Link>, 'sub6', null, [
             getItem(<Link to='../warhouse/product/register'>ثبت</Link>, '13'),
             getItem(<Link to='../warhouse/product/report'>گزارش</Link>, '14'),
@@ -105,16 +116,10 @@ const items: MenuItem[] = [
         ]),
 
         getItem(<Link to='../warhouse/handling'>انبارگردانی</Link>, '19')
-    ]),
+    ] , !(context.permission === 'مدیر' || context.permission === 'انباردار')),
     getItem(<Link to='../contactus'>پشتیبانی</Link>, '20', <PhoneOutlined/>),
     getItem(<Link to='../logout'>خروج</Link>, '21', <PoweroffOutlined/>),
 ];
-
-
-const LayoutForm: React.FC = () => {
-    const [collapsed, setCollapsed] = useState(true);
-    const location = useLocation();
-    const context = useContext(Context)
     const breadcrumbNameMap: Record<string, string> = {
         '/contract': 'قراردادها',
         '/personal': 'مدارک اشخاص',

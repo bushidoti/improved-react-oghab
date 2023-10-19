@@ -1,5 +1,17 @@
 import React, {useContext, useEffect, useRef, useState} from 'react';
-import {Alert, Button, Checkbox, Divider, Input, InputNumber, InputRef, message, Select, Space, Table} from 'antd';
+import {
+    Alert,
+    Button,
+    Divider,
+    Form,
+    Input,
+    InputNumber,
+    InputRef,
+    message,
+    Select,
+    Space,
+    Table
+} from 'antd';
 import type {ColumnsType} from 'antd/es/table';
 import Url from "../../../api-configue";
 import {Context} from "../../../../context";
@@ -7,7 +19,6 @@ import axios from "axios";
 import {PlusOutlined} from "@ant-design/icons";
 import {useNavigate} from "react-router-dom";
 import dayjs from "dayjs";
-import {CheckboxChangeEvent} from "antd/es/checkbox";
 
 interface DataType {
     key: React.Key;
@@ -24,7 +35,6 @@ interface DataType {
 
 
 const Receive: React.FC = () => {
-    const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
     const context = useContext(Context)
     const [product, setProduct] = useState<any[]>([])
     const inputRef = useRef<InputRef>(null);
@@ -36,12 +46,12 @@ const Receive: React.FC = () => {
     const [allProduct, setAllProduct] = useState<any[]>([]);
     const [option, setOption] = useState<any[]>([]);
     const [listProduct, setListProduct] = useState<any[]>([]);
-    const [selectedJson, setSelectedJson] = useState<any[]>([]);
     const navigate = useNavigate();
     const [autoIncrement, setAutoIncrement] = useState<number>()
     const [increment, setIncrement] = useState<number>(0)
     const [loading, setLoading] = useState<boolean>(false);
-    const [checked, setCheck] = useState<boolean>(true);
+    const [form] = Form.useForm();
+
     const onNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setName(event.target.value);
     };
@@ -181,8 +191,51 @@ const Receive: React.FC = () => {
             width: '15%',
             dataIndex: 'product',
             key: 'product',
-            render: (_value, record) => {
+            render: (_value, record,index) => {
                 return (
+                    <Form
+                       form={form}
+                       initialValues={{ products: product }}
+                       onValuesChange={() => {
+                                     form.getFieldValue(['products']).map((obj:
+                                          {
+                                              document_code: string,
+                                              document_type: string,
+                                              buyer: string,
+                                              receiver: string;
+                                              systemID: string;
+                                              operator: string;
+                                              sender: string;
+                                              date: string;
+                                              afterOperator: number;
+                                              input: number;
+                                              product: number;
+                                          }) => {
+                        obj.document_code = `فاکتور در ${obj.sender} ثبت شده است ارسال شده با شماره حواله ${obj.systemID}`
+                        obj.document_type = 'فاکتور'
+                        obj.buyer = obj.sender
+                        obj.receiver = receiverName
+                        obj.afterOperator = (allProduct.filter((products: {
+                                product: number;
+                            }) => products.product === obj.product).reduce((a: any, v: { input: any; }) => a + v.input, 0))
+                            - (allProduct.filter((products: {
+                                product: number;
+                            }) => products.product === obj.product).reduce((a: any, v: {
+                                output: any;
+                            }) => a + v.output, 0)) + obj.input
+                        obj.operator = 'ورود'
+                        obj.date = dayjs().locale('fa').format('YYYY-MM-DD')
+                        return obj;
+                    })
+                       }}
+                    >
+                      <Form.List name={['products']}>
+                        {() => (
+
+                      <>
+
+                       <Form.Item name={[index,'product']}   validateStatus="error"
+                         help="باید پر شود">
                        <Select placeholder="انتخاب کنید"
                             optionFilterProp="children"
                             showSearch
@@ -239,6 +292,11 @@ const Receive: React.FC = () => {
                             )}
                             options={listProduct.map((item) => ({label: item.name, value: item.code}))}
                             />
+                           </Form.Item>
+                         </>
+                              )}
+                      </Form.List>
+                   </Form>
                 )
             }
         }
@@ -310,18 +368,8 @@ const Receive: React.FC = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
         [context.office])
 
-    const onSelectChange = (newSelectedRowKeys: React.Key[], selectedRows: any) => {
-        setSelectedRowKeys(newSelectedRowKeys);
-        setSelectedJson(selectedRows);
-    };
 
-    const rowSelection = {
-        selectedRowKeys,
-        onChange: onSelectChange,
-        getCheckboxProps: (record: DataType) => ({
-            disabled: checked, // Column configuration not to be checked
-          }),
-    };
+
 
 
 
@@ -331,40 +379,18 @@ const Receive: React.FC = () => {
     }
     const onFinish = async () => {
         new Promise(resolve => resolve(
-            selectedJson.map((obj:
+            form.getFieldValue(['products']).map((obj:
                                   {
-                                      document_code: string,
-                                      document_type: string,
-                                      buyer: string,
                                       receiver: string;
                                       systemID: string;
-                                      operator: string;
-                                      sender: string;
-                                      date: string;
-                                      afterOperator: number;
-                                      input: number;
-                                      product: number;
                                   }) => {
-                obj.document_code = `فاکتور در ${obj.sender} ثبت شده است ارسال شده با شماره حواله ${obj.systemID}`
-                obj.document_type = 'فاکتور'
-                obj.buyer = obj.sender
                 obj.receiver = receiverName
                 obj.systemID = ''
-                obj.afterOperator = (allProduct.filter((products: {
-                        product: number;
-                    }) => products.product === obj.product).reduce((a: any, v: { input: any; }) => a + v.input, 0))
-                    - (allProduct.filter((products: {
-                        product: number;
-                    }) => products.product === obj.product).reduce((a: any, v: {
-                        output: any;
-                    }) => a + v.output, 0)) + obj.input
-                obj.operator = 'ورود'
-                obj.date = dayjs().locale('fa').format('YYYY-MM-DD')
                 return obj;
             })
         )).then(() => setLoading(true)).then(async () => {
                 await axios.post(
-                    `${Url}/api/allproducts/`, selectedJson, {
+                    `${Url}/api/allproducts/`, form.getFieldValue(['products']), {
                         headers: {
                             'Authorization': 'Bearer ' + localStorage.getItem('access_token'),
                         }
@@ -385,7 +411,7 @@ const Receive: React.FC = () => {
                     }
                 }).then(
                     async () => {
-                        selectedJson.map(async (data) => (
+                        form.getFieldValue(['products']).map(async (data: { id: any; }) => (
                             await axios.delete(`${Url}/api/transmission/${data.id}`, {
                                 headers: {
                                     'Authorization': 'Bearer ' + localStorage.getItem('access_token'),
@@ -413,29 +439,28 @@ const Receive: React.FC = () => {
         )
     };
 
-    const onChange = (e: CheckboxChangeEvent) => {
-        setCheck(!e.target.checked)
-        };
 
     return (
         <div>
+
+
+                    <Alert style={{marginBottom: 20}} message="دقت کنید که قبل از ثبت حتما ستون مربوط
+                    به انتقال به کالای مورد نظر را در هر ردیف پر کنید." type="warning" />
+
                     <Input style={{marginBottom: 20}} placeholder='نام گیرنده' onChange={onReceiverNameChange}/>
-                      <Space  style={{marginBottom: 30}}>
-                             <Checkbox onChange={onChange}>باز کردن قفل</Checkbox>
-                             <Alert message="دقت کنید قبل از باز کردن قفل , ستون انتقال به کالا مربوطه را در هر ردیف پر کنید سپس قفل را باز کنید." type="error" />
-                      </Space>
 
                     <Table
                         rowKey="id"
-                        rowSelection={rowSelection}
                         columns={columns}
                         dataSource={product}
                         loading={loading}
                         pagination={{position: ["bottomCenter"]}}
                     />
-                    <Button type={"primary"} block htmlType="submit" disabled={receiverName === ''} danger={loading} onClick={onFinish} loading={loading}>
+
+                   <Button type={"primary"} block htmlType="submit" disabled={receiverName === ''} danger={loading} onClick={onFinish} loading={loading}>
                         ثبت
                     </Button>
+
         </div>
     );
 };

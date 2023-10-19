@@ -77,7 +77,7 @@ const Edit: React.FC = () => {
                 commitmentPrice: `${values.contract.commitmentPrice}`.replace(/\B(?=(\d{3})+(?!\d))/g, ','),
                 typeBail: values.contract.typeBail,
                 firstBail: values.contract.firstBail,
-                secondBail: values.contract.secondBail,
+                secondBail: values.contract.typeBail === 'سفته' ?  `${values.contract.secondBail}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : values.contract.secondBail,
                 clearedDate: values.contract.clearedDate ? dayjs(values.contract.clearedDate).locale('fa').format('YYYY-MM-DD') : null,
                 affidavitStatus: values.contract.affidavitStatus,
                 clearedStatus: !!values.contract.clearedDate,
@@ -114,6 +114,32 @@ const Edit: React.FC = () => {
         }).then(response => {
             return response
         }).then(async data => {
+            if (data.data.typeBail === 'چک') {
+            setBailLabel({
+                secondBail: 'بانک',
+                firstBail: 'شماره چک'
+            })
+        } else if (data.data.typeBail === 'نقد') {
+            setBailLabel({
+                firstBail: 'واریز به حساب',
+                secondBail: 'شماره حساب'
+            })
+        } else if (data.data.typeBail === 'سفته') {
+            setBailLabel({
+                firstBail: 'تعداد سفته',
+                secondBail: 'مبلغ سفته'
+            })
+        } else if (data.data.typeBail === 'بانک') {
+            setBailLabel({
+                firstBail: 'ضمانت',
+                secondBail: 'شماره تضمین'
+            })
+        } else if (data.data.typeBail === 'تعهد') {
+            setBailLabel({
+                firstBail: 'موضوع تعهد',
+                secondBail: 'شماره تعهد'
+            })
+        }
             form.setFieldsValue({
                 contract: {
                     id: data.data.id,
@@ -260,7 +286,16 @@ const Edit: React.FC = () => {
                     </Form.Item>
                     <Form.Item className='register-form-personal' name={['contract', 'secondBail']}
                                label={bailLabel.secondBail} rules={[{required: true}]}>
-                        <Input/>
+                        {bailLabel.secondBail === 'مبلغ سفته' ?
+                             <InputNumber
+                                    addonAfter="ریال"
+                                    formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                                    parser={(value) => value!.replace(/\$\s?|(,*)/g, '')}
+                                />
+                            :
+                            <Input/>
+
+                        }
                     </Form.Item>
                     <Form.Item name={['contract', 'expireDate']} className='register-form-personal'
                                label="تاریخ پایان قرارداد" rules={[{required: true}]}>

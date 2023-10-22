@@ -8,8 +8,8 @@ import {
     PoweroffOutlined,
     SolutionOutlined,
 } from '@ant-design/icons';
-import {Avatar, Breadcrumb, Layout, Menu, MenuProps, Space, theme} from 'antd';
-import {Link, Route, Routes, useLocation} from "react-router-dom";
+import {Avatar, Layout, Menu, MenuProps, Space, theme} from 'antd';
+import {Link, Route, Routes} from "react-router-dom";
 import React, {useContext, useState} from "react";
 import Contactus from "../contactus/page";
 import RegisterContract from "../contract/register/page";
@@ -71,7 +71,6 @@ function getItem(
 
 const LayoutForm: React.FC = () => {
     const [collapsed, setCollapsed] = useState(true);
-    const location = useLocation();
     const context = useContext(Context)
     const items: MenuItem[] = [
     getItem(<Link to='/'>خانه</Link>, '1', <HomeOutlined/>),
@@ -120,49 +119,9 @@ const LayoutForm: React.FC = () => {
     getItem(<Link to='../contactus'>پشتیبانی</Link>, '20', <PhoneOutlined/>),
     getItem(<Link to='../logout'>خروج</Link>, '21', <PoweroffOutlined/>),
 ];
-    const breadcrumbNameMap: Record<string, string> = {
-        '/contract': 'قراردادها',
-        '/personal': 'مدارک اشخاص',
-        '/document': 'اسناد اموال',
-        '/warhouse': 'انبارداری',
-        '/contactus': 'تماس با ما',
-        '/warhouse/product': 'انبار',
-        '/warhouse/property': 'اموال',
-        '/contract/register': 'ثبت',
-        '/contract/report': 'گزارش',
-        '/contract/upload': 'بارگذاری',
-        '/personal/register': 'ثبت',
-        '/personal/report': 'گزارش',
-        '/personal/edit': 'ویرایش',
-        '/personal/upload': 'بارگذاری',
-        '/document/register': 'ثبت',
-        '/document/report': 'گزارش',
-        '/document/upload': 'بارگذاری',
-        '/warhouse/product/register': 'ثبت',
-        '/warhouse/product/report': 'گزارش',
-        '/warhouse/property/register': 'ثبت',
-        '/warhouse/property/report': 'گزارش',
-        '/warhouse/property/sent': 'ارسالی',
-        '/warhouse/property/recycle': 'بایگانی',
-        '/warhouse/handling': 'انبارگردانی',
 
-    };
 
-    const pathSnippets = location.pathname.split('/').filter((i) => i);
-    const extraBreadcrumbItems = pathSnippets.map((_, index) => {
-        const url = `/${pathSnippets.slice(0, index + 1).join('/')}`;
-        return {
-            key: url,
-            title: <Link to={url}>{breadcrumbNameMap[url]}</Link>,
-        };
-    });
 
-    const breadcrumbItems = [
-        {
-            title: <Link to="/">خانه</Link>,
-            key: 'home',
-        },
-    ].concat(extraBreadcrumbItems);
 
     const {
         token: {colorBgContainer},
@@ -194,8 +153,7 @@ const LayoutForm: React.FC = () => {
                               style={{marginRight: 20}}>{context.fullName + ' ' + context.office}</span>
                     </Space>
                 </Header>
-                <Content style={{margin: '0 16px', overflow: 'initial'}}>
-                    <Breadcrumb separator=">" style={{margin: '16px 0'}} items={breadcrumbItems}/>
+                <Content style={{margin: '24px 16px', padding: 24, overflow: 'initial'}}>
                     <div style={{padding: 24, background: colorBgContainer}}>
                         <Routes>
                             <Route path={'/contract'} element={<MainContract/>}/>

@@ -136,7 +136,7 @@ export const UploadProductDocs = () => {
                     <Button type={"primary"} disabled={selectedDoc === '' || selectedDocSub === ''} onClick={scanImage} loading={loading}>اسکن</Button>
                     </ConfigProvider>
                     <Button type={"primary"} disabled={selectedDoc === '' || selectedDocSub === ''} onClick={() => setVisible(true)} loading={loading}>پیش نمایش</Button>
-                    <Button type={"dashed"} htmlType={"submit"} disabled={selectedDoc === '' || selectedDocSub === '' } onClick={onFinish} loading={loading}>بارگزاری</Button>
+                    <Button type={"dashed"} htmlType={"submit"} disabled={selectedDoc === '' || selectedDocSub === '' || context.compressed === '' } onClick={onFinish} loading={loading}>بارگزاری</Button>
             </Space.Compact>
             <Image
                 width={200}

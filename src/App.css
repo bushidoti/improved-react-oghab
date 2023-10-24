@@ -67,3 +67,12 @@ body {
   background-color: #dcdcdc;
   pointer-events: none;
 }
+
+
+.loading {
+  display: grid;
+  place-items: center;
+  min-height: 100vh;
+  background: hsl(0 0% 90%);
+  font-family:  'Google Sans', sans-serif, system-ui;
+}

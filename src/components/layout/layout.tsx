@@ -3,7 +3,6 @@ import {
     CloudSyncOutlined,
     FileOutlined,
     HomeOutlined,
-    PhoneOutlined,
     PieChartOutlined,
     PoweroffOutlined,
     SolutionOutlined,
@@ -11,7 +10,6 @@ import {
 import {Avatar, Layout, Menu, MenuProps, Space, theme} from 'antd';
 import {Link, Route, Routes} from "react-router-dom";
 import React, {useContext, useState} from "react";
-import Contactus from "../contactus/page";
 import RegisterContract from "../contract/register/page";
 import ReportContract from "../contract/report/page";
 import UploadContract from "../contract/upload/page";
@@ -42,7 +40,7 @@ import NoAccess from "../noaccess/no_access";
 import Card from "../warhouse/product/card/card";
 import ProductFactor from "../warhouse/product/report/factor";
 import ProductCheck from "../warhouse/product/report/check";
-
+import {UploadProductDocs} from "../warhouse/product/upload/upload";
 
 const {Header, Content, Footer, Sider} = Layout;
 
@@ -54,7 +52,7 @@ function getItem(
     icon?: React.ReactNode,
     children?: MenuItem[] ,
     disabled?: boolean,
-
+    danger?: boolean ,
 ): MenuItem {
     return {
         key,
@@ -62,7 +60,7 @@ function getItem(
         children,
         label,
         disabled,
-
+        danger,
     } as MenuItem;
 }
 
@@ -105,19 +103,17 @@ const LayoutForm: React.FC = () => {
         getItem(<Link to='../warhouse/product'>انبار</Link>, 'sub6', null, [
             getItem(<Link to='../warhouse/product/register'>ثبت</Link>, '13'),
             getItem(<Link to='../warhouse/product/report'>گزارش</Link>, '14'),
+            getItem(<Link to='../warhouse/product/upload'>بارگزاری مدارک</Link>, '15'),
         ]),
-
         getItem(<Link to='../warhouse/property'>اموال</Link>, 'sub7', null, [
-            getItem(<Link to='../warhouse/property/register'>ثبت</Link>, '15'),
-            getItem(<Link to='../warhouse/property/report'>گزارش</Link>, '16'),
-            getItem(<Link to='../warhouse/property/sent'>ارسالی</Link>, '17'),
-            getItem(<Link to='../warhouse/property/recycle'>بایگانی</Link>, '18'),
+            getItem(<Link to='../warhouse/property/register'>ثبت</Link>, '16'),
+            getItem(<Link to='../warhouse/property/report'>گزارش</Link>, '17'),
+            getItem(<Link to='../warhouse/property/sent'>ارسالی</Link>, '18'),
+            getItem(<Link to='../warhouse/property/recycle'>بایگانی</Link>, '19'),
         ]),
-
-        getItem(<Link to='../warhouse/handling'>انبارگردانی</Link>, '19')
+        getItem(<Link to='../warhouse/handling'>انبارگردانی</Link>, '20')
     ] , !(context.permission === 'مدیر' || context.permission === 'انباردار')),
-    getItem(<Link to='../contactus'>پشتیبانی</Link>, '20', <PhoneOutlined/>),
-    getItem(<Link to='../logout'>خروج</Link>, '21', <PoweroffOutlined/>),
+    getItem(<Link to='../logout'>خروج</Link>, '21', <PoweroffOutlined/>,undefined,undefined,true),
 ];
 
 
@@ -177,6 +173,7 @@ const LayoutForm: React.FC = () => {
                             <Route path={`/warhouse/product/check/${context.currentProductCheck}`}
                                    element={<ProductCheck/>}/>
                             <Route path={'/warhouse/product/register'} element={<RegisterProduct/>}/>
+                            <Route path={'/warhouse/product/upload'} element={<UploadProductDocs/>}/>
                             <Route path={'/warhouse/product/report'} element={<ReportProduct/>}/>
                             <Route path={'/warhouse/property'} element={<MainProperty/>}/>
                             <Route path={'/warhouse/property/register'} element={<RegisterProperty/>}/>
@@ -184,7 +181,6 @@ const LayoutForm: React.FC = () => {
                             <Route path={'/warhouse/property/sent'} element={<SentProperty/>}/>
                             <Route path={'/warhouse/property/recycle'} element={<RecycleProperty/>}/>
                             <Route path={'/warhouse/handling'} element={<Handling/>}/>
-                            <Route path={'/contactus'} element={<Contactus/>}/>
                             <Route path={'/'} element={<Home/>}/>
                             <Route path={'/logout'} element={<Logout/>}/>
                             <Route path={'/no_access'} element={<NoAccess/>}/>

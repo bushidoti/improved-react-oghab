@@ -84,7 +84,7 @@ const App: React.FC = () => {
 
     useEffect(() => {
         if (document.readyState === "complete") {
-            setLoading(false)
+            setTimeout(() => setLoading(false), 3000)
         }
     }, [])
 

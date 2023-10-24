@@ -1,9 +1,14 @@
-var __html = require('./index.html.js');
-var template = {__html: __html};
+import {Flex, Image, Spin} from "antd";
+
 export const Loading = () => {
     return (
-        <>
-            <span dangerouslySetInnerHTML={template}/>
-        </>
+        <div className='loading'>
+            <div>
+                  <Flex vertical justify={"center"} align={"center"}>
+                     <Image preview={false} src={require('./icon.png')}/>
+                     <Spin size="large" />
+                  </Flex>
+            </div>
+        </div>
     )
 }

@@ -126,11 +126,8 @@ const LayoutForm: React.FC = () => {
 ];
 
 
-
-
-
     return (
-        <Layout style={{minHeight: '100vh'}}>
+        <Layout >
               <Sider breakpoint="xl" collapsedWidth="0">
                 <div className='flex flex-col items-center m-5'>
                     <Avatar className='bg-sky-500' size={100} icon={<UserOutlined />} />
@@ -147,7 +144,7 @@ const LayoutForm: React.FC = () => {
                 />
             </Sider>
             <Layout>
-                <Content style={{margin: '24px 16px', padding: 24, overflow: 'initial'}}>
+                <Content className='me-8 p-2 h-[100vh]' style={{overflow: 'initial'}}>
                     <div className='bg-white rounded' style={{padding: 24}}>
                         <Routes>
                             <Route path={'/contract'} element={<MainContract/>}/>
@@ -183,7 +180,6 @@ const LayoutForm: React.FC = () => {
                             <Route path={'/logout'} element={<Logout/>}/>
                             <Route path={'/no_access'} element={<NoAccess/>}/>
                             <Route path="*" element={<PageNotFound/>}/>
-
                         </Routes>
                     </div>
                 </Content>

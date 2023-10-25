@@ -1,35 +1,25 @@
 import React from 'react';
-import {Carousel, Image} from 'antd';
+import {Carousel} from 'antd';
 
-const contentStyle: React.CSSProperties = {
-    maxHeight: '80vh',
-    width: '80vw',
-    borderRadius: 20
-};
+
 
 const Home: React.FC = () => (
-    <Carousel style={{width: '80vw', margin: "auto"}} autoplay effect="fade">
-        <div>
-            <Image
-                style={contentStyle}
+    <Carousel className='w-full' autoplay effect="fade">
+            <img
+                className='object-fill rounded h-[80vh]'
                 src={require('./1.png')}
-                preview={false}
+                alt=''
             />
-        </div>
-        <div>
-            <Image
-                style={contentStyle}
+            <img
+                className='object-fill rounded h-[80vh]'
                 src={require('./2.png')}
-                preview={false}
+                alt=''
             />
-        </div>
-        <div>
-            <Image
-                style={contentStyle}
+            <img
+                className='object-fill rounded h-[80vh]'
                 src={require('./3.png')}
-                preview={false}
+                alt=''
             />
-        </div>
     </Carousel>
 );
 

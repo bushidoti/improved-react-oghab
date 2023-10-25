@@ -1,6 +1,5 @@
 body {
     background-color: #b5f5ec;
-
 }
 
 
@@ -19,11 +18,6 @@ body {
     direction: rtl;
 }
 
-.span-header {
-    background-color: #f4ffb8;
-    border-radius: 25px;
-    padding: 10px 20px;
-}
 
 .table-expired-rows {
     background-color: #fff1f0;

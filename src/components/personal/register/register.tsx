@@ -250,13 +250,13 @@ const Register = (props: { currentStep: number, setCurrentStep: Dispatch<SetStat
                         <ConfigProvider theme={{
                             components: {
                                 Button: {
-                                    groupBorderColor: '#092b00'
+                                    groupBorderColor: '#092b00',
                                 }
                             }, token: {
                                 colorPrimary: '#52c41a'
                             }
                         }}>
-                            <Button danger={loading} type={"primary"} loading={loading} block htmlType="submit">
+                            <Button  danger={loading} type={"primary"} loading={loading} block htmlType="submit">
                                 ثبت
                             </Button>
                         </ConfigProvider>

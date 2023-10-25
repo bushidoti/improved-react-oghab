@@ -8,6 +8,7 @@ import {Loading} from "./components/loading/loading";
 import axios from "axios";
 import Url from "./components/api-configue";
 import Compressor from "compressorjs";
+import {Banner} from "./components/layout/banner";
 
 declare global {
     interface Window {
@@ -172,11 +173,14 @@ const App: React.FC = () => {
                     office
                 }}>
                     {isLogged ?
-                        <Routes>
-                            <Route path={'*'} element={<LayoutForm/>}>
+                        <>
+                            <Banner/>
+                            <Routes>
+                                <Route path={'*'} element={<LayoutForm/>}>
 
-                            </Route>
-                        </Routes>
+                                </Route>
+                            </Routes>
+                        </>
                         :
                         <Routes>
                             <Route path={'/'}>

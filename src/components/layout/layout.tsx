@@ -5,9 +5,9 @@ import {
     HomeOutlined,
     PieChartOutlined,
     PoweroffOutlined,
-    SolutionOutlined,
+    SolutionOutlined, UserOutlined,
 } from '@ant-design/icons';
-import {Avatar, Layout, Menu, MenuProps, Space, theme} from 'antd';
+import {Avatar, Layout, Menu, MenuProps} from 'antd';
 import {Link, Route, Routes} from "react-router-dom";
 import React, {useContext, useState} from "react";
 import RegisterContract from "../contract/register/page";
@@ -42,7 +42,7 @@ import ProductFactor from "../warhouse/product/report/factor";
 import ProductCheck from "../warhouse/product/report/check";
 import {UploadProductDocs} from "../warhouse/product/upload/upload";
 
-const {Header, Content, Footer, Sider} = Layout;
+const {Content, Footer, Sider} = Layout;
 
 type MenuItem = Required<MenuProps>['items'][number];
 
@@ -64,12 +64,21 @@ function getItem(
     } as MenuItem;
 }
 
+const rootSubmenuKeys = ['sub1', 'sub4', 'sub5'];
 
 
 
 const LayoutForm: React.FC = () => {
-    const [collapsed, setCollapsed] = useState(true);
+    const [openKeys, setOpenKeys] = useState(['']);
     const context = useContext(Context)
+    const onOpenChange: MenuProps['onOpenChange'] = (keys) => {
+        const latestOpenKey = keys.find((key) => openKeys.indexOf(key) === -1);
+        if (latestOpenKey && rootSubmenuKeys.indexOf(latestOpenKey!) === -1) {
+          setOpenKeys(keys);
+        } else {
+          setOpenKeys(latestOpenKey ? [latestOpenKey] : []);
+        }
+      };
     const items: MenuItem[] = [
     getItem(<Link to='/'>خانه</Link>, '1', <HomeOutlined/>),
     getItem(<Link target={"_blank"} style={context.permission !== 'مدیر' ? {pointerEvents:'none'} : {}} to='https://api.oghab-asaluyeh.ir/admin/'>پنل مدیریت</Link>, '2', <PieChartOutlined/> ,  undefined , context.permission !== 'مدیر'),
@@ -119,38 +128,27 @@ const LayoutForm: React.FC = () => {
 
 
 
-    const {
-        token: {colorBgContainer},
-    } = theme.useToken();
-
 
     return (
-        <Layout style={{minHeight: '100vh', marginRight: !collapsed ? 200 : 80}}>
-            <Sider style={{
-                overflow: 'auto',
-                height: '100vh',
-                position: 'fixed',
-                right: 0,
-                top: 0,
-                bottom: 0,
-            }} collapsible reverseArrow collapsed={collapsed} onCollapse={(value) => setCollapsed(value)}>
-                <Avatar shape="square"
-                        size={!collapsed ? {xs: 24, sm: 32, md: 40, lg: 64, xl: 80, xxl: 100} : 'default'}
-                        style={{
-                            right: !collapsed ?
-                                40 : 15, margin: 10
-                        }} src={require('./icon.png')}/>
-                <Menu theme="dark" defaultSelectedKeys={['1']} mode="inline" items={items}/>
+        <Layout style={{minHeight: '100vh'}}>
+              <Sider breakpoint="xl" collapsedWidth="0">
+                <div className='flex flex-col items-center m-5'>
+                    <Avatar className='bg-sky-500' size={100} icon={<UserOutlined />} />
+                    <p className='text-gray-50'>{context.fullName}</p>
+                    <p className='text-gray-50'>{context.office}</p>
+                </div>
+                <Menu
+                    theme="dark"
+                    defaultSelectedKeys={['1']}
+                    mode="inline"
+                    items={items}
+                    openKeys={openKeys}
+                    onOpenChange={onOpenChange}
+                />
             </Sider>
             <Layout>
-                <Header style={{padding: 0}}>
-                    <Space>
-                        <span className='span-header'
-                              style={{marginRight: 20}}>{context.fullName + ' ' + context.office}</span>
-                    </Space>
-                </Header>
                 <Content style={{margin: '24px 16px', padding: 24, overflow: 'initial'}}>
-                    <div style={{padding: 24, background: colorBgContainer}}>
+                    <div className='bg-white rounded' style={{padding: 24}}>
                         <Routes>
                             <Route path={'/contract'} element={<MainContract/>}/>
                             <Route path={'/contract/register'} element={<RegisterContract/>}/>

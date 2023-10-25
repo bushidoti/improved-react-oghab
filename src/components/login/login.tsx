@@ -76,7 +76,7 @@ const Login: React.FC = () => {
                 </Form.Item>
 
                 <Form.Item>
-                    <Button type="primary" htmlType="submit" className="login-form-button">
+                    <Button type="primary" htmlType="submit" className="w-full">
                         ورود
                     </Button>
 

@@ -1,4 +1,4 @@
-import {FileExcelOutlined, SearchOutlined} from '@ant-design/icons';
+import {SearchOutlined} from '@ant-design/icons';
 import React, {useContext, useEffect, useRef, useState} from 'react';
 import Highlighter from "react-highlight-words";
 import type {InputRef, TableProps} from 'antd';
@@ -12,7 +12,6 @@ import dayjs from 'dayjs';
 import 'dayjs/locale/fa';
 import {DateObject} from "react-multi-date-picker";
 import persian from "react-date-object/calendars/persian";
-import {CSVLink} from "react-csv";
 import {Context} from "../../../context";
 import {useNavigate} from "react-router-dom";
 import qs from 'qs';
@@ -42,28 +41,6 @@ interface DataType {
     affidavitStatus: boolean;
 }
 
-const headers = [
-    {label: "شماره ثبت", key: "id"},
-    {label: "وضعیت", key: "type"},
-    {label: "نام و نشانی", key: "full_name"},
-    {label: "شماره پرونده", key: "caseNumber"},
-    {label: "جنسیت", key: "sex"},
-    {label: "تاریخ استخدام", key: "date"},
-    {label: "کد ملی", key: "national_id"},
-    {label: "شغل", key: "job"},
-    {label: "تضمین مصوب", key: "approvedPrice"},
-    {label: "مبلغ تضمین", key: "commitmentPrice"},
-    {label: "وثیقه تضمین", key: "typeBail"},
-    {label: "مشخصه وثیقه", key: "firstBail"},
-    {label: "مشخصه وثیقه", key: "secondBail"},
-    {label: "تاریخ پایان قرارداد", key: "expireDate"},
-    {label: "وضعیت تسویه", key: "clearedStatus"},
-    {label: "تاریخ تسویه", key: "clearedDate"},
-    {label: "وضعیت مدرک", key: "receivedDocument"},
-    {label: "وضعیت اقرارنامه", key: "affidavitStatus"},
-    {label: "محل کار", key: "office"},
-
-];
 
 type DataIndex = keyof DataType;
 
@@ -594,10 +571,6 @@ const MainPersonal: React.FC = () => {
                 <Badge color="green" status="processing" text="به معنی تسویه شده و قفل شده"/>
                 <Button onClick={clearFilters}>پاک کردن فیتلر ها</Button>
                 <Button onClick={clearAll}>پاک کردن فیلتر و مرتب کننده ها</Button>
-                <Button><CSVLink
-                    filename={"پرسنل.csv"}
-                    data={contract}
-                    headers={headers}>اکسل <FileExcelOutlined/></CSVLink></Button>
                 <Button onClick={generatePDF}>چاپ</Button>
 
             </Space>

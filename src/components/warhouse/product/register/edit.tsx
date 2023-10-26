@@ -15,7 +15,7 @@ import {
     Select,
     Space
 } from "antd";
-import {CloseOutlined, PlusOutlined} from "@ant-design/icons";
+import {PlusOutlined} from "@ant-design/icons";
 
 
 
@@ -24,7 +24,7 @@ export const EditDoc = () => {
     const context = useContext(Context)
     const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
-    const [Check, setCheck] = useState<any>([])
+    const [allProducts, setAllProducts] = useState<any>([])
     const [form] = Form.useForm();
     const [listProduct, setListProduct] = useState<any[]>([]);
     const [name, setName] = useState('');
@@ -33,23 +33,33 @@ export const EditDoc = () => {
 
     const fetchData = async () => {
         await axios.get(
-            `${Url}/api/checksproduct/${context.currentProductCheck}/`, {
+            `${Url}/api/${context.currentProductDoc === 'فاکتور' ?  'factorsproduct' :  'checksproduct' }/${context.currentProductDoc === 'فاکتور' ?  context.currentProductFactor :  context.currentProductCheck }/`, {
                 headers: {
                     'Authorization': 'Bearer ' + localStorage.getItem('access_token'),
                 }
             }).then(response => {
             return response
         }).then(async data => {
-              form.setFieldsValue({
-                    CheckID: data.data.code,
-                    receiver: data.data.jsonData[0].receiver,
-                    document_type: 'حواله',
-                    products: data.data.jsonData
-            });
+            if (context.currentProductDoc === 'فاکتور'){
+                   form.setFieldsValue({
+                        FactorID: data.data.code,
+                        receiver: data.data.jsonData[0].receiver,
+                        seller: data.data.jsonData[0].seller,
+                        buyer: data.data.jsonData[0].buyer,
+                        document_code: data.data.jsonData[0].document_code,
+                        document_type: 'فاکتور',
+                        products: data.data.jsonData});
+            }else {
+                   form.setFieldsValue({
+                        CheckID: data.data.code,
+                        receiver: data.data.jsonData[0].receiver,
+                        document_type: 'حواله',
+                        products: data.data.jsonData});
+            }
         }).finally(() => {
             setLoading(false)
         }).then(async () => {
-            return await axios.get(`${Url}/api/allproducts/?fields=id,product,input,output&systemID=${context.currentProductCheck}&inventory=${context.office}`, {
+            return await axios.get(`${Url}/api/allproducts/?fields=id,product,input,output&systemID=${context.currentProductDoc === 'فاکتور' ?  context.currentProductFactor :  context.currentProductCheck }&inventory=${context.office}&document_type=${context.currentProductDoc}`, {
                 headers: {
                     'Authorization': 'Bearer ' + localStorage.getItem('access_token'),
                 }
@@ -57,7 +67,7 @@ export const EditDoc = () => {
         }).then(response => {
             return response
         }).then(async data => {
-            setCheck(data.data)
+            setAllProducts(data.data)
         }).then(async () => {
             return await axios.get(`${Url}/api/consumable-list`, {
                 headers: {
@@ -85,7 +95,6 @@ export const EditDoc = () => {
         })
     }
 
-    console.log(Check)
     const filterOption = (input: string, option?: { label: string; value: string }) =>
         (option?.label ?? '').toLowerCase().includes(input.toLowerCase());
 
@@ -124,7 +133,6 @@ export const EditDoc = () => {
         })
     };
 
-
     useEffect(() => {
             void fetchData()
         },
@@ -132,12 +140,15 @@ export const EditDoc = () => {
     [])
 
     const onFinish = async () => {
-        new Promise(resolve => resolve(
+        if (context.currentProductDoc === 'حواله'){
+                 new Promise(resolve => resolve(
             form.getFieldValue(['products']).map((obj:
                                   {
                                       receiver: string;
+                                      amendment: string;
                                   }) => {
                 obj.receiver = form.getFieldValue(['receiver'])
+                obj.amendment = 'اصلاح شده'
                 return obj;
             })
         )).then(
@@ -145,12 +156,12 @@ export const EditDoc = () => {
                 form.setFieldsValue({
                     products: {
                         [i]: {
-                            afterOperator: (Check.filter((products: {
+                            afterOperator: (allProducts.filter((products: {
                                     product: number;
                                 }) => products.product === product.product).reduce((a: any, v: {
                                     input: any;
                                 }) => a + v.input, 0))
-                                - (Check.filter((products: {
+                                - (allProducts.filter((products: {
                                     product: number;
                                 }) => products.product === product.product).reduce((a: any, v: {
                                     output: any;
@@ -187,7 +198,7 @@ export const EditDoc = () => {
             }
         ).then(
                     async () => {
-                        Check.map(async (data: { id: any; } , i: number) => (
+                        allProducts.map(async (data: { id: any; } , i: number) => (
                             await axios.put(`${Url}/api/allproducts/${data.id}/`,form.getFieldValue(['products'])[i], {
                                 headers: {
                                     'Authorization': 'Bearer ' + localStorage.getItem('access_token'),
@@ -207,17 +218,104 @@ export const EditDoc = () => {
 
                     }
                 )
+        }else if (context.currentProductDoc === 'فاکتور'){
+                   new Promise(resolve => resolve(
+            form.getFieldValue(['products']).map((obj:
+                                  {
+                                      receiver: string;
+                                      buyer: string;
+                                      seller: string;
+                                      document_code: string;
+                                      amendment: string;
+                                  }) => {
+                obj.receiver = form.getFieldValue(['receiver'])
+                obj.buyer = form.getFieldValue(['buyer'])
+                obj.seller = form.getFieldValue(['seller'])
+                obj.document_code = form.getFieldValue(['document_code'])
+                obj.amendment = 'اصلاح شده'
+                return obj;
+            })
+        )).then(
+              form.getFieldValue(['products']).map(async (product: { product: number; }, i: number) => {
+                form.setFieldsValue({
+                     products: {
+                        [i]: {
+                            afterOperator: (allProducts.filter((products: {
+                                    product: number;
+                                }) => products.product === product.product).reduce((a: any, v: {
+                                    input: any;
+                                }) => a + v.input, 0))
+                                - (allProducts.filter((products: {
+                                    product: number;
+                                }) => products.product === product.product).reduce((a: any, v: {
+                                    output: any;
+                                }) => a + v.output, 0)) + form.getFieldValue(['products'])[i].input,
+                        }
+                    }
+                });
+            })
+        ).then(() => setLoading(true)).then(
+            async () => {
+                await axios.put(
+                    `${Url}/api/factorsproduct/${form.getFieldValue(['FactorID'])}/`, {
+                                code: form.getFieldValue(['FactorID']),
+                                jsonData: form.getFieldValue(['products']),
+                            }, {
+                        headers: {
+                            'Authorization': 'Bearer ' + localStorage.getItem('access_token'),
+                        }
+                    }).then(response => {
+                    return response
+                }).then(async data => {
+                    if (data.status === 200) {
+                        message.success('ویرایش شد!');
+                        setLoading(false)
+                    }
+                }).catch(async (error) => {
+                    if (error.request.status === 403) {
+                        navigate('/no_access')
+                    } else if (error.request.status === 400) {
+                        message.error('عدم ثبت');
+                        setLoading(false)
+                    }
+                })
+            }
+        ).then(
+                    async () => {
+                        allProducts.map(async (data: { id: any; } , i: number) => (
+                            await axios.put(`${Url}/api/allproducts/${data.id}/`,form.getFieldValue(['products'])[i], {
+                                headers: {
+                                    'Authorization': 'Bearer ' + localStorage.getItem('access_token'),
+                                }
+                            }).then(
+                                response => {
+                                    return response
+                                }
+                            ).then(
+                                async data => {
+                                    if (data.status === 200) {
+                                        message.success('ویرایش شد.');
+                                    }
+                                }
+                            )
+                        ))
+
+                    }
+                )
+        }
     };
 
     return (
         <Form
             form={form}
-            name="OutputForm"
+            name={context.currentProductDoc === 'فاکتور' ? "InputForm" : "OutputForm"}
             layout={"vertical"}
             onFinish={onFinish}
             autoComplete="off"
         >
-            <>
+            {context.currentProductDoc === 'حواله' ?
+                        <>
+
                 <Form.Item>
                         <Form.Item name={'CheckID'} style={{margin: 8, display: 'inline-block'}}
                                    label="شماره ثبت حواله">
@@ -226,6 +324,7 @@ export const EditDoc = () => {
                     <Form.Item name={['document_type']} className='register-form-personal' label="نوع مدرک"
                                rules={[{required: true}]}>
                         <Select
+                            disabled
                             placeholder="انتخاب کنید"
                             options={[
                                 {value: 'حواله', label: 'حواله'}
@@ -244,7 +343,7 @@ export const EditDoc = () => {
                 </Form.Item>
                 <Form.Item>
                     <Form.List name={['products']}>
-                        {(subFields, subOpt) => (
+                        {(subFields) => (
                             <>
                                 <Flex vertical gap={20}>
                                     {subFields.map((subField) => (
@@ -328,21 +427,10 @@ export const EditDoc = () => {
                                                         }))}
                                                 />
                                             </Form.Item>
-                                            <Form.Item label=' '>
-                                                <CloseOutlined
-                                                    onClick={() => {
-                                                        subOpt.remove(subField.name);
-                                                    }}
-                                                />
-                                            </Form.Item>
-
                                         </Space>
                                     ))}
 
-                                    <Button type="dashed" style={{marginBottom: 10}} loading={loading}
-                                            onClick={() => subOpt.add()} block>
-                                        اضافه کردن سطر +
-                                    </Button>
+                                
                                     <Button type={"primary"} block htmlType="submit" danger={loading} loading={loading}>
                                         ثبت
                                     </Button>
@@ -353,6 +441,115 @@ export const EditDoc = () => {
                     </Form.List>
                 </Form.Item>
             </>
+                    :
+            <>
+                <Form.Item>
+                        <Form.Item name={'FactorID'} style={{margin: 8, display: 'inline-block'}}
+                                   label="شماره ثبت فاکتور">
+                            <InputNumber disabled/>
+                        </Form.Item>
+                    <Form.Item name={['document_type']} className='register-form-personal' label="نوع مدرک"
+                               rules={[{required: true}]}>
+                        <Select
+                            disabled
+                            placeholder="انتخاب کنید"
+                            options={[
+                                {value: 'فاکتور', label: 'فاکتور'}
+                                , {value: 'متفرقه', label: 'متفرقه'}
+                                , {value: 'انبارگردانی', label: 'انبارگردانی'}
+                                , {value: 'سند', label: 'سند'}
+                            ]}
+                        />
+                    </Form.Item>
+                     <Form.Item name={'document_code'} className='register-form-personal' label="شناسه مدرک"
+                               rules={[{required: true}]}>
+                        <Input placeholder='شناسه مدرک'/>
+                    </Form.Item>
+                        <Form.Item name={'receiver'} className='register-form-personal' label="نام گیرنده"
+                                   rules={[{required: true}]}>
+                            <Input placeholder='نام گیرنده'/>
+                        </Form.Item>
+                           <Form.Item name={'buyer'} className='register-form-personal' label="خریدار"
+                                       rules={[{required: true}]}>
+                                <Input placeholder='نام خریدار'/>
+                            </Form.Item>
+                            <Form.Item name={'seller'} className='register-form-personal' label="فروشنده"
+                                       rules={[{required: true}]}>
+                                <Input placeholder='فروشنده'/>
+                            </Form.Item>
+
+                </Form.Item>
+                <Form.Item>
+                    <Form.List name={['products']}>
+                        {(subFields) => (
+                            <>
+                                <Flex vertical gap={20}>
+                                    {subFields.map((subField) => (
+                                        <Space key={subField.key} size={20}>
+                                            <Form.Item name={[subField.name, 'product']} style={{width: 300}}
+                                                       label='نام کالا' rules={[{required: true}]}>
+                                                <Select placeholder="انتخاب کنید"
+                                                        optionFilterProp="children"
+                                                        showSearch
+                                                        filterOption={filterOption}
+                                                        onChange={() => {
+                                                            form.getFieldValue(['products']).map(async (product: {
+                                                                product: number;
+                                                            }, i: number) => {
+                                                                await axios.get(`${Url}/api/product/?code=${product.product}`, {
+                                                                    headers: {
+                                                                        'Authorization': 'Bearer ' + localStorage.getItem('access_token'),
+                                                                    }
+                                                                }).then(response => {
+                                                                    return response
+                                                                }).then(async data => {
+                                                                    form.setFieldsValue({
+                                                                        products: {
+                                                                            [i]: {
+                                                                                scale: data.data[0].scale,
+                                                                                category: data.data[0].category,
+                                                                                name: data.data[0].name,
+                                                                            }
+                                                                        }
+                                                                    });
+                                                                })
+                                                            })
+                                                        }}
+                                                        options={listProduct.map((item) => ({
+                                                            label: item.name,
+                                                            value: item.code
+                                                        }))}
+                                                />
+                                            </Form.Item>
+                                            <Form.Item name={[subField.name, 'category']} style={{width: 250}}
+                                                       label='گروه'>
+                                                <Input placeholder="گروه"
+                                                       disabled
+                                                />
+                                            </Form.Item>
+                                            <Form.Item name={[subField.name, 'input']} rules={[{required: true}]}
+                                                       label='تعداد'>
+                                                <InputNumber min={1} placeholder="تعداد"/>
+                                            </Form.Item>
+                                            <Form.Item name={[subField.name, 'scale']} style={{width: 150}}
+                                                       label='مقیاس'>
+                                                <Input placeholder="مقیاس" disabled/>
+                                            </Form.Item>
+                                        </Space>
+                                    ))}
+
+                                    <Button type={"primary"} block htmlType="submit" danger={loading} loading={loading}>
+                                        ثبت
+                                    </Button>
+
+                                </Flex>
+                            </>
+                        )}
+                    </Form.List>
+                </Form.Item>
+            </>
+            }
+
         </Form>
     )
 }

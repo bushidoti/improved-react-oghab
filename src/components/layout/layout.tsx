@@ -30,7 +30,6 @@ import {Context} from "../../context";
 import MainContract from "../contract/main/page";
 import MainDocument from "../document/main/page";
 import MainPersonal from "../personal/main/page";
-import MainWarehouse from "../warhouse/main/page";
 import MainProduct from "../warhouse/product/main/page";
 import MainProperty from "../warhouse/property/main/page";
 import Edit from "../personal/register/edit";
@@ -103,13 +102,13 @@ const LayoutForm: React.FC = () => {
         ]),
     ], !(context.permission === 'مدیر' || context.permission === 'اداری' || context.permission === 'مدیر اداری' || context.permission === 'مشاهده')),
 
-    getItem(<Link style={!(context.permission === 'مدیر' || context.permission === 'اداری' || context.permission === 'مدیر اداری' || context.permission === 'مشاهده') ? {pointerEvents:'none'} : {}} to='../document'>مدیریت اسناد</Link>, 'sub4', <FileOutlined/>, [
+    getItem('مدیریت اسناد', 'sub4', <FileOutlined/>, [
         getItem(<Link to='../document/register'>ثبت اسناد اموال</Link>, '10'),
         getItem(<Link to='../document/report'>گزارش اسناد</Link>, '11'),
         getItem(<Link to='../document/upload'>باگذاری اسناد</Link>, '12')
     ],!(context.permission === 'مدیر' || context.permission === 'اداری' || context.permission === 'مدیر اداری' || context.permission === 'مشاهده')),
 
-    getItem(<Link style={!(context.permission === 'مدیر' || context.permission === 'انباردار') ? {pointerEvents:'none'} : {}} to='../warhouse'>انبارداری</Link>, 'sub5', <BarChartOutlined/>, [
+    getItem('انبارداری', 'sub5', <BarChartOutlined/>, [
         getItem(<Link to='../warhouse/product'>انبار</Link>, 'sub6', null, [
             getItem(<Link to='../warhouse/product/register'>ثبت</Link>, '13'),
             getItem(<Link to='../warhouse/product/report'>گزارش</Link>, '14'),
@@ -161,7 +160,6 @@ const LayoutForm: React.FC = () => {
                             <Route path={`/personal/edit/${context.currentPersonal}`} element={<Edit/>}/>
                             <Route path={'/personal/report'} element={<MainPersonal/>}/>
                             <Route path={'/personal/upload'} element={<UploadPersonal/>}/>
-                            <Route path={'/warhouse'} element={<MainWarehouse/>}/>
                             <Route path={'/warhouse/product'} element={<MainProduct/>}/>
                             <Route path={`/warhouse/product/edit/${context.currentProduct}`} element={<Card/>}/>
                             <Route path={`/warhouse/product/editDoc/${context.currentProductDoc}/${context.currentProductDoc === 'فاکتور' ? context.currentProductFactor : context.currentProductCheck }`} element={<EditDoc/>}/>

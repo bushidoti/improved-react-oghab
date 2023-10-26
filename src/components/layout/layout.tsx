@@ -41,6 +41,7 @@ import Card from "../warhouse/product/card/card";
 import ProductFactor from "../warhouse/product/report/factor";
 import ProductCheck from "../warhouse/product/report/check";
 import {UploadProductDocs} from "../warhouse/product/upload/upload";
+import {EditDoc} from "../warhouse/product/register/edit";
 
 const {Content, Footer, Sider} = Layout;
 
@@ -163,6 +164,7 @@ const LayoutForm: React.FC = () => {
                             <Route path={'/warhouse'} element={<MainWarehouse/>}/>
                             <Route path={'/warhouse/product'} element={<MainProduct/>}/>
                             <Route path={`/warhouse/product/edit/${context.currentProduct}`} element={<Card/>}/>
+                            <Route path={`/warhouse/product/editDoc/${context.currentProductDoc}/${context.currentProductDoc === 'فاکتور' ? context.currentProductFactor : context.currentProductCheck }`} element={<EditDoc/>}/>
                             <Route path={`/warhouse/product/factor/${context.currentProductFactor}`}
                                    element={<ProductFactor/>}/>
                             <Route path={`/warhouse/product/check/${context.currentProductCheck}`}

@@ -3,6 +3,8 @@ import {createContext} from "react";
 export const Context = createContext({
     setLogged: (_value: boolean) => {
     },
+     setCurrentProductDoc: (_value: string) => {
+    },
     setCurrentPersonal: (_value: number) => {
     },
     setCurrentProduct: (_value: number) => {
@@ -14,6 +16,7 @@ export const Context = createContext({
     fullName: '',
     isLogged: false,
     office: '',
+    currentProductDoc: '',
     compressed: '',
     currentPersonal: 0,
     currentProductCheck: 0,

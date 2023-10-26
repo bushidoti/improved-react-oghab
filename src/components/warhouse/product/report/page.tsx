@@ -18,6 +18,7 @@ import {Context} from "../../../../context";
 
 interface DataType {
     key: React.Key;
+    id: number;
     index: number;
     output: number;
     input: number;
@@ -318,6 +319,15 @@ const ReportProduct: React.FC = () => {
             dataIndex: 'systemID',
             width: '5%',
             key: 'systemID',
+            render: (_value, record) => <Button type={"link"} onClick={() => {
+                if (record.document_type === 'فاکتور'){
+                    context.setCurrentProductFactor(record.systemID)
+                }else if (record.document_type === 'حواله'){
+                    context.setCurrentProductCheck(record.systemID)
+                }
+                context.setCurrentProductDoc(record.document_type)
+                navigate(`/warhouse/product/editDoc/${record.document_type}/${record.systemID}`)
+            }}>{record.systemID}</Button>,
         }, {
             align: "center",
             title: 'شناسه سند',

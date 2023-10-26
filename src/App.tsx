@@ -27,6 +27,7 @@ const App: React.FC = () => {
     const [scan, setScan] = useState('');
     const [compress, setCompress] = useState('');
     const [compressed, setCompressed] = useState('');
+    const [currentProductDoc, setCurrentProductDoc] = useState<string>('');
     const [currentPersonal, setCurrentPersonal] = useState<number>(0)
     const [currentProduct, setCurrentProduct] = useState<number>(0)
     const [currentProductFactor, setCurrentProductFactor] = useState<number>(0)
@@ -158,6 +159,8 @@ const App: React.FC = () => {
                 <Context.Provider value={{
                     setLogged,
                     fullName,
+                    setCurrentProductDoc,
+                    currentProductDoc,
                     setCurrentProduct,
                     setCurrentProductCheck,
                     currentProductCheck,

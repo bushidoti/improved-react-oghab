@@ -2,7 +2,29 @@ import React from "react";
 import {DateObject} from "react-multi-date-picker";
 import persian from "react-date-object/calendars/persian";
 
-const TablePrint = (props: { componentPDF: React.LegacyRef<HTMLTableElement> | undefined, contract: any[]; }) => {
+interface Person {
+  id?: number,
+  approvedPrice?: number,
+  commitmentPrice?: number,
+  name?: string,
+  full_name?: string,
+  date?: string,
+  expireDate: string,
+  clearedDate?: string,
+  national_id?: string,
+  typeBail?: string,
+  office?: string,
+  job?: string,
+  type?: string,
+  firstBail?: string,
+  secondBail?: string,
+  sex?: string,
+  clearedStatus?: boolean,
+  receivedDocument?: boolean,
+  affidavitStatus?: boolean,
+}
+
+const TablePrint = (props: { componentPDF: React.LegacyRef<HTMLTableElement> | undefined, contract: Person[]; }) => {
     const date = new DateObject({calendar: persian})
     return (
         <div style={{display: 'none'}}>

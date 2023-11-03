@@ -44,12 +44,20 @@ interface DataType {
 
 type DataIndex = keyof DataType;
 
+interface TypeContract {
+    count:number
+    results:[]
+}
 
 const MainPersonal: React.FC = () => {
     const [searchText, setSearchText] = useState('');
     const [searchedColumn, setSearchedColumn] = useState('');
     const searchInput = useRef<InputRef>(null);
-    const [contract, setContracts] = useState<any[]>([])
+    const [contract, setContracts] = useState<TypeContract>()
+    const [pagination, setPagination] = useState<any>({
+        current:1,
+        pageSize:10
+    })
     const context = useContext(Context)
     const [loading, setLoading] = useState(true);
     const [filteredInfo, setFilteredInfo] = useState<Record<string, FilterValue | null>>({});
@@ -63,8 +71,10 @@ const MainPersonal: React.FC = () => {
         documentTitle: "اشخاص",
     });
 
+
     const fetchData = async () => {
-        await axios.get(`${Url}/api/persons/?fields=affidavitStatus,id,type,full_name,expireDate,date,national_id,caseNumber,sex,office,job,approvedPrice,commitmentPrice,typeBail,firstBail,secondBail,clearedStatus,clearedDate,receivedDocument,&${qs.stringify(filteredInfo, {
+        setLoading(true)
+        await axios.get(`${Url}/api/persons/?size=${pagination.pageSize}&page=${pagination.current}&fields=affidavitStatus,id,type,full_name,expireDate,date,national_id,caseNumber,sex,office,job,approvedPrice,commitmentPrice,typeBail,firstBail,secondBail,clearedStatus,clearedDate,receivedDocument,&${qs.stringify(filteredInfo, {
             encode: false,
             arrayFormat: 'comma'
         })}&office=${context.permission === 'مدیر اداری' || context.permission === 'مشاهده' ? qs.stringify(filteredInfo, {
@@ -92,7 +102,7 @@ const MainPersonal: React.FC = () => {
             void fetchData()
         },
         // eslint-disable-next-line react-hooks/exhaustive-deps
-        [context.office, JSON.stringify(filteredInfo)])
+        [context.office, JSON.stringify(filteredInfo),pagination])
 
     const handleSearch = (
         selectedKeys: string[],
@@ -535,9 +545,10 @@ const MainPersonal: React.FC = () => {
         setSortedInfo({});
     };
 
-    const handleChange: TableProps<DataType>['onChange'] = (_pagination, filters, sorter) => {
+    const handleChange: TableProps<DataType>['onChange'] = (pagination, filters, sorter) => {
         setFilteredInfo(filters);
         setSortedInfo(sorter as SorterResult<DataType>);
+        setPagination(pagination);
     };
 
 
@@ -589,16 +600,16 @@ const MainPersonal: React.FC = () => {
             <Table
                 bordered
                 columns={columns.filter(col => !filteredColumns.includes(col.key as string))}
-                dataSource={contract}
+                dataSource={contract?.results}
                 tableLayout={"fixed"}
                 scroll={{x: 3010, y: '60vh'}}
                 rowKey="id"
                 onChange={handleChange}
                 loading={loading}
-                pagination={{position: ["bottomCenter"]}}
+                pagination={{position: ["bottomCenter"], total:contract?.count,showSizeChanger:true}}
                 // rowClassName={(record, index) =>  date.format('YYYY-MM-DD').replaceAll('/' , '-') > record.expireDate  ? 'table-expired-rows' :  ''}
             />
-            <TablePrint componentPDF={componentPDF} contract={contract}/>
+            <TablePrint componentPDF={componentPDF} contract={contract !== undefined ? contract?.results : []}/>
         </>
     )
 };

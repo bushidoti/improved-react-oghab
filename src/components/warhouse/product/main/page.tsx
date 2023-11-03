@@ -29,14 +29,22 @@ interface DataType {
 
 type DataIndex = keyof DataType;
 
+interface TypeProduct {
+    count:number
+    results:[]
+}
 
 const MainProduct: React.FC = () => {
     const [searchText, setSearchText] = useState('');
     const [searchedColumn, setSearchedColumn] = useState('');
     const searchInput = useRef<InputRef>(null);
-    const [product, setProduct] = useState<any[]>([])
+    const [product, setProduct] = useState<TypeProduct>()
+    const [pagination, setPagination] = useState<any>({
+        current:1,
+        pageSize:10
+    })
     const context = useContext(Context)
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState<boolean>();
     const [filteredInfo, setFilteredInfo] = useState<Record<string, FilterValue | null>>({});
     const [sortedInfo, setSortedInfo] = useState<SorterResult<DataType>>({});
     const navigate = useNavigate();
@@ -49,8 +57,9 @@ const MainProduct: React.FC = () => {
     const [optionCategory, setOptionCategory] = useState<any[]>([]);
 
     const fetchData = async () => {
+        setLoading(true)
         await axios.get(
-            `${Url}/api/product/?${qs.stringify(filteredInfo, {
+            `${Url}/api/product/?size=${pagination.pageSize}&page=${pagination.current}&${qs.stringify(filteredInfo, {
                 encode: false,
                 arrayFormat: 'comma'
             })}&inventory=${context.permission === 'مدیر' || context.permission === 'مشاهده' ? qs.stringify(filteredInfo, {
@@ -98,7 +107,7 @@ const MainProduct: React.FC = () => {
             void fetchData()
         },
         // eslint-disable-next-line react-hooks/exhaustive-deps
-        [context.office, JSON.stringify(filteredInfo)])
+        [context.office, JSON.stringify(filteredInfo),pagination])
 
     const handleSearch = (
         selectedKeys: string[],
@@ -327,9 +336,10 @@ const MainProduct: React.FC = () => {
         setSortedInfo({});
     };
 
-    const handleChange: TableProps<DataType>['onChange'] = (_pagination, filters, sorter) => {
+    const handleChange: TableProps<DataType>['onChange'] = (pagination, filters, sorter) => {
         setFilteredInfo(filters);
         setSortedInfo(sorter as SorterResult<DataType>);
+        setPagination(pagination);
     };
 
     return (
@@ -343,16 +353,16 @@ const MainProduct: React.FC = () => {
             <Table
                 bordered
                 columns={columns}
-                dataSource={product}
+                dataSource={product?.results}
                 tableLayout={"fixed"}
                 scroll={{y: '60vh'}}
                 rowKey="code"
                 onChange={handleChange}
                 loading={loading}
-                pagination={{position: ["bottomCenter"]}}
+                pagination={{position: ["bottomCenter"],total:product?.count,showSizeChanger:true}}
                 // rowClassName={(record, index) =>  date.format('YYYY-MM-DD').replaceAll('/' , '-') > record.expireDate  ? 'table-expired-rows' :  ''}
             />
-            <TablePrint componentPDF={componentPDF} contract={product} productSub={productSub}/>
+            <TablePrint componentPDF={componentPDF} contract={product !== undefined ? product?.results : []} productSub={productSub}/>
         </>
     )
 };

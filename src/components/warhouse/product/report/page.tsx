@@ -45,19 +45,27 @@ interface DataType {
 
 type DataIndex = keyof DataType;
 
+interface TypeProduct {
+    count:number
+    results:[]
+}
+
 
 const ReportProduct: React.FC = () => {
     const [searchText, setSearchText] = useState('');
     const [selectedDoc, setSelectedDoc] = useState('');
     const [searchedColumn, setSearchedColumn] = useState('');
     const searchInput = useRef<InputRef>(null);
-    const [product, setProduct] = useState<any[]>([])
-    const [loading, setLoading] = useState(true);
+    const [pagination, setPagination] = useState<any>({
+        current:1,
+        pageSize:10
+    })
+    const [loading, setLoading] = useState<boolean>();
     const [filteredInfo, setFilteredInfo] = useState<Record<string, FilterValue | null>>({});
     const navigate = useNavigate();
     const componentPDF = useRef(null);
     const [optionConsumable, setOptionConsumable] = useState<any[]>([]);
-    const [productSub, setProductSub] = useState<any[]>([])
+    const [productSub, setProductSub] = useState<TypeProduct>()
     const [optionCategory, setOptionCategory] = useState<any[]>([]);
     const context = useContext(Context)
     const [filteredColumns, setFilteredColumns] = useState<string[]>([])
@@ -68,17 +76,8 @@ const ReportProduct: React.FC = () => {
     });
 
     const fetchData = async () => {
-        await axios.get(
-            `${Url}/api/product`, {
-                headers: {
-                    'Authorization': 'Bearer ' + localStorage.getItem('access_token'),
-                }
-            }).then(response => {
-            return response
-        }).then(async data => {
-            setProduct(data.data)
-        }).then(async () => {
-            return await axios.get(`${Url}/api/allproducts/?fields=product,name,inventory,seller,category,systemID,input,output,document_code,document_type,date,operator,afterOperator,obsolete,consumable,buyer,receiver,amendment,id,scale&${qs.stringify(filteredInfo, {
+       setLoading(true)
+        await axios.get(`${Url}/api/allproducts/?size=${pagination.pageSize}&page=${pagination.current}&fields=product,name,inventory,seller,category,systemID,input,output,document_code,document_type,date,operator,afterOperator,obsolete,consumable,buyer,receiver,amendment,id,scale&${qs.stringify(filteredInfo, {
                 encode: false,
                 arrayFormat: 'comma'
             })}&inventory=${context.permission === 'مدیر' || context.permission === 'مشاهده' ? qs.stringify(filteredInfo, {
@@ -88,8 +87,7 @@ const ReportProduct: React.FC = () => {
                 headers: {
                     'Authorization': 'Bearer ' + localStorage.getItem('access_token'),
                 }
-            })
-        }).then(response => {
+            }).then(response => {
             return response
         }).then(async data => {
             setProductSub(data.data)
@@ -127,7 +125,7 @@ const ReportProduct: React.FC = () => {
             void fetchData()
         },
         // eslint-disable-next-line react-hooks/exhaustive-deps
-        [JSON.stringify(filteredInfo)])
+        [JSON.stringify(filteredInfo),pagination])
 
     const handleSearch = (
         selectedKeys: string[],
@@ -470,8 +468,9 @@ const ReportProduct: React.FC = () => {
         setFilteredInfo({});
     };
 
-    const handleChange: TableProps<DataType>['onChange'] = (_pagination, filters) => {
+    const handleChange: TableProps<DataType>['onChange'] = (pagination, filters) => {
         setFilteredInfo(filters);
+        setPagination(pagination);
     };
 
 
@@ -544,15 +543,15 @@ const ReportProduct: React.FC = () => {
             <Table
                 bordered
                 columns={columns.filter(col => !filteredColumns.includes(col.key as string))}
-                dataSource={productSub}
+                dataSource={productSub?.results}
                 tableLayout={"fixed"}
                 scroll={{x: 3010, y: '60vh'}}
                 rowKey="id"
                 onChange={handleChange}
                 loading={loading}
-                pagination={{position: ["bottomCenter"]}}
+                pagination={{position: ["bottomCenter"],total:productSub?.count,showSizeChanger:true}}
             />
-            <TablePrint componentPDF={componentPDF} contract={product} productSub={productSub}/>
+            <TablePrint componentPDF={componentPDF} productSub={productSub !== undefined ? productSub?.results : []}/>
         </>
     )
 };

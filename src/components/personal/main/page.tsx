@@ -59,7 +59,7 @@ const MainPersonal: React.FC = () => {
         pageSize:10
     })
     const context = useContext(Context)
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState<boolean>();
     const [filteredInfo, setFilteredInfo] = useState<Record<string, FilterValue | null>>({});
     const [sortedInfo, setSortedInfo] = useState<SorterResult<DataType>>({});
     const date = new DateObject({calendar: persian})

@@ -2,7 +2,6 @@ import React from "react";
 
 const TablePrint = (props: {
     componentPDF: React.LegacyRef<HTMLTableElement> | undefined,
-    contract: any[],
     productSub: any[]
 }) => {
     return (

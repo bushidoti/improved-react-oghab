@@ -357,7 +357,7 @@ const Card: React.FC = () => {
             width: '7%',
             key: 'consumable',
             filters: optionConsumable.map((item) => ({text: item.value, value: item.value})),
-            filteredValue: filteredInfo.category || null,
+            filteredValue: filteredInfo.consumable || null,
             onFilter: (value, record) => record.consumable === value,
         }, {
             align: "center",

@@ -25,6 +25,8 @@ export const EditDoc = () => {
     const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
     const [allProducts, setAllProducts] = useState<any>([])
+    const [rowDetailed, setRowDetailed] = useState<any>([])
+
     const [form] = Form.useForm();
     const [listProduct, setListProduct] = useState<any[]>([]);
     const [name, setName] = useState('');
@@ -59,7 +61,7 @@ export const EditDoc = () => {
         }).finally(() => {
             setLoading(false)
         }).then(async () => {
-            return await axios.get(`${Url}/api/allproducts/?fields=id,product,input,output&systemID=${context.currentProductDoc === 'فاکتور' ?  context.currentProductFactor :  context.currentProductCheck }&inventory=${context.office}&document_type=${context.currentProductDoc}`, {
+            return await axios.get(`${Url}/api/allproducts/?fields=id,systemID,product,input,output&systemID=${context.currentProductDoc === 'فاکتور' ?  context.currentProductFactor :  context.currentProductCheck }&inventory=${context.office}&document_type=${context.currentProductDoc}`, {
                 headers: {
                     'Authorization': 'Bearer ' + localStorage.getItem('access_token'),
                 }
@@ -68,6 +70,16 @@ export const EditDoc = () => {
             return response
         }).then(async data => {
             setAllProducts(data.data)
+        }).then(async () => {
+            return await axios.get(`${Url}/api/allproducts/?fields=id,systemID,product,input,output&inventory=${context.office}`, {
+                headers: {
+                    'Authorization': 'Bearer ' + localStorage.getItem('access_token'),
+                }
+            })
+        }).then(response => {
+            return response
+        }).then(async data => {
+            setRowDetailed(data.data)
         }).then(async () => {
             return await axios.get(`${Url}/api/consumable-list`, {
                 headers: {
@@ -152,20 +164,25 @@ export const EditDoc = () => {
                 return obj;
             })
         )).then(
-              form.getFieldValue(['products']).map(async (product: { product: number; }, i: number) => {
+              form.getFieldValue(['products']).map(async (product: { product: number, systemID:number }, i: number) => {
                 form.setFieldsValue({
                     products: {
                         [i]: {
-                            afterOperator: (allProducts.filter((products: {
+                            afterOperator: (rowDetailed.filter((products: {
                                     product: number;
                                 }) => products.product === product.product).reduce((a: any, v: {
                                     input: any;
                                 }) => a + v.input, 0))
-                                - (allProducts.filter((products: {
+                                - (rowDetailed.filter((products: {
                                     product: number;
                                 }) => products.product === product.product).reduce((a: any, v: {
                                     output: any;
-                                }) => a + v.output, 0)) - form.getFieldValue(['products'])[i].output,
+                                }) => a + v.output, 0))  - (rowDetailed.filter((products: {
+                                    systemID: number;
+                                    product: number;
+                                }) => products.systemID === product.systemID && products.product === product.product).reduce((a: any, v: {
+                                    input: any;
+                                }) => a + v.input, 0)) - form.getFieldValue(['products'])[i].output,
                         }
                     }
                 });
@@ -236,20 +253,25 @@ export const EditDoc = () => {
                 return obj;
             })
         )).then(
-              form.getFieldValue(['products']).map(async (product: { product: number; }, i: number) => {
+              form.getFieldValue(['products']).map(async (product: { product: number , systemID: number; }, i: number) => {
                 form.setFieldsValue({
                      products: {
                         [i]: {
-                            afterOperator: (allProducts.filter((products: {
+                            afterOperator: (rowDetailed.filter((products: {
                                     product: number;
                                 }) => products.product === product.product).reduce((a: any, v: {
                                     input: any;
                                 }) => a + v.input, 0))
-                                - (allProducts.filter((products: {
+                                - (rowDetailed.filter((products: {
                                     product: number;
                                 }) => products.product === product.product).reduce((a: any, v: {
                                     output: any;
-                                }) => a + v.output, 0)) + form.getFieldValue(['products'])[i].input,
+                                }) => a + v.output, 0))   - (rowDetailed.filter((products: {
+                                    systemID: number;
+                                    product: number;
+                                }) => products.systemID === product.systemID && products.product === product.product).reduce((a: any, v: {
+                                    input: any;
+                                }) => a + v.input, 0))  + form.getFieldValue(['products'])[i].input,
                         }
                     }
                 });

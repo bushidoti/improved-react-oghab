@@ -10,8 +10,6 @@ import Url from "../../api-configue";
 import {DatePicker as DatePickerJalali, JalaliLocaleListener} from "antd-jalali";
 import dayjs from 'dayjs';
 import 'dayjs/locale/fa';
-import {DateObject} from "react-multi-date-picker";
-import persian from "react-date-object/calendars/persian";
 import {Context} from "../../../context";
 import {useNavigate} from "react-router-dom";
 import qs from 'qs';
@@ -67,7 +65,6 @@ const MainContract: React.FC = () => {
     const [loading, setLoading] = useState<boolean>();
     const [filteredInfo, setFilteredInfo] = useState<Record<string, FilterValue | null>>({});
     const [sortedInfo, setSortedInfo] = useState<SorterResult<DataType>>({});
-    const date = new DateObject({calendar: persian})
     const navigate = useNavigate();
     const [filteredColumns, setFilteredColumns] = useState<string[]>([])
     const componentPDF = useRef(null);
@@ -293,12 +290,6 @@ const MainContract: React.FC = () => {
                                     <Badge color="green" status="processing"/> {record.id}
                                 </Space>
                             )
-                        } else if (date.format('YYYY-MM-DD').replaceAll('/', '-') > record.expireDate) {
-                            return (
-                                <Space>
-                                    <Badge color="red" status="processing"/> {record.id}
-                                </Space>
-                            )
                         } else {
                             return record.id
                         }
@@ -320,7 +311,7 @@ const MainContract: React.FC = () => {
                     value: 'پیمانکار',
                 }
             ],
-            filteredValue: filteredInfo.type || null,
+            filteredValue: filteredInfo.type_form || null,
             onFilter: (value, record) => record.type_form === value,
 
         }, {
@@ -340,10 +331,10 @@ const MainContract: React.FC = () => {
         }, {
             align: "center",
             title: 'شماره قرارداد',
-            width: '6%',
+            width: '6.30%',
             dataIndex: 'contractNumber',
             key: 'contractNumber',
-            filteredValue: filteredInfo.caseNumber || null,
+            filteredValue: filteredInfo.contractNumber || null,
             ...getColumnSearchProps('contractNumber'),
 
         }, {
@@ -416,8 +407,8 @@ const MainContract: React.FC = () => {
                     value: 'تعهد',
                 }
             ],
-            filteredValue: filteredInfo.typeBail || null,
-            onFilter: (value, record) => record.typeBail === value,
+            filteredValue: filteredInfo.typeBail1 || null,
+            onFilter: (value, record) => record.typeBail1 === value,
         }, {
             align: "center",
             title: 'مشخصه وثیقه حسن انجام کار',
@@ -469,8 +460,8 @@ const MainContract: React.FC = () => {
                     value: 'تعهد',
                 }
             ],
-            filteredValue: filteredInfo.typeBail || null,
-            onFilter: (value, record) => record.typeBail === value,
+            filteredValue: filteredInfo.typeBail2 || null,
+            onFilter: (value, record) => record.typeBail2 === value,
         }, {
             align: "center",
             title: 'مشخصه وثیقه تعهد انجام کار',
@@ -601,12 +592,10 @@ const MainContract: React.FC = () => {
     return (
         <>
             <Space style={{marginBottom: 16}}>
-                <Badge color="red" status="processing" text="به معنی پایان قرارداد"/>
                 <Badge color="green" status="processing" text="به معنی تسویه شده و قفل شده"/>
                 <Button onClick={clearFilters}>پاک کردن فیتلر ها</Button>
                 <Button onClick={clearAll}>پاک کردن فیلتر و مرتب کننده ها</Button>
                 <Button onClick={generatePDF}>چاپ</Button>
-
             </Space>
             <Space style={{marginBottom: 16, marginRight: 16}}>
                 <Select

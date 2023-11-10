@@ -29,6 +29,7 @@ const App: React.FC = () => {
     const [compressed, setCompressed] = useState('');
     const [currentProductDoc, setCurrentProductDoc] = useState<string>('');
     const [currentPersonal, setCurrentPersonal] = useState<number>(0)
+    const [currentContract, setCurrentContract] = useState<number>(0)
     const [currentProduct, setCurrentProduct] = useState<number>(0)
     const [currentProductFactor, setCurrentProductFactor] = useState<number>(0)
     const [currentProductCheck, setCurrentProductCheck] = useState<number>(0)
@@ -158,6 +159,8 @@ const App: React.FC = () => {
                 :
                 <Context.Provider value={{
                     setLogged,
+                    currentContract,
+                    setCurrentContract,
                     fullName,
                     setCurrentProductDoc,
                     currentProductDoc,

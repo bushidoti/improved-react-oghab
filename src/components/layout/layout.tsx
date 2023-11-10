@@ -11,7 +11,6 @@ import {Avatar, Layout, Menu, MenuProps} from 'antd';
 import {Link, Route, Routes} from "react-router-dom";
 import React, {useContext, useState} from "react";
 import RegisterContract from "../contract/register/page";
-import ReportContract from "../contract/report/page";
 import UploadContract from "../contract/upload/page";
 import RegisterDocument from "../document/register/page";
 import ReportDocument from "../document/report/page";
@@ -41,6 +40,7 @@ import ProductFactor from "../warhouse/product/report/factor";
 import ProductCheck from "../warhouse/product/report/check";
 import {UploadProductDocs} from "../warhouse/product/upload/upload";
 import {EditDoc} from "../warhouse/product/register/edit";
+import EditContract from "../contract/register/edit";
 
 const {Content, Footer, Sider} = Layout;
 
@@ -149,12 +149,13 @@ const LayoutForm: React.FC = () => {
                         <Routes>
                             <Route path={'/contract'} element={<MainContract/>}/>
                             <Route path={'/contract/register'} element={<RegisterContract/>}/>
-                            <Route path={'/contract/report'} element={<ReportContract/>}/>
+                            <Route path={'/contract/report'} element={<MainContract/>}/>
                             <Route path={'/contract/upload'} element={<UploadContract/>}/>
                             <Route path={'/document'} element={<MainDocument/>}/>
                             <Route path={'/document/register'} element={<RegisterDocument/>}/>
                             <Route path={'/document/report'} element={<ReportDocument/>}/>
                             <Route path={'/document/upload'} element={<UploadDocument/>}/>
+                            <Route path={`/contract/edit/${context.currentContract}`} element={<EditContract/>}/>
                             <Route path={'/personal'} element={<MainPersonal/>}/>
                             <Route path={'/personal/register'} element={<RegisterPersonal/>}/>
                             <Route path={`/personal/edit/${context.currentPersonal}`} element={<Edit/>}/>

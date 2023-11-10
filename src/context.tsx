@@ -7,6 +7,8 @@ export const Context = createContext({
     },
     setCurrentPersonal: (_value: number) => {
     },
+    setCurrentContract: (_value: number) => {
+    },
     setCurrentProduct: (_value: number) => {
     },
     setCurrentProductFactor: (_value: number) => {
@@ -21,6 +23,7 @@ export const Context = createContext({
     currentPersonal: 0,
     currentProductCheck: 0,
     currentProduct: 0,
+    currentContract: 0,
     currentProductFactor: 0,
     scan: '',
     permission: ''

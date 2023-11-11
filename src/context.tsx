@@ -13,6 +13,8 @@ export const Context = createContext({
     },
     setCurrentProductFactor: (_value: number) => {
     },
+    setCurrentDocProperty: (_value: number) => {
+    },
     setCurrentProductCheck: (_value: number) => {
     },
     fullName: '',
@@ -21,6 +23,7 @@ export const Context = createContext({
     currentProductDoc: '',
     compressed: '',
     currentPersonal: 0,
+    currentDocProperty: 0,
     currentProductCheck: 0,
     currentProduct: 0,
     currentContract: 0,

@@ -1,6 +1,27 @@
-export default function UploadDocument() {
+import {Tabs} from "antd";
+import Immovable from "./immovable";
+import Movable from "./movable";
 
+
+export default function UploadDocument() {
+    const items = [
+        {
+            label: `منقول`,
+            key: '1',
+            children: <Movable/>,
+        }, {
+            label: `غیر منقول`,
+            key: '2',
+            children: <Immovable/>,
+        }
+    ];
     return (
-        <p>upload</p>
+        <Tabs
+            defaultActiveKey="1"
+            centered
+            type="card"
+            items={items}
+        />
     )
 }
+

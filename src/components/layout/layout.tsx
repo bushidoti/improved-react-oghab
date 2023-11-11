@@ -13,7 +13,6 @@ import React, {useContext, useState} from "react";
 import RegisterContract from "../contract/register/page";
 import UploadContract from "../contract/upload/page";
 import RegisterDocument from "../document/register/page";
-import ReportDocument from "../document/report/page";
 import UploadDocument from "../document/upload/page";
 import RegisterProduct from "../warhouse/product/register/page";
 import ReportProduct from "../warhouse/product/report/page";
@@ -27,7 +26,6 @@ import Handling from "../warhouse/handling/page";
 import {Logout} from "../login/logout";
 import {Context} from "../../context";
 import MainContract from "../contract/main/page";
-import MainDocument from "../document/main/page";
 import MainPersonal from "../personal/main/page";
 import MainProduct from "../warhouse/product/main/page";
 import MainProperty from "../warhouse/property/main/page";
@@ -41,6 +39,7 @@ import ProductCheck from "../warhouse/product/report/check";
 import {UploadProductDocs} from "../warhouse/product/upload/upload";
 import {EditDoc} from "../warhouse/product/register/edit";
 import EditContract from "../contract/register/edit";
+import MainDocument from "../document/main/page";
 
 const {Content, Footer, Sider} = Layout;
 
@@ -153,7 +152,7 @@ const LayoutForm: React.FC = () => {
                             <Route path={'/contract/upload'} element={<UploadContract/>}/>
                             <Route path={'/document'} element={<MainDocument/>}/>
                             <Route path={'/document/register'} element={<RegisterDocument/>}/>
-                            <Route path={'/document/report'} element={<ReportDocument/>}/>
+                            <Route path={'/document/report'} element={<MainDocument/>}/>
                             <Route path={'/document/upload'} element={<UploadDocument/>}/>
                             <Route path={`/contract/edit/${context.currentContract}`} element={<EditContract/>}/>
                             <Route path={'/personal'} element={<MainPersonal/>}/>

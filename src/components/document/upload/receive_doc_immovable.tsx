@@ -14,11 +14,11 @@ const ReceiveDocImmovable = () => {
     const navigate = useNavigate();
 
     const options = [
-        {value: 'فاکتور فروش', label: 'فاکتور فروش'},
-        {value: 'بیمه نامه', label: 'بیمه نامه'},
-        {value: 'برگ سبز', label: 'برگ سبز'},
-        {value: 'کارت سوخت', label: 'کارت سوخت'},
-        {value: 'کارت ماشین', label: 'کارت ماشین'},
+        {value: 'سند صفحه 1', label: 'سند صفحه 1'},
+        {value: 'سند صفحه 2', label: 'سند صفحه 2'},
+        {value: 'سند صفحه 3', label: 'سند صفحه 3'},
+        {value: 'سند صفحه 4', label: 'سند صفحه 4'},
+        {value: 'سند صفحه 5', label: 'سند صفحه 5'},
     ];
     const onFinish = async () => {
         setLoading(true)
@@ -48,7 +48,7 @@ const ReceiveDocImmovable = () => {
 
     const onPreview = async () => {
         setLoading(true)
-        await axios.get(`${Url}/api/documents/${context.currentContract}/?fields=${selected}`, {
+        await axios.get(`${Url}/api/immovable/${context.currentDocProperty}/?fields=${selected}`, {
             headers: {
                 'Authorization': 'Bearer ' + localStorage.getItem('access_token'),
             }
@@ -67,16 +67,16 @@ const ReceiveDocImmovable = () => {
     };
 
     const onValuesChange = (value: string) => {
-        if (value === 'فاکتور فروش') {
-            setSelected('saleFactorFile')
-        } else if (value === 'بیمه نامه') {
-            setSelected('insurancePaperFile')
-        } else if (value === 'برگ سبز') {
-            setSelected('greenCardFile')
-        } else if (value === 'کارت سوخت') {
-            setSelected('gasCardFile')
-        } else if (value === 'کارت ماشین') {
-            setSelected('carCardFile')
+        if (value === 'سند صفحه 1') {
+            setSelected('doc_1')
+        } else if (value === 'سند صفحه 2') {
+            setSelected('doc_2')
+        } else if (value === 'سند صفحه 3') {
+            setSelected('doc_3')
+        } else if (value === 'سند صفحه 4') {
+            setSelected('doc_4')
+        } else if (value === 'سند صفحه 5') {
+            setSelected('doc_5')
         }
     }
 

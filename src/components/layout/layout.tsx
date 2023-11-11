@@ -40,6 +40,8 @@ import {UploadProductDocs} from "../warhouse/product/upload/upload";
 import {EditDoc} from "../warhouse/product/register/edit";
 import EditContract from "../contract/register/edit";
 import MainDocument from "../document/main/page";
+import EditImmovable from "../document/register/edit_immovable";
+import EditMovable from "../document/register/edit_movable";
 
 const {Content, Footer, Sider} = Layout;
 
@@ -154,6 +156,8 @@ const LayoutForm: React.FC = () => {
                             <Route path={'/document/register'} element={<RegisterDocument/>}/>
                             <Route path={'/document/report'} element={<MainDocument/>}/>
                             <Route path={'/document/upload'} element={<UploadDocument/>}/>
+                            <Route path={`/document/movable/edit/${context.currentDocProperty}`} element={<EditMovable/>}/>
+                            <Route path={`/document/immovable/edit/${context.currentDocProperty}`} element={<EditImmovable/>}/>
                             <Route path={`/contract/edit/${context.currentContract}`} element={<EditContract/>}/>
                             <Route path={'/personal'} element={<MainPersonal/>}/>
                             <Route path={'/personal/register'} element={<RegisterPersonal/>}/>

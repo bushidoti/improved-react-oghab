@@ -48,7 +48,7 @@ const ReceiveDocMovable = () => {
 
     const onPreview = async () => {
         setLoading(true)
-        await axios.get(`${Url}/api/documents/${context.currentContract}/?fields=${selected}`, {
+        await axios.get(`${Url}/api/movable/${context.currentDocProperty}/?fields=${selected}`, {
             headers: {
                 'Authorization': 'Bearer ' + localStorage.getItem('access_token'),
             }

@@ -250,7 +250,7 @@ const MainMovable: React.FC = () => {
                         if (record.soldStatus) {
                             return (
                                 <Space>
-                                    <Badge color="green" status="processing"/> {record.id}
+                                    <Badge color="red" status="processing"/> {record.id}
                                 </Space>
                             )
                         } else {

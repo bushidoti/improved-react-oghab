@@ -1,32 +1,38 @@
 import React, {useContext, useEffect, useState} from 'react';
-import {Button, ConfigProvider, Form, Input, InputNumber, message, Select, Space} from 'antd';
+import {Button, ConfigProvider, Divider, Form, Input, InputNumber, message, Select, Space} from 'antd';
+import {DatePicker as DatePickerJalali} from "antd-jalali";
 import Url from "../../api-configue";
 import axios from "axios";
-import {useNavigate} from "react-router-dom";
+import dayjs from "dayjs";
 import {Context} from "../../../context";
+import {useNavigate} from "react-router-dom";
+import ReceiveDocMovable from "../upload/receive_doc_movable";
 import TextArea from "antd/es/input/TextArea";
-
-
 /* eslint-disable no-template-curly-in-string */
 const validateMessages = {
     required: '${label} مورد نیاز است !',
 };
+/* eslint-enable no-template-curly-in-string */
 
-
-const Movable = () => {
+const EditMovable: React.FC = () => {
     const [form] = Form.useForm();
-    const navigate = useNavigate();
-
-    const [loading, setLoading] = useState<boolean>(false);
     const context = useContext(Context)
+    const navigate = useNavigate();
+    const [loading, setLoading] = useState<boolean>(false);
+
+
+
+
+
+
+
 
     const onFinish = async (values: any) => {
         setLoading(true)
-        await axios.post(
-            `${Url}/api/movable/`, {
+        await axios.put(
+            `${Url}/api/movable/${context.currentDocProperty}/`, {
                 typeVehicle: values.document.typeVehicle,
                 name: values.document.name,
-                location: context.office,
                 docNumber: values.document.docNumber,
                 motorNumber: values.document.motorNumber,
                 chassisNumber: values.document.chassisNumber,
@@ -43,6 +49,9 @@ const Movable = () => {
                 gasCard: values.document.gasCard,
                 carCard: values.document.carCard,
                 description: values.document.description,
+                buyer: values.document.buyer,
+                soldDate: values.document.soldDate ? dayjs(values.document.soldDate).locale('fa').format('YYYY-MM-DD') : null,
+                soldStatus: !!values.document.soldDate,
             }, {
                 headers: {
                     'Authorization': 'Bearer ' + localStorage.getItem('access_token'),
@@ -50,29 +59,25 @@ const Movable = () => {
             }).then(response => {
             return response
         }).then(async data => {
-            if (data.status === 201) {
-                message.success('ثبت شد');
-                await handleResetSubmit()
+            if (data.status === 200) {
+                message.success('ویرایش شد');
                 setLoading(false)
+                navigate('/document')
             }
-        }).catch(async (error) => {
+        }).catch((error) => {
             if (error.request.status === 403) {
                 navigate('/no_access')
-            } else if (error.request.status === 400) {
-                message.error('عدم ثبت');
+            } else if (error.request.status === 405) {
+                message.error('عدم ویرایش');
                 setLoading(false)
-                await handleResetSubmit()
             }
         })
     };
 
-    const handleResetSubmit = async () => {
-        form.resetFields()
-        await fetchLastData()
-    }
 
-    const fetchLastData = async () => {
-        await axios.get(`${Url}/api/movable/?fields=id`, {
+    const fetchData = async () => {
+        setLoading(true)
+        await axios.get(`${Url}/api/movable/${context.currentDocProperty}/?fields=id,typeVehicle,name,docNumber,motorNumber,chassisNumber,owner,model,madeOf,part1plate,part2plate,part3plate,location,cityPlate,descriptionLocation,paperDoc,insurancePaper,gasCard,carCard,description,soldDate,buyer,soldStatus`, {
             headers: {
                 'Authorization': 'Bearer ' + localStorage.getItem('access_token'),
             }
@@ -81,10 +86,31 @@ const Movable = () => {
         }).then(async data => {
             form.setFieldsValue({
                 document: {
-                    id: data.data.length === 0 ? 1 :  data.data.slice(-1)[0].id + 1,
+                    id: data.data.id,
+                    typeVehicle: data.data.typeVehicle,
+                    name: data.data.name,
+                    docNumber: data.data.docNumber,
+                    motorNumber: data.data.motorNumber,
+                    chassisNumber: data.data.chassisNumber,
+                    owner: data.data.owner,
+                    model: data.data.model,
+                    madeOf: data.data.madeOf,
+                    part1plate: data.data.part1plate,
+                    part2plate: data.data.part2plate,
+                    part3plate: data.data.part3plate,
+                    cityPlate: data.data.cityPlate,
+                    descriptionLocation: data.data.descriptionLocation,
+                    paperDoc: data.data.paperDoc,
+                    insurancePaper: data.data.insurancePaper,
+                    gasCard: data.data.gasCard,
+                    carCard: data.data.carCard,
+                    description: data.data.description,
+                    buyer: data.data.buyer,
+                    // @ts-ignore
+                    soldDate: data.data.soldDate ? dayjs(data.data.soldDate, {jalali: true}) : null,
                 },
             });
-        }).catch((error) => {
+        }).then(() => setLoading(false)).catch((error) => {
             if (error.request.status === 403) {
                 navigate('/no_access')
             }
@@ -92,7 +118,7 @@ const Movable = () => {
     }
 
     useEffect(() => {
-            void fetchLastData()
+            void fetchData()
         },
         // eslint-disable-next-line react-hooks/exhaustive-deps
         [])
@@ -128,17 +154,15 @@ const Movable = () => {
     ]
 
     return (
-        <Form form={form}
-              autoComplete="off"
-              name="document"
-              layout="vertical"
-              onFinish={onFinish}
-              validateMessages={validateMessages}
-        >
-            <Form.Item name={['document', 'id']} style={{margin: 10}} label="شماره ثبت">
-                <InputNumber disabled/>
-            </Form.Item>
-            <Form.Item>
+        <>
+            <Form form={form}
+                  autoComplete="off"
+                  name="document"
+                  layout="vertical"
+                  onFinish={onFinish}
+                  validateMessages={validateMessages}
+            >
+                <Form.Item>
                 <Form.Item name={['document', 'typeVehicle']} className='w-[233px] inline-block m-2' label="نوع خودرو"
                            rules={[{required: true}]}>
                     <Select
@@ -186,15 +210,16 @@ const Movable = () => {
                        </Form.Item>
                         <Form.Item name={['document', 'cityPlate']} label="شهر" className='w-[120px] inline-block mt-2' rules={[{required: true}]}>
                           <Select
+                            className='text-center'
                             placeholder="انتخاب کنید"
                             options={options}/>
                        </Form.Item>
                         <Form.Item name={['document', 'part1plate']} label="چپ" className='w-[80px] inline-block mt-2' rules={[{required: true}]}>
                            <Input maxLength={2} placeholder={'- -'} className='text-center'/>
-                       </Form.Item>
+                        </Form.Item>
                     </Space.Compact>
                 </Form.Item>
-            <Form.Item>
+                <Form.Item>
                 <Form.Item name={['document', 'descriptionLocation']} className='w-[233px] inline-block m-2' label="محل استقرار"
                            rules={[{required: true}]}>
                       <TextArea allowClear />
@@ -218,33 +243,46 @@ const Movable = () => {
                            label="شناسه کارت ماشین" rules={[{required: true}]}>
                             <Input/>
                    </Form.Item>
-            </Form.Item>
-            <Form.Item>
+               </Form.Item>
                 <Form.Item>
-                    <Form.Item style={{margin: 8}}>
-                        <ConfigProvider theme={{
-                            components: {
-                                Button: {
-                                    groupBorderColor: '#092b00',
-                                }
-                            }, token: {
-                                colorPrimary: '#52c41a'
-                            }
-                        }}>
-                            <Button  danger={loading} type={"primary"} loading={loading} block htmlType="submit">
-                                ثبت
-                            </Button>
-                        </ConfigProvider>
+                    <Divider>فروش</Divider>
+                    <Form.Item name={['document', 'soldDate']} className='register-form-personal'
+                               label="تاریخ فروش">
+                        <DatePickerJalali/>
                     </Form.Item>
-                    <Form.Item style={{margin: 8}}>
-                        <Button onClick={handleResetSubmit} block loading={loading} htmlType="button">
-                            ریست
-                        </Button>
+                    <Form.Item name={['document', 'buyer']} valuePropName="checked" className='register-form-personal' label="خریدار">
+                        <Input/>
+                    </Form.Item>
+                    <Divider>مشاهده مدارک</Divider>
+                    <ReceiveDocMovable/>
+                    <Form.Item>
+                        <Form.Item style={{margin: 8}}>
+                            <ConfigProvider theme={{
+                                components: {
+                                    Button: {
+                                        groupBorderColor: '#092b00'
+                                    }
+                                }, token: {
+                                    colorPrimary: '#52c41a'
+                                }
+                            }}>
+                                <Button danger={loading} type={"primary"} loading={loading} block htmlType="submit">
+                                    ویرایش
+                                </Button>
+                            </ConfigProvider>
+                            <Form.Item style={{marginTop: 8}}>
+                                <Button onClick={() => navigate('/personal')} block loading={loading} htmlType="button">
+                                    بازگشت
+                                </Button>
+                            </Form.Item>
+                        </Form.Item>
                     </Form.Item>
                 </Form.Item>
-            </Form.Item>
-        </Form>
+
+            </Form>
+
+        </>
     );
 }
 
-export default Movable;
+export default EditMovable;

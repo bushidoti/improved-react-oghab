@@ -1,38 +1,41 @@
 import React, {useContext, useEffect, useState} from 'react';
-import {Button, ConfigProvider, Form, Input, InputNumber, message, Select} from 'antd';
+import {Button, ConfigProvider, Divider, Form, Input, InputNumber, message, Select} from 'antd';
+import {DatePicker as DatePickerJalali} from "antd-jalali";
 import Url from "../../api-configue";
 import axios from "axios";
-import {useNavigate} from "react-router-dom";
+import dayjs from "dayjs";
 import {Context} from "../../../context";
+import {useNavigate} from "react-router-dom";
+import ReceiveDocImmovable from "../upload/receive_doc_immovable";
 import TextArea from "antd/es/input/TextArea";
-
-
 /* eslint-disable no-template-curly-in-string */
 const validateMessages = {
     required: '${label} مورد نیاز است !',
 };
+/* eslint-enable no-template-curly-in-string */
 
-
-const Immovable = () => {
+const EditImmovable: React.FC = () => {
     const [form] = Form.useForm();
+    const context = useContext(Context)
     const navigate = useNavigate();
     const [loading, setLoading] = useState<boolean>(false);
-    const context = useContext(Context)
 
     const onFinish = async (values: any) => {
         setLoading(true)
-        await axios.post(
-            `${Url}/api/immovable/`, {
+        await axios.put(
+            `${Url}/api/immovable/${context.currentDocProperty}/`, {
                 typeEstate: values.document.typeEstate,
                 name: values.document.name,
-                location: context.office,
                 docNumber: values.document.docNumber,
                 plate: values.document.plate,
                 address: values.document.address,
+                madeOf: values.document.madeOf,
                 landlord: values.document.landlord,
                 meter: values.document.meter,
-                madeOf: values.document.madeOf,
                 description: values.document.description,
+                buyer: values.document.buyer,
+                soldDate: values.document.soldDate ? dayjs(values.document.soldDate).locale('fa').format('YYYY-MM-DD') : null,
+                soldStatus: !!values.document.soldDate,
             }, {
                 headers: {
                     'Authorization': 'Bearer ' + localStorage.getItem('access_token'),
@@ -40,29 +43,25 @@ const Immovable = () => {
             }).then(response => {
             return response
         }).then(async data => {
-            if (data.status === 201) {
-                message.success('ثبت شد');
-                await handleResetSubmit()
+            if (data.status === 200) {
+                message.success('ویرایش شد');
                 setLoading(false)
+                navigate('/document')
             }
-        }).catch(async (error) => {
+        }).catch((error) => {
             if (error.request.status === 403) {
                 navigate('/no_access')
-            } else if (error.request.status === 400) {
-                message.error('عدم ثبت');
+            } else if (error.request.status === 405) {
+                message.error('عدم ویرایش');
                 setLoading(false)
-                await handleResetSubmit()
             }
         })
     };
 
-    const handleResetSubmit = async () => {
-        form.resetFields()
-        await fetchLastData()
-    }
 
-    const fetchLastData = async () => {
-        await axios.get(`${Url}/api/immovable/?fields=id`, {
+    const fetchData = async () => {
+        setLoading(true)
+        await axios.get(`${Url}/api/immovable/${context.currentDocProperty}/?fields=id,typeEstate,name,docNumber,plate,address,landlord,meter,location,madeOf,description,soldDate,buyer,soldStatus`, {
             headers: {
                 'Authorization': 'Bearer ' + localStorage.getItem('access_token'),
             }
@@ -71,10 +70,22 @@ const Immovable = () => {
         }).then(async data => {
             form.setFieldsValue({
                 document: {
-                    id: data.data.length === 0 ? 1 :  data.data.slice(-1)[0].id + 1,
+                    id: data.data.id,
+                    typeEstate: data.data.typeEstate,
+                    name: data.data.name,
+                    docNumber: data.data.docNumber,
+                    address: data.data.address,
+                    plate: data.data.plate,
+                    landlord: data.data.landlord,
+                    madeOf: data.data.madeOf,
+                    meter: data.data.meter,
+                    description: data.data.description,
+                    buyer: data.data.buyer,
+                    // @ts-ignore
+                    soldDate: data.data.soldDate ? dayjs(data.data.soldDate, {jalali: true}) : null,
                 },
             });
-        }).catch((error) => {
+        }).then(() => setLoading(false)).catch((error) => {
             if (error.request.status === 403) {
                 navigate('/no_access')
             }
@@ -82,24 +93,21 @@ const Immovable = () => {
     }
 
     useEffect(() => {
-            void fetchLastData()
+            void fetchData()
         },
         // eslint-disable-next-line react-hooks/exhaustive-deps
         [])
 
-
     return (
-        <Form form={form}
-              autoComplete="off"
-              name="document"
-              layout="vertical"
-              onFinish={onFinish}
-              validateMessages={validateMessages}
-        >
-            <Form.Item name={['document', 'id']} style={{margin: 10}} label="شماره ثبت">
-                <InputNumber disabled/>
-            </Form.Item>
-            <Form.Item>
+        <>
+            <Form form={form}
+                  autoComplete="off"
+                  name="document"
+                  layout="vertical"
+                  onFinish={onFinish}
+                  validateMessages={validateMessages}
+            >
+              <Form.Item>
                 <Form.Item name={['document', 'typeEstate']} className='w-[233px] inline-block m-2' label="نوع ملک"
                            rules={[{required: true}]}>
                     <Select
@@ -142,32 +150,45 @@ const Immovable = () => {
                              <TextArea allowClear />
                 </Form.Item>
             </Form.Item>
-            <Form.Item>
                 <Form.Item>
-                    <Form.Item style={{margin: 8}}>
-                        <ConfigProvider theme={{
-                            components: {
-                                Button: {
-                                    groupBorderColor: '#092b00',
-                                }
-                            }, token: {
-                                colorPrimary: '#52c41a'
-                            }
-                        }}>
-                            <Button  danger={loading} type={"primary"} loading={loading} block htmlType="submit">
-                                ثبت
-                            </Button>
-                        </ConfigProvider>
+                    <Divider>فروش</Divider>
+                    <Form.Item name={['document', 'soldDate']} className='register-form-personal'
+                               label="تاریخ فروش">
+                        <DatePickerJalali/>
                     </Form.Item>
-                    <Form.Item style={{margin: 8}}>
-                        <Button onClick={handleResetSubmit} block loading={loading} htmlType="button">
-                            ریست
-                        </Button>
+                    <Form.Item name={['document', 'buyer']} valuePropName="checked" className='register-form-personal' label="خریدار">
+                        <Input/>
+                    </Form.Item>
+                    <Divider>مشاهده مدارک</Divider>
+                    <ReceiveDocImmovable/>
+                    <Form.Item>
+                        <Form.Item style={{margin: 8}}>
+                            <ConfigProvider theme={{
+                                components: {
+                                    Button: {
+                                        groupBorderColor: '#092b00'
+                                    }
+                                }, token: {
+                                    colorPrimary: '#52c41a'
+                                }
+                            }}>
+                                <Button danger={loading} type={"primary"} loading={loading} block htmlType="submit">
+                                    ویرایش
+                                </Button>
+                            </ConfigProvider>
+                            <Form.Item style={{marginTop: 8}}>
+                                <Button onClick={() => navigate('/personal')} block loading={loading} htmlType="button">
+                                    بازگشت
+                                </Button>
+                            </Form.Item>
+                        </Form.Item>
                     </Form.Item>
                 </Form.Item>
-            </Form.Item>
-        </Form>
+
+            </Form>
+
+        </>
     );
 }
 
-export default Immovable;
+export default EditImmovable;

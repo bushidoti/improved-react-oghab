@@ -19,6 +19,7 @@ import ConstructionIcon from '@mui/icons-material/Construction';
 import EmojiFoodBeverageIcon from '@mui/icons-material/EmojiFoodBeverage';
 import EngineeringIcon from '@mui/icons-material/Engineering';
 import CellWifiIcon from '@mui/icons-material/CellWifi';
+import {Link} from "react-router-dom";
 
 const items: MenuProps['items'] = [
   {
@@ -27,12 +28,12 @@ const items: MenuProps['items'] = [
     icon: <HomeRepairServiceIcon />,
     children: [
          {
-            label: 'تجهیزات فرودگاهی',
+            label: <Link to='../warhouse/property/register/airport_equipment'>تجهیزات فرودگاهی</Link>,
             key: '1',
             icon: <AirplaneTicketIcon />,
           },
           {
-            label: 'تجهیزات ایمنی',
+            label:  <Link to='../warhouse/property/register/safety_equipment'>تجهیزات ایمنی</Link>,
             key: '2',
             icon: <HealthAndSafetyIcon />,
           }
@@ -44,17 +45,17 @@ const items: MenuProps['items'] = [
     icon: <DirectionsCarIcon />,
     children: [
          {
-            label: 'خودرو اداری',
+            label: <Link to='../warhouse/property/register/personal_vehicle'>خودرو اداری</Link>,
             key: '3',
             icon: <DirectionsCarFilledIcon />,
           },
           {
-            label: 'خودرو فرودگاهی',
+            label: <Link to='../warhouse/property/register/airport_vehicle'>خودرو فرودگاهی</Link>,
             key: '4',
             icon: <DirectionsBusFilledIcon />,
           },
           {
-            label: 'هواپیما',
+            label: <Link to='../warhouse/property/register/airplane'>هواپیما</Link>,
             key: '5',
             icon: <AirplanemodeActiveIcon />,
           }
@@ -66,27 +67,27 @@ const items: MenuProps['items'] = [
     icon: <EventSeatIcon />,
     children: [
          {
-            label: 'اثاثه الکترونیکی',
+            label: <Link to='../warhouse/property/register/electronic_furniture'>اثاثه الکترونیکی</Link>,
             key: '6',
             icon: <ElectricBoltIcon />,
          },
          {
-            label: 'اثاثه اداری',
+            label: <Link to='../warhouse/property/register/office_furniture'>اثاثه اداری</Link>,
             key: '7',
             icon: <LocalPrintshopIcon />,
          },
          {
-            label: 'اثاثه تاسیساتی',
+            label: <Link to='../warhouse/property/register/facility_furniture'>اثاثه تاسیساتی</Link>,
             key: '8',
             icon: <HeatPumpIcon />,
          },
          {
-            label: 'اثاثه فرودگاهی',
+            label: <Link to='../warhouse/property/register/airport_furniture'>اثاثه فرودگاهی</Link>,
             key: '9',
             icon: <LivingIcon />,
          },
          {
-            label: 'اثاثه دیجیتال',
+            label: <Link to='../warhouse/property/register/digital_furniture'>اثاثه دیجیتالی</Link>,
             key: '10',
             icon: <DevicesIcon />,
          }
@@ -98,22 +99,22 @@ const items: MenuProps['items'] = [
     icon: <DevicesOtherIcon />,
     children: [
          {
-            label: 'ابزار آلات غیر صنعتی',
+            label: <Link to='../warhouse/property/register/none_industrial_equipment'>ابزار آلات غیر صنعتی</Link>,
             key: '11',
             icon: <ConstructionIcon />,
           },
           {
-            label: 'ابزار آلات صنعتی',
+            label: <Link to='../warhouse/property/register/industrial_equipment'>ابزار آلات صنعتی</Link>,
             key: '12',
             icon: <EngineeringIcon />,
           },
           {
-            label: 'امتیازات',
+            label: <Link to='../warhouse/property/register/benefit'>امتیازات</Link>,
             key: '13',
             icon: <CellWifiIcon />,
           },
           {
-            label: 'اقلام پشتیبانی',
+            label: <Link to='../warhouse/property/register/support'>اقلام پشتیبانی</Link>,
             key: '14',
             icon: <EmojiFoodBeverageIcon />,
           }
@@ -146,9 +147,7 @@ const RegisterProperty: React.FC = () => {
                 }
             }
         }}>
-
             <Menu onClick={onClick} selectedKeys={[current]} mode="horizontal" items={items} />
-
         </ConfigProvider>
   );
 };

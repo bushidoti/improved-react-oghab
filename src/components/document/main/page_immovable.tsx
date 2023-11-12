@@ -402,7 +402,7 @@ const MainImmovable: React.FC = () => {
     return (
         <>
             <Space style={{marginBottom: 16}}>
-                <Badge color="red" status="processing" text="به معنی فروخته و قفل شده"/>
+                <Badge color="red" status="processing" text="به معنی فروخته شده"/>
                 <Button onClick={clearFilters}>پاک کردن فیتلر ها</Button>
                 <Button onClick={clearAll}>پاک کردن فیلتر و مرتب کننده ها</Button>
                 <Button onClick={generatePDF}>چاپ</Button>

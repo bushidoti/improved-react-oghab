@@ -592,7 +592,7 @@ const MainContract: React.FC = () => {
     return (
         <>
             <Space style={{marginBottom: 16}}>
-                <Badge color="green" status="processing" text="به معنی تسویه شده و قفل شده"/>
+                <Badge color="green" status="processing" text="به معنی تسویه شده"/>
                 <Button onClick={clearFilters}>پاک کردن فیتلر ها</Button>
                 <Button onClick={clearAll}>پاک کردن فیلتر و مرتب کننده ها</Button>
                 <Button onClick={generatePDF}>چاپ</Button>

@@ -130,9 +130,9 @@ const Immovable = () => {
                            rules={[{required: true}]}>
                     <Input/>
                 </Form.Item>
-                 <Form.Item name={['document', 'madeOf']} className='w-[233px] inline-block m-2' label="سال ساخت"
-                           rules={[{required: true}]}>
-                    <InputNumber className='w-[233px]' maxLength={4}/>
+                 <Form.Item name={['document', 'madeOf']} className='w-[233px] inline-block m-2' hasFeedback label="سال ساخت"
+                           rules={[{required: true, len: 4}]}>
+                    <Input className='w-[233px]' showCount type={'number'} maxLength={4} />
                  </Form.Item>
                <Form.Item name={['document', 'meter']} className='w-[233px] inline-block m-2' label="متراژ"
                            rules={[{required: true}]}>

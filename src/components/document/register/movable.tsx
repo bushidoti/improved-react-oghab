@@ -169,28 +169,28 @@ const Movable = () => {
                            rules={[{required: true}]}>
                     <Input/>
                 </Form.Item>
-                 <Form.Item name={['document', 'madeOf']} className='w-[233px] inline-block m-2' label="سال ساخت"
-                           rules={[{required: true}]}>
-                    <InputNumber className='w-[233px]' maxLength={4}/>
+                 <Form.Item name={['document', 'madeOf']} className='w-[233px] inline-block m-2' hasFeedback label="سال ساخت"
+                           rules={[{required: true, len: 4}]}>
+                    <Input className='w-[233px]' showCount type={'number'} maxLength={4} />
                  </Form.Item>
                <Form.Item name={['document', 'model']} className='w-[233px] inline-block m-2' label="مدل"
                            rules={[{required: true}]}>
                     <Input/>
                 </Form.Item>
                     <Space.Compact>
-                       <Form.Item name={['document', 'part3plate']} label="سریال" className='w-[80px] inline-block ms-2 mt-2' rules={[{required: true}]}>
-                            <Input maxLength={2} placeholder={'- -'} className='text-center'/>
+                       <Form.Item name={['document', 'part3plate']} label="سریال" hasFeedback className='w-[80px] inline-block ms-2 mt-2' rules={[{required: true, len: 2}]}>
+                            <Input maxLength={2} type={'number'} placeholder={'- -'} className='text-center'/>
                        </Form.Item>
-                        <Form.Item name={['document', 'part2plate']} label="راست" className='w-[80px] inline-block mt-2' rules={[{required: true}]}>
-                              <Input maxLength={3} placeholder={'- - -'} className='text-center'/>
+                        <Form.Item name={['document', 'part2plate']} label="راست" hasFeedback className='w-[80px] inline-block mt-2' rules={[{required: true, len: 3}]}>
+                              <Input type={'number'} maxLength={3} placeholder={'- - -'} className='text-center'/>
                        </Form.Item>
                         <Form.Item name={['document', 'cityPlate']} label="شهر" className='w-[120px] inline-block mt-2' rules={[{required: true}]}>
                           <Select
                             placeholder="انتخاب کنید"
                             options={options}/>
                        </Form.Item>
-                        <Form.Item name={['document', 'part1plate']} label="چپ" className='w-[80px] inline-block mt-2' rules={[{required: true}]}>
-                           <Input maxLength={2} placeholder={'- -'} className='text-center'/>
+                        <Form.Item name={['document', 'part1plate']} label="چپ" hasFeedback className='w-[80px] inline-block mt-2' rules={[{required: true, len: 2}]}>
+                           <Input maxLength={2} type={'number'} placeholder={'- -'} className='text-center'/>
                        </Form.Item>
                     </Space.Compact>
                 </Form.Item>

@@ -1,6 +1,6 @@
 import React, {useContext} from 'react';
 import type { MenuProps } from 'antd';
-import {ConfigProvider, Menu} from 'antd';
+import {Alert, ConfigProvider, Divider, Flex, Menu, Space} from 'antd';
 import HomeRepairServiceIcon from '@mui/icons-material/HomeRepairService';
 import DirectionsCarIcon from '@mui/icons-material/DirectionsCar';
 import EventSeatIcon from '@mui/icons-material/EventSeat';
@@ -140,7 +140,7 @@ const RegisterProperty: React.FC = () => {
   const onClick: MenuProps['onClick'] = (e) => {
     context.setCurrentPropertyForm(e.key);
   };
-
+    console.log(context.propertyCapsule)
   return (
         <ConfigProvider theme={{
             components: {
@@ -189,6 +189,29 @@ const RegisterProperty: React.FC = () => {
                         }
                     })()}
                 </>
+            <>
+                {context.propertyCapsule.length !==0 ?
+                     <Alert
+                      message="آیتم های در حال انتظار ثبت نهایی"
+                      description={
+                      <Flex gap="middle" vertical>
+                        {context.propertyCapsule.map((data:any, index) => (
+                            <div key={index}>
+                                <Space>
+                                <p> آیتم : {index + 1}</p>
+                                <p> کد اموال : {data.code}</p>
+                                <p> نام اموال : {data.name}</p>
+                                </Space>
+                                <Divider />
+                            </div>
+                        ))}
+                      </Flex>
+                 } type="success"/>
+                : null}
+
+
+
+            </>
         </ConfigProvider>
   );
 };

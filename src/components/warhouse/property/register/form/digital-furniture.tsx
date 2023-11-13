@@ -15,7 +15,6 @@ const validateMessages = {
 const DigitalFurniture     = () => {
     const [form] = Form.useForm();
     const navigate = useNavigate();
-    const [loading, setLoading] = useState<boolean>(false);
     const context = useContext(Context)
     const [autoIncrement, setAutoIncrement] = useState<number>()
     const [autoIncrementFactor, setAutoIncrementFactor] = useState<number>()
@@ -23,36 +22,22 @@ const DigitalFurniture     = () => {
     const [currentConnectionDevice, setCurrentConnectionDevice] = useState<string>('')
     const [visible, setVisible] = useState(false);
 
-    const onFinish = async () => {
-        setLoading(true)
-                await axios.post(
-                    `${Url}/api/factor_property/`, {
-                                code: form.getFieldValue(['property','factorCode']),
-                                inventory: context.office,
-                                factor: context.compressed,
-                            }, {
-                        headers: {
-                            'Authorization': 'Bearer ' + localStorage.getItem('access_token'),
-                        }
-                    }).then(
-                        response => {
-                    return response
-                }).then(async data => {
-                    if (data.status === 201) {
-                        message.success('فاکتور ثبت شد.');
-                        setLoading(false)
-                    }
-                }).catch(async (error) => {
-                    if (error.request.status === 403) {
-                        navigate('/no_access')
-                    } else if (error.request.status === 400) {
-                        message.error('عدم ثبت');
-                        setLoading(false)
-                        await handleResetSubmit()
-                    }
-                }).then(async () => {
-               await axios.post(
-                   `${Url}/api/property/`, {
+    const subObjAdd = async () => {
+        await axios.put(`${Url}/api/autoincrement_property/${autoIncrement}/`, {
+            increment: form.getFieldValue(['property', 'code']) + 1
+        }, {
+            headers: {
+                'Authorization': 'Bearer ' + localStorage.getItem('access_token'),
+            }
+        }).then(response => {
+            return response
+        }).then(async data => {
+            if (data.status === 200) {
+                message.success('کد کالا بروز شد');
+                await fetchData()
+            }
+        }).then(() => {
+              context.setPropertyCapsule(oldArray => [...oldArray, {
                             code : form.getFieldValue(['property','code']),
                             category : context.currentPropertyForm,
                             factorCode:  form.getFieldValue(['property','factorCode']),
@@ -70,7 +55,41 @@ const DigitalFurniture     = () => {
                             sub_item_type: form.getFieldValue(['property','sub_item_type']),
                             model: form.getFieldValue(['property','model']),
                             install_location: form.getFieldValue(['property','install_location']),
-                   },  {
+                   }])
+        })
+    }
+
+    const onFinish = async () => {
+        context.setLoadingAjax(true)
+                await axios.post(
+                    `${Url}/api/factor_property/`, {
+                                code: form.getFieldValue(['property','factorCode']),
+                                inventory: context.office,
+                                factor: context.compressed,
+                                jsonData: context.propertyCapsule,
+                            }, {
+                        headers: {
+                            'Authorization': 'Bearer ' + localStorage.getItem('access_token'),
+                        }
+                    }).then(
+                        response => {
+                    return response
+                }).then(async data => {
+                    if (data.status === 201) {
+                        message.success('فاکتور ثبت شد.');
+                        context.setLoadingAjax(false)
+                    }
+                }).catch(async (error) => {
+                    if (error.request.status === 403) {
+                        navigate('/no_access')
+                    } else if (error.request.status === 400) {
+                        message.error('عدم ثبت');
+                        context.setLoadingAjax(false)
+                        await handleResetSubmit()
+                    }
+                }).then(async () => {
+               await axios.post(
+                   `${Url}/api/property/`, context.propertyCapsule,  {
                        headers: {
                            'Authorization': 'Bearer ' + localStorage.getItem('access_token'),
                        }
@@ -80,22 +99,7 @@ const DigitalFurniture     = () => {
                    if (data.status === 201) {
                        message.success('ثبت شد');
                        await handleResetSubmit()
-                       setLoading(false)
-                   }
-               }).then(async () => {
-                   return await axios.put(`${Url}/api/autoincrement_property/${autoIncrement}/`, {
-                       increment: form.getFieldValue(['property','code']) + 1
-                   }, {
-                       headers: {
-                           'Authorization': 'Bearer ' + localStorage.getItem('access_token'),
-                       }
-                   })
-               }).then(response => {
-                   return response
-               }).then(async data => {
-                   if (data.status === 200) {
-                       message.success('کد کالا بروز شد');
-                       await fetchData()
+                       context.setLoadingAjax(false)
                    }
                }).then(async () => {
                    return await axios.put(`${Url}/api/autoincrement_property_factor/${autoIncrementFactor}/`, {
@@ -111,13 +115,14 @@ const DigitalFurniture     = () => {
                    if (data.status === 200) {
                        message.success('کد فاکتور بروز شد');
                        await fetchData()
+                       context.setPropertyCapsule(oldArray => [])
                    }
                }).catch(async (error) => {
                    if (error.request.status === 403) {
                        navigate('/no_access')
                    } else if (error.request.status === 400) {
                        message.error('عدم ثبت');
-                       setLoading(false)
+                       context.setLoadingAjax(false)
                        await handleResetSubmit()
                    }
                })
@@ -364,7 +369,7 @@ const DigitalFurniture     = () => {
                                 colorPrimary: '#faad14',
                             }
                         }}>
-                            <Button type={"primary"} onClick={scanImage} loading={loading}>اسکن</Button>
+                            <Button type={"primary"} onClick={scanImage} loading={context.loadingAjax}>اسکن</Button>
                         </ConfigProvider>
                         <Button type={"primary"} onClick={() => setVisible(true)}>پیش نمایش</Button>
                     </Space.Compact>
@@ -382,13 +387,28 @@ const DigitalFurniture     = () => {
                                 colorPrimary: '#52c41a'
                             }
                         }}>
-                            <Button  danger={loading} type={"primary"} loading={loading} block htmlType="submit">
+                            <Button  danger={context.loadingAjax} onClick={subObjAdd} type={"primary"} loading={context.loadingAjax} block htmlType="button">
                                 ثبت
                             </Button>
                         </ConfigProvider>
                     </Form.Item>
+                      <Form.Item style={{margin: 8}}>
+                        <ConfigProvider theme={{
+                                    components: {
+                                        Button: {
+                                            groupBorderColor: '#ff0000',
+                                        }
+                                        }, token: {
+                                            colorPrimary: 'rgba(255,0,0,0.72)'
+                            }
+                        }}>
+                                  <Button  type={"primary"} block htmlType="submit">
+                                     پایان
+                                  </Button>
+                        </ConfigProvider>
+                    </Form.Item>
                     <Form.Item style={{margin: 8}}>
-                        <Button onClick={handleResetSubmit} block loading={loading} htmlType="button">
+                        <Button onClick={handleResetSubmit} block loading={context.loadingAjax} htmlType="button">
                             ریست
                         </Button>
                     </Form.Item>

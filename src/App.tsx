@@ -22,6 +22,7 @@ const App: React.FC = () => {
     const navigate = useNavigate();
     const [isLogged, setLogged] = useState(false)
     const [loading, setLoading] = useState(true)
+    const [loadingAjax, setLoadingAjax] = useState(false)
     const [fullName, setFullName] = useState('');
     const [office, setOffice] = useState('');
     const [scan, setScan] = useState('');
@@ -35,6 +36,7 @@ const App: React.FC = () => {
     const [currentProductFactor, setCurrentProductFactor] = useState<number>(0)
     const [currentProductCheck, setCurrentProductCheck] = useState<number>(0)
     const [permission, setPermission] = useState('');
+    const [propertyCapsule, setPropertyCapsule] = useState<any>([]);
     const [currentPropertyForm, setCurrentPropertyForm] = useState<string>('');
 
 
@@ -167,9 +169,13 @@ const App: React.FC = () => {
                     setCurrentProductDoc,
                     setCurrentDocProperty,
                     currentDocProperty,
+                    setLoadingAjax,
+                    loadingAjax,
                     currentProductDoc,
                     setCurrentProduct,
                     setCurrentProductCheck,
+                    setPropertyCapsule,
+                    propertyCapsule,
                     currentProductCheck,
                     setCurrentProductFactor,
                     currentPropertyForm,

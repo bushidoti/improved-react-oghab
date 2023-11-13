@@ -446,7 +446,6 @@ const InputForm: React.FC = () => {
                         </>
                         : null}
 
-
                 </Form.Item>
                 <Form.Item>
                     <Form.List name={['products']}>

@@ -17,12 +17,18 @@ export const Context = createContext({
     },
     setCurrentDocProperty: (_value: number) => {
     },
+    setLoadingAjax: (_value: boolean) => {
+    },
     setCurrentProductCheck: (_value: number) => {
+    },
+    setPropertyCapsule: (_value: (oldArray: any) => any[]) => {
     },
     fullName: '',
     isLogged: false,
+    loadingAjax: false,
     office: '',
     currentProductDoc: '',
+    propertyCapsule: [],
     compressed: '',
     currentPropertyForm: '',
     currentPersonal: 0,

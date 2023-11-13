@@ -35,6 +35,7 @@ const App: React.FC = () => {
     const [currentProductFactor, setCurrentProductFactor] = useState<number>(0)
     const [currentProductCheck, setCurrentProductCheck] = useState<number>(0)
     const [permission, setPermission] = useState('');
+    const [currentPropertyForm, setCurrentPropertyForm] = useState<string>('');
 
 
     useEffect(() => {
@@ -171,6 +172,8 @@ const App: React.FC = () => {
                     setCurrentProductCheck,
                     currentProductCheck,
                     setCurrentProductFactor,
+                    currentPropertyForm,
+                    setCurrentPropertyForm,
                     currentProductFactor,
                     currentProduct,
                     scan,

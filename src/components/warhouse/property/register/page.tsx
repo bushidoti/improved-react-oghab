@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useContext} from 'react';
 import type { MenuProps } from 'antd';
 import {ConfigProvider, Menu} from 'antd';
 import HomeRepairServiceIcon from '@mui/icons-material/HomeRepairService';
@@ -19,7 +19,19 @@ import ConstructionIcon from '@mui/icons-material/Construction';
 import EmojiFoodBeverageIcon from '@mui/icons-material/EmojiFoodBeverage';
 import EngineeringIcon from '@mui/icons-material/Engineering';
 import CellWifiIcon from '@mui/icons-material/CellWifi';
-import {Link} from "react-router-dom";
+import SafetyEquipment from "./form/safety-equipment";
+import {Context} from "../../../../context";
+import AirportEquipment from "./form/airport-equipment";
+import Vehicle from "./form/vehicle";
+import ElectronicFurniture from "./form/electronic-furniture";
+import OfficeFurniture from "./form/office-furniture";
+import FacilityFurniture from "./form/facility-furniture";
+import AirportFurniture from "./form/airport-furniture";
+import DigitalFurniture from "./form/digital-furniture";
+import NoneIndustrial from "./form/none_industrial";
+import SupportItem from "./form/support-items";
+import Benefit from "./form/benefit";
+import Industrial from "./form/industrial";
 
 const items: MenuProps['items'] = [
   {
@@ -28,13 +40,13 @@ const items: MenuProps['items'] = [
     icon: <HomeRepairServiceIcon />,
     children: [
          {
-            label: <Link to='../warhouse/property/register/airport_equipment'>تجهیزات فرودگاهی</Link>,
-            key: '1',
+            label: 'تجهیزات فرودگاهی',
+            key: 'تجهیزات فرودگاهی',
             icon: <AirplaneTicketIcon />,
           },
           {
-            label:  <Link to='../warhouse/property/register/safety_equipment'>تجهیزات ایمنی</Link>,
-            key: '2',
+            label:  'تجهیزات ایمنی',
+            key: 'تجهیزات ایمنی',
             icon: <HealthAndSafetyIcon />,
           }
     ],
@@ -45,18 +57,18 @@ const items: MenuProps['items'] = [
     icon: <DirectionsCarIcon />,
     children: [
          {
-            label: <Link to='../warhouse/property/register/personal_vehicle'>خودرو اداری</Link>,
-            key: '3',
+            label: 'خودرو اداری',
+            key: 'خودرو اداری',
             icon: <DirectionsCarFilledIcon />,
           },
           {
-            label: <Link to='../warhouse/property/register/airport_vehicle'>خودرو فرودگاهی</Link>,
-            key: '4',
+            label: 'خودرو فرودگاهی',
+            key: 'خودرو فرودگاهی',
             icon: <DirectionsBusFilledIcon />,
           },
           {
-            label: <Link to='../warhouse/property/register/airplane'>هواپیما</Link>,
-            key: '5',
+            label: 'هواپیما',
+            key: 'هواپیما',
             icon: <AirplanemodeActiveIcon />,
           }
     ],
@@ -67,28 +79,28 @@ const items: MenuProps['items'] = [
     icon: <EventSeatIcon />,
     children: [
          {
-            label: <Link to='../warhouse/property/register/electronic_furniture'>اثاثه الکترونیکی</Link>,
-            key: '6',
+            label: 'اثاثه الکترونیکی',
+            key: 'اثاثه الکترونیکی',
             icon: <ElectricBoltIcon />,
          },
          {
-            label: <Link to='../warhouse/property/register/office_furniture'>اثاثه اداری</Link>,
-            key: '7',
+            label: 'اثاثه اداری',
+            key: 'اثاثه اداری',
             icon: <LocalPrintshopIcon />,
          },
          {
-            label: <Link to='../warhouse/property/register/facility_furniture'>اثاثه تاسیساتی</Link>,
-            key: '8',
+            label: 'اثاثه تاسیساتی',
+            key: 'اثاثه تاسیساتی',
             icon: <HeatPumpIcon />,
          },
          {
-            label: <Link to='../warhouse/property/register/airport_furniture'>اثاثه فرودگاهی</Link>,
-            key: '9',
+            label: 'اثاثه فرودگاهی',
+            key: 'اثاثه فرودگاهی',
             icon: <LivingIcon />,
          },
          {
-            label: <Link to='../warhouse/property/register/digital_furniture'>اثاثه دیجیتالی</Link>,
-            key: '10',
+            label: 'اثاثه دیجیتالی',
+            key: 'اثاثه دیجیتالی',
             icon: <DevicesIcon />,
          }
     ],
@@ -99,23 +111,23 @@ const items: MenuProps['items'] = [
     icon: <DevicesOtherIcon />,
     children: [
          {
-            label: <Link to='../warhouse/property/register/none_industrial_equipment'>ابزار آلات غیر صنعتی</Link>,
-            key: '11',
+            label: 'ابزار آلات غیر صنعتی',
+            key: 'ابزار آلات غیر صنعتی',
             icon: <ConstructionIcon />,
           },
           {
-            label: <Link to='../warhouse/property/register/industrial_equipment'>ابزار آلات صنعتی</Link>,
-            key: '12',
+            label: 'ابزار آلات صنعتی',
+            key: 'ابزار آلات صنعتی',
             icon: <EngineeringIcon />,
           },
           {
-            label: <Link to='../warhouse/property/register/benefit'>امتیازات</Link>,
-            key: '13',
+            label: 'امتیازات',
+            key: 'امتیازات',
             icon: <CellWifiIcon />,
           },
           {
-            label: <Link to='../warhouse/property/register/support'>اقلام پشتیبانی</Link>,
-            key: '14',
+            label: 'اقلام پشتیبانی',
+            key: 'اقلام پشتیبانی',
             icon: <EmojiFoodBeverageIcon />,
           }
     ],
@@ -123,11 +135,10 @@ const items: MenuProps['items'] = [
 ];
 
 const RegisterProperty: React.FC = () => {
-  const [current, setCurrent] = useState('mail');
+  const context = useContext(Context)
 
   const onClick: MenuProps['onClick'] = (e) => {
-    console.log('click ', e);
-    setCurrent(e.key);
+    context.setCurrentPropertyForm(e.key);
   };
 
   return (
@@ -147,7 +158,37 @@ const RegisterProperty: React.FC = () => {
                 }
             }
         }}>
-            <Menu onClick={onClick} selectedKeys={[current]} mode="horizontal" items={items} />
+            <Menu onClick={onClick} selectedKeys={[context.currentPropertyForm]} mode="horizontal" items={items} />
+                <>
+                    {(() => {
+                        if (context.currentPropertyForm === 'تجهیزات ایمنی'){
+                            return <SafetyEquipment/>
+                        } else if (context.currentPropertyForm === 'تجهیزات فرودگاهی'){
+                            return <AirportEquipment/>
+                        } else  if (context.currentPropertyForm === 'خودرو اداری' ||
+                            context.currentPropertyForm === 'خودرو فرودگاهی' || context.currentPropertyForm === 'هواپیما' ){
+                            return <Vehicle/>
+                        } else if (context.currentPropertyForm === 'اثاثه الکترونیکی'){
+                            return <ElectronicFurniture/>
+                        } else if (context.currentPropertyForm === 'اثاثه اداری'){
+                            return <OfficeFurniture/>
+                        } else if (context.currentPropertyForm === 'اثاثه تاسیساتی'){
+                            return <FacilityFurniture/>
+                        } else if (context.currentPropertyForm === 'اثاثه فرودگاهی'){
+                            return <AirportFurniture/>
+                        } else if (context.currentPropertyForm === 'اثاثه دیجیتالی'){
+                            return <DigitalFurniture/>
+                        } else if (context.currentPropertyForm === 'ابزار آلات غیر صنعتی'){
+                            return <NoneIndustrial/>
+                        } else if (context.currentPropertyForm === 'ابزار آلات صنعتی'){
+                            return <Industrial/>
+                        } else if (context.currentPropertyForm === 'اقلام پشتیبانی'){
+                            return <SupportItem/>
+                        } else if (context.currentPropertyForm === 'امتیازات'){
+                            return <Benefit/>
+                        }
+                    })()}
+                </>
         </ConfigProvider>
   );
 };

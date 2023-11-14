@@ -1,6 +1,5 @@
 import {Route, Routes} from "react-router-dom";
 import React, {useContext} from "react";
-
 import RegisterContract from "../contract/register/page";
 import UploadContract from "../contract/upload/page";
 import RegisterDocument from "../document/register/page";
@@ -9,7 +8,6 @@ import RegisterProduct from "../warhouse/product/register/page";
 import ReportProduct from "../warhouse/product/report/page";
 import RecycleProperty from "../warhouse/property/recycle/page";
 import RegisterProperty from "../warhouse/property/register/page";
-import ReportProperty from "../warhouse/property/report/page";
 import SentProperty from "../warhouse/property/sent/page";
 import RegisterPersonal from "../personal/register/page";
 import UploadPersonal from "../personal/upload/page";
@@ -67,7 +65,7 @@ export const RouteLayout = () => {
                 <Route path={'/warhouse/product/report'} element={<ReportProduct/>}/>
                 <Route path={'/warhouse/property'} element={<MainProperty/>}/>
                 <Route path={'/warhouse/property/register'} element={<RegisterProperty/>}/>
-                <Route path={'/warhouse/property/report'} element={<ReportProperty/>}/>
+                <Route path={'/warhouse/property/report'} element={<MainProperty/>}/>
                 <Route path={'/warhouse/property/sent'} element={<SentProperty/>}/>
                 <Route path={'/warhouse/property/recycle'} element={<RecycleProperty/>}/>
                 <Route path={'/warhouse/handling'} element={<Handling/>}/>

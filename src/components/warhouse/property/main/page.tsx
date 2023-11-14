@@ -20,6 +20,7 @@ import EmojiFoodBeverageIcon from '@mui/icons-material/EmojiFoodBeverage';
 import EngineeringIcon from '@mui/icons-material/Engineering';
 import CellWifiIcon from '@mui/icons-material/CellWifi';
 import {Context} from "../../../../context";
+import SafetyEquipmentTable from "./tables/table_safety_equipment.";
 
 
 const items: MenuProps['items'] = [
@@ -127,7 +128,7 @@ const MainProperty: React.FC = () => {
   const context = useContext(Context)
 
   const onClick: MenuProps['onClick'] = (e) => {
-    context.setCurrentPropertyForm(e.key);
+    context.setCurrentPropertyTable(e.key);
   };
 
   return (
@@ -147,33 +148,33 @@ const MainProperty: React.FC = () => {
                 }
             }
         }}>
-            <Menu onClick={onClick} selectedKeys={[context.currentPropertyForm]} mode="horizontal" items={items} />
+            <Menu onClick={onClick} selectedKeys={[context.currentPropertyTable]} mode="horizontal" items={items} />
                 <>
                     {(() => {
-                        if (context.currentPropertyForm === 'تجهیزات ایمنی'){
+                        if (context.currentPropertyTable === 'تجهیزات ایمنی'){
+                            return <SafetyEquipmentTable/>
+                        } else if (context.currentPropertyTable === 'تجهیزات فرودگاهی'){
                             return ''
-                        } else if (context.currentPropertyForm === 'تجهیزات فرودگاهی'){
+                        } else  if (context.currentPropertyTable === 'خودرو اداری' ||
+                            context.currentPropertyTable === 'خودرو فرودگاهی' || context.currentPropertyTable === 'هواپیما' ){
                             return ''
-                        } else  if (context.currentPropertyForm === 'خودرو اداری' ||
-                            context.currentPropertyForm === 'خودرو فرودگاهی' || context.currentPropertyForm === 'هواپیما' ){
+                        } else if (context.currentPropertyTable === 'اثاثه الکترونیکی'){
                             return ''
-                        } else if (context.currentPropertyForm === 'اثاثه الکترونیکی'){
+                        } else if (context.currentPropertyTable === 'اثاثه اداری'){
                             return ''
-                        } else if (context.currentPropertyForm === 'اثاثه اداری'){
+                        } else if (context.currentPropertyTable === 'اثاثه تاسیساتی'){
                             return ''
-                        } else if (context.currentPropertyForm === 'اثاثه تاسیساتی'){
+                        } else if (context.currentPropertyTable === 'اثاثه فرودگاهی'){
                             return ''
-                        } else if (context.currentPropertyForm === 'اثاثه فرودگاهی'){
+                        } else if (context.currentPropertyTable === 'اثاثه دیجیتالی'){
                             return ''
-                        } else if (context.currentPropertyForm === 'اثاثه دیجیتالی'){
+                        } else if (context.currentPropertyTable === 'ابزار آلات غیر صنعتی'){
                             return ''
-                        } else if (context.currentPropertyForm === 'ابزار آلات غیر صنعتی'){
+                        } else if (context.currentPropertyTable === 'ابزار آلات صنعتی'){
                             return ''
-                        } else if (context.currentPropertyForm === 'ابزار آلات صنعتی'){
+                        } else if (context.currentPropertyTable === 'اقلام پشتیبانی'){
                             return ''
-                        } else if (context.currentPropertyForm === 'اقلام پشتیبانی'){
-                            return ''
-                        } else if (context.currentPropertyForm === 'امتیازات'){
+                        } else if (context.currentPropertyTable === 'امتیازات'){
                             return ''
                         }
                     })()}

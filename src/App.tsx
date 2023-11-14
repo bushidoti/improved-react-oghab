@@ -34,10 +34,12 @@ const App: React.FC = () => {
     const [currentDocProperty, setCurrentDocProperty] = useState<number>(0)
     const [currentProduct, setCurrentProduct] = useState<number>(0)
     const [currentProductFactor, setCurrentProductFactor] = useState<number>(0)
+    const [currentPropertyFactor, setCurrentPropertyFactor] = useState<number>(0)
     const [currentProductCheck, setCurrentProductCheck] = useState<number>(0)
     const [permission, setPermission] = useState('');
     const [propertyCapsule, setPropertyCapsule] = useState<any>([]);
     const [currentPropertyForm, setCurrentPropertyForm] = useState<string>('');
+    const [currentPropertyTable, setCurrentPropertyTable] = useState<string>('');
     const [propertyTab, setPropertyTab] = useState<string>('ثبت اولیه / خرید');
 
 
@@ -171,6 +173,8 @@ const App: React.FC = () => {
                     setCurrentDocProperty,
                     currentDocProperty,
                     setLoadingAjax,
+                    setCurrentPropertyFactor,
+                    currentPropertyFactor,
                     loadingAjax,
                     currentProductDoc,
                     setCurrentProduct,
@@ -179,6 +183,8 @@ const App: React.FC = () => {
                     propertyCapsule,
                     currentProductCheck,
                     setCurrentProductFactor,
+                    setCurrentPropertyTable,
+                    currentPropertyTable,
                     currentPropertyForm,
                     setCurrentPropertyForm,
                     currentProductFactor,

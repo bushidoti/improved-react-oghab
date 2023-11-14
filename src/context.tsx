@@ -21,14 +21,19 @@ export const Context = createContext({
     },
     setCurrentProductCheck: (_value: number) => {
     },
+    setCurrentPropertyFactor: (_value: number) => {
+    },
     setPropertyCapsule: (_value: (oldArray: any) => any[]) => {
     },
     setPropertyTab: (_value: string) => {
+    },
+    setCurrentPropertyTable: (_value: string) => {
     },
     fullName: '',
     isLogged: false,
     loadingAjax: false,
     office: '',
+    currentPropertyTable: '',
     propertyTab: '',
     currentProductDoc: '',
     propertyCapsule: [],
@@ -37,6 +42,7 @@ export const Context = createContext({
     currentPersonal: 0,
     currentDocProperty: 0,
     currentProductCheck: 0,
+    currentPropertyFactor: 0,
     currentProduct: 0,
     currentContract: 0,
     currentProductFactor: 0,

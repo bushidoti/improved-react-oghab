@@ -1,6 +1,6 @@
 import React, {useContext} from 'react';
 import type { MenuProps } from 'antd';
-import {Alert, ConfigProvider, Divider, Flex, Menu, Space} from 'antd';
+import {Alert, ConfigProvider, Divider, Flex, Menu, Space, Tabs} from 'antd';
 import HomeRepairServiceIcon from '@mui/icons-material/HomeRepairService';
 import DirectionsCarIcon from '@mui/icons-material/DirectionsCar';
 import EventSeatIcon from '@mui/icons-material/EventSeat';
@@ -134,13 +134,13 @@ const items: MenuProps['items'] = [
   },
 ];
 
-const RegisterProperty: React.FC = () => {
+const RepairRegister: React.FC = () => {
   const context = useContext(Context)
 
   const onClick: MenuProps['onClick'] = (e) => {
     context.setCurrentPropertyForm(e.key);
   };
-    console.log(context.propertyCapsule)
+
   return (
         <ConfigProvider theme={{
             components: {
@@ -199,8 +199,10 @@ const RegisterProperty: React.FC = () => {
                             <div key={index}>
                                 <Space>
                                 <p> آیتم : {index + 1}</p>
-                                <p> کد اموال : {data.code}</p>
-                                <p> نام اموال : {data.name}</p>
+                                <p> کد اموال : {context.propertyTab === 'تعمیرات' ? data.property : data.code }</p>
+                                {context.propertyTab === 'تعمیرات' ? <p>شرح تعمیر : {data.description}</p> : null }
+                                {context.propertyTab === 'تعمیرات' ? <p>شناسه فاکتور : {data.document_code}</p> : null }
+                                {context.propertyTab === 'تعمیرات' ? null :  <p> نام اموال : {data.name}</p> }
                                 </Space>
                                 <Divider />
                             </div>
@@ -216,4 +218,35 @@ const RegisterProperty: React.FC = () => {
   );
 };
 
-export default RegisterProperty;
+
+
+
+export default function RegisterProperty() {
+    const context = useContext(Context)
+
+    const onChange = (key: string) => {
+          context.setPropertyTab(key);
+        };
+
+    const items = [
+        {
+            label: `ثبت اولیه / خرید`,
+            key: 'ثبت اولیه / خرید',
+            children: <RepairRegister/>,
+        }, {
+            label: `تعمیرات`,
+            key: 'تعمیرات',
+            children: <RepairRegister/>,
+        }
+    ];
+    return (
+        <Tabs
+            defaultActiveKey="1"
+            centered
+            type="card"
+            items={items}
+            onChange={onChange}
+        />
+    )
+}
+

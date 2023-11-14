@@ -1,9 +1,10 @@
 import React, {useContext, useEffect, useState} from 'react';
-import {Button, ConfigProvider, Form, Image, Input, InputNumber, message, Space} from 'antd';
+import {Button, ConfigProvider, Form, Image, Input, InputNumber, message, Select, Space} from 'antd';
 import axios from "axios";
 import {useNavigate} from "react-router-dom";
 import {Context} from "../../../../../context";
 import Url from "../../../../api-configue";
+import TextArea from "antd/es/input/TextArea";
 
 
 /* eslint-disable no-template-curly-in-string */
@@ -19,23 +20,26 @@ const Industrial = () => {
     const [autoIncrement, setAutoIncrement] = useState<number>()
     const [autoIncrementFactor, setAutoIncrementFactor] = useState<number>()
     const [visible, setVisible] = useState(false);
+    const [listProperty, setListProperty] = useState<any[]>([]);
+
 
     const subObjAdd = async () => {
-        await axios.put(`${Url}/api/autoincrement_property/${autoIncrement}/`, {
-            increment: form.getFieldValue(['property', 'code']) + 1
-        }, {
-            headers: {
-                'Authorization': 'Bearer ' + localStorage.getItem('access_token'),
-            }
-        }).then(response => {
-            return response
-        }).then(async data => {
-            if (data.status === 200) {
-                message.success('کد کالا بروز شد');
-                await fetchData()
-            }
-        }).then(() => {
-              context.setPropertyCapsule(oldArray => [...oldArray, {
+        if (context.propertyTab === 'ثبت اولیه / خرید'){
+           await axios.put(`${Url}/api/autoincrement_property/${autoIncrement}/`, {
+                increment: form.getFieldValue(['property', 'code']) + 1
+            }, {
+                headers: {
+                    'Authorization': 'Bearer ' + localStorage.getItem('access_token'),
+                }
+            }).then(response => {
+                return response
+            }).then(async data => {
+                if (data.status === 200) {
+                    message.success('کد کالا بروز شد');
+                    await fetchData()
+                }
+            }).then(async () => {
+                context.setPropertyCapsule(oldArray => [...oldArray, {
                             code : form.getFieldValue(['property','code']),
                             category : context.currentPropertyForm,
                             factorCode:  form.getFieldValue(['property','factorCode']),
@@ -48,10 +52,25 @@ const Industrial = () => {
                             year_buy: form.getFieldValue(['property','year_buy']),
                             using_location: form.getFieldValue(['property','using_location']),
                    }])
-        })
+               await handleResetSubmit()
+
+           })
+      }else if (context.propertyTab === 'تعمیرات'){
+             context.setPropertyCapsule(oldArray => [...oldArray, {
+                                property : form.getFieldValue(['property','property']),
+                                factorCode:  form.getFieldValue(['property','factorCode']),
+                                document_code:  form.getFieldValue(['property','document_code']),
+                                description:  form.getFieldValue(['property','description']),
+                                inventory: context.office,
+             }])
+            await handleResetSubmit()
+        }
     }
+
+
     const onFinish = async () => {
-        context.setLoadingAjax(true)
+        if (context.propertyTab === 'ثبت اولیه / خرید'){
+                context.setLoadingAjax(true)
                 await axios.post(
                     `${Url}/api/factor_property/`, {
                                 code: form.getFieldValue(['property','factorCode']),
@@ -106,7 +125,7 @@ const Industrial = () => {
                    if (data.status === 200) {
                        message.success('کد فاکتور بروز شد');
                        await fetchData()
-                       context.setPropertyCapsule(oldArray => [])
+                       context.setPropertyCapsule(() => [])
                    }
                }).catch(async (error) => {
                    if (error.request.status === 403) {
@@ -118,7 +137,75 @@ const Industrial = () => {
                    }
                })
            })
-
+        }else if (context.propertyTab === 'تعمیرات') {
+            context.setLoadingAjax(true)
+                await axios.post(
+                    `${Url}/api/factor_property/`, {
+                                code: form.getFieldValue(['property','factorCode']),
+                                inventory: context.office,
+                                factor: context.compressed,
+                                jsonData: context.propertyCapsule,
+                            }, {
+                        headers: {
+                            'Authorization': 'Bearer ' + localStorage.getItem('access_token'),
+                        }
+                    }).then(
+                        response => {
+                    return response
+                }).then(async data => {
+                    if (data.status === 201) {
+                        message.success('فاکتور ثبت شد.');
+                        context.setLoadingAjax(false)
+                    }
+                }).catch(async (error) => {
+                    if (error.request.status === 403) {
+                        navigate('/no_access')
+                    } else if (error.request.status === 400) {
+                        message.error('عدم ثبت');
+                        context.setLoadingAjax(false)
+                        await handleResetSubmit()
+                    }
+                }).then(async () => {
+               await axios.post(
+                   `${Url}/api/repaired_property/`, context.propertyCapsule,  {
+                       headers: {
+                           'Authorization': 'Bearer ' + localStorage.getItem('access_token'),
+                       }
+                   }).then(response => {
+                   return response
+               }).then(async data => {
+                   if (data.status === 201) {
+                       message.success('ثبت شد');
+                       await handleResetSubmit()
+                       context.setLoadingAjax(false)
+                   }
+               }).then(async () => {
+                   return await axios.put(`${Url}/api/autoincrement_property_factor/${autoIncrementFactor}/`, {
+                       increment: form.getFieldValue(['property','factorCode']) + 1
+                   }, {
+                       headers: {
+                           'Authorization': 'Bearer ' + localStorage.getItem('access_token'),
+                       }
+                   })
+               }).then(response => {
+                   return response
+               }).then(async data => {
+                   if (data.status === 200) {
+                       message.success('کد فاکتور بروز شد');
+                       await fetchData()
+                       context.setPropertyCapsule(() => [])
+                   }
+               }).catch(async (error) => {
+                   if (error.request.status === 403) {
+                       navigate('/no_access')
+                   } else if (error.request.status === 400) {
+                       message.error('عدم ثبت');
+                       context.setLoadingAjax(false)
+                       await handleResetSubmit()
+                   }
+               })
+           })
+        }
     };
 
     const handleResetSubmit = async () => {
@@ -127,10 +214,26 @@ const Industrial = () => {
     }
 
     const fetchData = async () => {
-        await axios.get(`${Url}/api/autoincrement_property/?inventory=${context.office}&name=${context.currentPropertyForm}`, {
+        await axios.get(`${Url}/api/autoincrement_property_factor/?inventory=${context.office}`, {
+                headers: {
+                    'Authorization': 'Bearer ' + localStorage.getItem('access_token'),
+                }
+            }).then(response => {
+            return response
+        }).then(async data => {
+            form.setFieldsValue({
+                property : {
+                    factorCode: data.data[0].increment,
+                }
+            });
+            setAutoIncrementFactor(data.data[0].id)
+        })
+        if (context.propertyTab === 'ثبت اولیه / خرید'){
+                  await axios.get(`${Url}/api/autoincrement_property/?inventory=${context.office}&name=${context.currentPropertyForm}`, {
             headers: {
                 'Authorization': 'Bearer ' + localStorage.getItem('access_token'),
             }
+
         }).then(response => {
             return response
         }).then(async data => {
@@ -140,34 +243,30 @@ const Industrial = () => {
                 }
             });
             setAutoIncrement(data.data[0].id)
-        }).then(async () => {
-            return await axios.get(`${Url}/api/autoincrement_property_factor/?inventory=${context.office}`, {
-                headers: {
-                    'Authorization': 'Bearer ' + localStorage.getItem('access_token'),
-                }
-            })
-        }).then(response => {
-            return response
-        }).then(async data => {
-            form.setFieldsValue({
-                property : {
-                    factorCode: data.data[0].increment,
-                }
-            });
-            setAutoIncrementFactor(data.data[0].id)
-
         }).catch((error) => {
             if (error.request.status === 403) {
                 navigate('/no_access')
             }
         })
+      }else if (context.propertyTab === 'تعمیرات'){
+            await axios.get(`${Url}/api/property/?inventory=${context.office}&category=${context.currentPropertyForm}`, {
+                headers: {
+                    'Authorization': 'Bearer ' + localStorage.getItem('access_token'),
+                }
+            }).then(response => {
+            return response
+        }).then(async data => {
+            setListProperty(data.data)
+        })
+        }
     }
+
 
     useEffect(() => {
             void fetchData()
         },
         // eslint-disable-next-line react-hooks/exhaustive-deps
-        [])
+        [context.propertyTab])
 
      function scanImage() {
             if (document.readyState === "complete") {
@@ -175,16 +274,23 @@ const Industrial = () => {
             }
         }
 
+    const filterOption = (input: string, option?: { label: string; value: string }) =>
+        (option?.label ?? '').toLowerCase().includes(input.toLowerCase());
+
     return (
         <>
-        <Form form={form}
+            <Form form={form}
               autoComplete="off"
               name="property"
               layout="vertical"
-              onFinish={onFinish}
+              onFinish={subObjAdd}
               validateMessages={validateMessages}
         >
-            <Form.Item>
+            {(() => {
+                if (context.propertyTab === 'ثبت اولیه / خرید'){
+                    return (
+                          <>
+                            <Form.Item>
                  <Form.Item name={['property', 'code']} className='w-[233px] m-2 inline-block' label="شماره ثبت">
                     <InputNumber className='w-[233px]' disabled/>
                  </Form.Item>
@@ -238,6 +344,58 @@ const Industrial = () => {
                     </Space.Compact>
                 </Form.Item>
             </Form.Item>
+
+                </>
+                    )
+                }else if (context.propertyTab === 'تعمیرات'){
+                    return (
+                        <>
+                             <Form.Item>
+                                     <Form.Item name={['property', 'factorCode']} className='w-[233px] m-2 inline-block' label="شماره ثبت سیستم فاکتور">
+                                            <InputNumber className='w-[233px]' disabled/>
+                                     </Form.Item>
+                                     <Form.Item name={['property', 'document_code']} className='w-[233px] inline-block m-2' label="شناسه فاکتور"
+                                                   rules={[{required: true}]}>
+                                            <Input/>
+                                     </Form.Item>
+                                     <Form.Item name={['property', 'property']} className='w-[233px] inline-block m-2' label="تجهیزات مورد نظر برای ثبت تعمیر"
+                                                   rules={[{required: true}]}>
+                                            <Select placeholder="انتخاب کنید"
+                                                                optionFilterProp="children"
+                                                                showSearch
+                                                                filterOption={filterOption}
+
+                                                                options={listProperty.map((item) => ({
+                                                                    label: item.name,
+                                                                    value: item.code
+                                                                }))}
+                                                        />
+                                     </Form.Item>
+                                     <Form.Item name={['property', 'description']} className='w-[233px] inline-block m-2' label="شرح تعمیرات"
+                                                   rules={[{required: true}]}>
+                                            <TextArea/>
+                                     </Form.Item>
+                                     <Form.Item style={{margin: 8, display: 'inline-block'}} label="فایل فاکتور">
+                                        <Space.Compact>
+                                            <ConfigProvider theme={{
+                                                components: {
+                                                    Button: {
+                                                        groupBorderColor: '#faad14',
+                                                    }
+                                                }, token: {
+                                                    colorPrimary: '#faad14',
+                                                }
+                                            }}>
+                                                <Button type={"primary"} onClick={scanImage} loading={context.loadingAjax}>اسکن</Button>
+                                            </ConfigProvider>
+                                            <Button type={"primary"} onClick={() => setVisible(true)}>پیش نمایش</Button>
+                                        </Space.Compact>
+                                    </Form.Item>
+                             </Form.Item>
+                        </>
+                    )
+                }
+            })()}
             <Form.Item>
                 <Form.Item>
                     <Form.Item style={{margin: 8}}>
@@ -250,7 +408,7 @@ const Industrial = () => {
                                 colorPrimary: '#52c41a'
                             }
                         }}>
-                            <Button  danger={context.loadingAjax} onClick={subObjAdd} type={"primary"} loading={context.loadingAjax} block htmlType="button">
+                            <Button  danger={context.loadingAjax} type={"primary"} loading={context.loadingAjax} block htmlType="submit">
                                 ثبت
                             </Button>
                         </ConfigProvider>
@@ -265,7 +423,7 @@ const Industrial = () => {
                                             colorPrimary: 'rgba(255,0,0,0.72)'
                             }
                         }}>
-                                  <Button  type={"primary"} block htmlType="submit">
+                                  <Button onClick={onFinish}  type={"primary"} block htmlType="button">
                                      پایان
                                   </Button>
                         </ConfigProvider>

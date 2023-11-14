@@ -23,10 +23,13 @@ export const Context = createContext({
     },
     setPropertyCapsule: (_value: (oldArray: any) => any[]) => {
     },
+    setPropertyTab: (_value: string) => {
+    },
     fullName: '',
     isLogged: false,
     loadingAjax: false,
     office: '',
+    propertyTab: '',
     currentProductDoc: '',
     propertyCapsule: [],
     compressed: '',

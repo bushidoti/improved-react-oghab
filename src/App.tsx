@@ -38,6 +38,7 @@ const App: React.FC = () => {
     const [permission, setPermission] = useState('');
     const [propertyCapsule, setPropertyCapsule] = useState<any>([]);
     const [currentPropertyForm, setCurrentPropertyForm] = useState<string>('');
+    const [propertyTab, setPropertyTab] = useState<string>('ثبت اولیه / خرید');
 
 
     useEffect(() => {
@@ -181,6 +182,8 @@ const App: React.FC = () => {
                     currentPropertyForm,
                     setCurrentPropertyForm,
                     currentProductFactor,
+                    setPropertyTab,
+                    propertyTab,
                     currentProduct,
                     scan,
                     compressed,

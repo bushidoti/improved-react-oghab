@@ -12,7 +12,7 @@ import {useNavigate} from "react-router-dom";
 import {useReactToPrint} from "react-to-print";
 import qs from "qs";
 import {Context} from "../../../../../context";
-import TablePrint from "../ptrint_table/table_print_safety_equipment";
+import TablePrint from "../ptrint_table/table_print_digital";
 
 interface DataType {
     key: React.Key;
@@ -23,8 +23,15 @@ interface DataType {
     name: number;
     property_number: number;
     document_code: number;
-    use_for: string;
-    user: string;
+    case: string;
+    hdd: string;
+    model: string;
+    power: string;
+    phone_feature: string;
+    ram: string;
+    motherboard: string;
+    cpu: string;
+    sub_item_type: string;
     install_location: string;
 }
 
@@ -37,7 +44,7 @@ interface TypeProduct {
 }
 
 
-const SafetyEquipmentTable: React.FC = () => {
+const DigitalFurnitureTable: React.FC = () => {
     const [searchText, setSearchText] = useState('');
     const [searchedColumn, setSearchedColumn] = useState('');
     const searchInput = useRef<InputRef>(null);
@@ -51,7 +58,7 @@ const SafetyEquipmentTable: React.FC = () => {
     const componentPDF = useRef(null);
     const [property, setProperty] = useState<TypeProduct>()
     const context = useContext(Context)
-    const [filteredColumns, setFilteredColumns] = useState<string[]>([])
+    const [filteredColumns, setFilteredColumns] = useState<string[]>(['case','hdd','power','phone_feature','ram','motherboard','cpu','sub_item_type'])
 
     const generatePDF = useReactToPrint({
         content: () => componentPDF.current,
@@ -60,7 +67,7 @@ const SafetyEquipmentTable: React.FC = () => {
 
     const fetchData = async () => {
        setLoading(true)
-        await axios.get(`${Url}/api/property/?size=${pagination.pageSize}&page=${pagination.current}&fields=code,category,factorCode,inventory,name,property_number,document_code,use_for,user,install_location&${qs.stringify(filteredInfo, {
+        await axios.get(`${Url}/api/property/?size=${pagination.pageSize}&page=${pagination.current}&fields=code,category,factorCode,inventory,name,property_number,document_code,case,hdd,model,power,phone_feature,ram,install_location,motherboard,cpu,sub_item_type&${qs.stringify(filteredInfo, {
                 encode: false,
                 arrayFormat: 'comma'
             })}&inventory=${context.permission === 'مدیر' || context.permission === 'مشاهده' ? qs.stringify(filteredInfo, {
@@ -111,18 +118,16 @@ const SafetyEquipmentTable: React.FC = () => {
             return 'شناسه فاکتور'
         } else if (dataIndex === "name") {
             return 'نام اموال'
-        } else if (dataIndex === "user") {
-            return 'یوزر'
-        } else if (dataIndex === "install_location") {
-            return 'محل نصب'
-        } else if (dataIndex === "use_for") {
-            return 'مورد استفاده'
+        } else if (dataIndex === "model") {
+            return 'مدل'
         } else if (dataIndex === "property_number") {
             return 'شماره اموال'
         } else if (dataIndex === "factorCode") {
             return 'شماره ثبت سیستم'
         } else if (dataIndex === "code") {
             return 'کد اموال'
+        } else if (dataIndex === "install_location") {
+            return 'محل نصب'
         }
     }
 
@@ -252,6 +257,12 @@ const SafetyEquipmentTable: React.FC = () => {
             key: 'category',
         }, {
             align: "center",
+            title: 'نوع دستگاه',
+            dataIndex: 'sub_item_type',
+            width: '3%',
+            key: 'sub_item_type',
+        }, {
+            align: "center",
             title: 'شماره اموال',
             dataIndex: 'property_number',
             width: '3%',
@@ -276,20 +287,60 @@ const SafetyEquipmentTable: React.FC = () => {
             filteredValue: filteredInfo.document_code || null,
         }, {
             align: "center",
-            title: 'مورد استفاده',
-            dataIndex: 'use_for',
+            title: 'مدل',
+            dataIndex: 'model',
             width: '3%',
-            key: 'use_for',
-            ...getColumnSearchProps('use_for'),
-            filteredValue: filteredInfo.use_for || null,
+            key: 'model',
+            ...getColumnSearchProps('model'),
+            filteredValue: filteredInfo.model || null,
         }, {
             align: "center",
-            title: 'یوزر',
-            dataIndex: 'user',
+            title: 'کیس',
+            dataIndex: 'case',
             width: '3%',
-            key: 'user',
-            ...getColumnSearchProps('user'),
-            filteredValue: filteredInfo.user || null,
+            key: 'case',
+        }, {
+            align: "center",
+            title: 'هارد',
+            dataIndex: 'hdd',
+            width: '3%',
+            key: 'hdd',
+
+        }, {
+            align: "center",
+            title: 'پاور',
+            dataIndex: 'power',
+            width: '3%',
+            key: 'power',
+
+        }, {
+            align: "center",
+            title: 'رم',
+            dataIndex: 'ram',
+            width: '3%',
+            key: 'ram',
+
+        }, {
+            align: "center",
+            title: 'پردازنده',
+            dataIndex: 'cpu',
+            width: '3%',
+            key: 'cpu',
+
+        }, {
+            align: "center",
+            title: 'مادربرد',
+            dataIndex: 'motherboard',
+            width: '3%',
+            key: 'motherboard',
+
+        }, {
+            align: "center",
+            title: 'ویژگی تلفن',
+            dataIndex: 'phone_feature',
+            width: '3%',
+            key: 'phone_feature',
+
         }, {
             align: "center",
             title: 'محل نصب',
@@ -353,8 +404,14 @@ const SafetyEquipmentTable: React.FC = () => {
         {label: 'شماره اموال', value: 'property_number'},
         {label: 'شماره ثبت سیستم', value: 'factorCode'},
         {label: 'شناسه فاکتور', value: 'document_code'},
-        {label: 'مورد استفاده', value: 'use_for'},
-        {label: 'یوزر', value: 'user'},
+        {label: 'کیس', value: 'case'},
+        {label: 'هارد', value: 'hdd'},
+        {label: 'پاور', value: 'power'},
+        {label: 'رم', value: 'ram'},
+        {label: 'پردازنده', value: 'cpu'},
+        {label: 'نوع دستگاه', value: 'sub_item_type'},
+        {label: 'مادربرد', value: 'motherboard'},
+        {label: 'ویژگی تلفن', value: 'phone_feature'},
         {label: 'محل نصب', value: 'install_location'},
     ];
 
@@ -380,6 +437,7 @@ const SafetyEquipmentTable: React.FC = () => {
                     allowClear
                     style={{width: 400}}
                     maxTagCount={2}
+                    defaultValue={['case','hdd','power','phone_feature','ram','motherboard','cpu','sub_item_type']}
                     placeholder="ستون هایی که میخواهید نمایش داده نشود انتخاب کنید."
                     onChange={onChange}
                     options={options}
@@ -390,7 +448,7 @@ const SafetyEquipmentTable: React.FC = () => {
                 columns={columns.filter(col => !filteredColumns.includes(col.key as string))}
                 dataSource={property?.results}
                 tableLayout={"fixed"}
-                scroll={{x: 2000, y: '60vh'}}
+                scroll={{x: 2500, y: '60vh'}}
                 rowKey="code"
                 onChange={handleChange}
                 loading={loading}
@@ -401,4 +459,4 @@ const SafetyEquipmentTable: React.FC = () => {
     )
 };
 
-export default SafetyEquipmentTable;
+export default DigitalFurnitureTable;

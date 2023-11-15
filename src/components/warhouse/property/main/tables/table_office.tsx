@@ -12,7 +12,7 @@ import {useNavigate} from "react-router-dom";
 import {useReactToPrint} from "react-to-print";
 import qs from "qs";
 import {Context} from "../../../../../context";
-import TablePrint from "../ptrint_table/table_print_safety_equipment";
+import TablePrint from "../ptrint_table/table_print_office";
 
 interface DataType {
     key: React.Key;
@@ -23,9 +23,9 @@ interface DataType {
     name: number;
     property_number: number;
     document_code: number;
-    use_for: string;
+    year_buy: string;
     user: string;
-    install_location: string;
+    using_location: string;
 }
 
 
@@ -37,7 +37,7 @@ interface TypeProduct {
 }
 
 
-const SafetyEquipmentTable: React.FC = () => {
+const OfficeFurnitureTable: React.FC = () => {
     const [searchText, setSearchText] = useState('');
     const [searchedColumn, setSearchedColumn] = useState('');
     const searchInput = useRef<InputRef>(null);
@@ -60,7 +60,7 @@ const SafetyEquipmentTable: React.FC = () => {
 
     const fetchData = async () => {
        setLoading(true)
-        await axios.get(`${Url}/api/property/?size=${pagination.pageSize}&page=${pagination.current}&fields=code,category,factorCode,inventory,name,property_number,document_code,use_for,user,install_location&${qs.stringify(filteredInfo, {
+        await axios.get(`${Url}/api/property/?size=${pagination.pageSize}&page=${pagination.current}&fields=code,category,factorCode,inventory,name,property_number,document_code,year_buy,user,using_location&${qs.stringify(filteredInfo, {
                 encode: false,
                 arrayFormat: 'comma'
             })}&inventory=${context.permission === 'مدیر' || context.permission === 'مشاهده' ? qs.stringify(filteredInfo, {
@@ -113,16 +113,16 @@ const SafetyEquipmentTable: React.FC = () => {
             return 'نام اموال'
         } else if (dataIndex === "user") {
             return 'یوزر'
-        } else if (dataIndex === "install_location") {
-            return 'محل نصب'
-        } else if (dataIndex === "use_for") {
-            return 'مورد استفاده'
+        } else if (dataIndex === "using_location") {
+            return 'محل استفاده'
         } else if (dataIndex === "property_number") {
             return 'شماره اموال'
         } else if (dataIndex === "factorCode") {
             return 'شماره ثبت سیستم'
         } else if (dataIndex === "code") {
             return 'کد اموال'
+        } else if (dataIndex === "year_buy") {
+            return 'سال خرید'
         }
     }
 
@@ -276,12 +276,12 @@ const SafetyEquipmentTable: React.FC = () => {
             filteredValue: filteredInfo.document_code || null,
         }, {
             align: "center",
-            title: 'مورد استفاده',
-            dataIndex: 'use_for',
+            title: 'سال خرید',
+            dataIndex: 'year_buy',
             width: '3%',
-            key: 'use_for',
-            ...getColumnSearchProps('use_for'),
-            filteredValue: filteredInfo.use_for || null,
+            key: 'year_buy',
+            ...getColumnSearchProps('year_buy'),
+            filteredValue: filteredInfo.year_buy || null,
         }, {
             align: "center",
             title: 'یوزر',
@@ -292,11 +292,11 @@ const SafetyEquipmentTable: React.FC = () => {
             filteredValue: filteredInfo.user || null,
         }, {
             align: "center",
-            title: 'محل نصب',
-            dataIndex: 'install_location',
+            title: 'محل استفاده',
+            dataIndex: 'using_location',
             width: '3%',
-            key: 'install_location',
-            ...getColumnSearchProps('install_location'),
+            key: 'using_location',
+            ...getColumnSearchProps('using_location'),
             filteredValue: filteredInfo.install_location || null,
         }, {
             align: "center",
@@ -353,9 +353,9 @@ const SafetyEquipmentTable: React.FC = () => {
         {label: 'شماره اموال', value: 'property_number'},
         {label: 'شماره ثبت سیستم', value: 'factorCode'},
         {label: 'شناسه فاکتور', value: 'document_code'},
-        {label: 'مورد استفاده', value: 'use_for'},
+        {label: 'سال خرید', value: 'year_buy'},
         {label: 'یوزر', value: 'user'},
-        {label: 'محل نصب', value: 'install_location'},
+        {label: 'محل استفاده', value: 'using_location'},
     ];
 
 
@@ -401,4 +401,4 @@ const SafetyEquipmentTable: React.FC = () => {
     )
 };
 
-export default SafetyEquipmentTable;
+export default OfficeFurnitureTable;

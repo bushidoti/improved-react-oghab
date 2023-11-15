@@ -18,9 +18,8 @@ const TablePrint = (props: {
                     <th className='th' scope="col">شماره اموال</th>
                     <th className='th' scope="col">شماره ثبت سیستم</th>
                     <th className='th' scope="col">شناسه فاکتور</th>
-                    <th className='th' scope="col">مورد استفاده</th>
-                    <th className='th' scope="col">یوزر</th>
-                    <th className='th' scope="col">محل نصب</th>
+                    <th className='th' scope="col">شماره خط</th>
+                    <th className='th' scope="col">محل استفاده</th>
                     <th className='th' scope="col">انبار</th>
                 </tr>
                 </thead>
@@ -35,9 +34,8 @@ const TablePrint = (props: {
                         <td className='td'>{data.property_number}</td>
                         <td className='td'>{data.factorCode}</td>
                         <td className='td'>{data.document_code}</td>
-                        <td className='td'>{data.use_for}</td>
-                        <td className='td'>{data.user}</td>
-                        <td className='td'>{data.install_location}</td>
+                        <td className='td'>{data.number}</td>
+                        <td className='td'>{data.using_location}</td>
                         <td className='td'>{data.inventory}</td>
                     </tr>
                 ))

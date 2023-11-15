@@ -21,6 +21,17 @@ import EngineeringIcon from '@mui/icons-material/Engineering';
 import CellWifiIcon from '@mui/icons-material/CellWifi';
 import {Context} from "../../../../context";
 import SafetyEquipmentTable from "./tables/table_safety_equipment.";
+import AirportEquipmentTable from "./tables/table_airport_equipment";
+import VehicleTable from "./tables/vehicle_table";
+import ElectronicFurnitureTable from "./tables/table_electronic";
+import OfficeFurnitureTable from "./tables/table_office";
+import FacilityFurnitureTable from "./tables/table_facility";
+import AirportFurnitureTable from "./tables/table_airport";
+import DigitalFurnitureTable from "./tables/digital_table";
+import NoneIndustrialTable from "./tables/table_none_industrial";
+import IndustrialTable from "./tables/table_industrial";
+import BenefitTable from "./tables/table_benefit";
+import SupportItemTable from "./tables/table_support";
 
 
 const items: MenuProps['items'] = [
@@ -154,28 +165,28 @@ const MainProperty: React.FC = () => {
                         if (context.currentPropertyTable === 'تجهیزات ایمنی'){
                             return <SafetyEquipmentTable/>
                         } else if (context.currentPropertyTable === 'تجهیزات فرودگاهی'){
-                            return ''
+                            return <AirportEquipmentTable/>
                         } else  if (context.currentPropertyTable === 'خودرو اداری' ||
                             context.currentPropertyTable === 'خودرو فرودگاهی' || context.currentPropertyTable === 'هواپیما' ){
-                            return ''
+                            return <VehicleTable/>
                         } else if (context.currentPropertyTable === 'اثاثه الکترونیکی'){
-                            return ''
+                            return <ElectronicFurnitureTable/>
                         } else if (context.currentPropertyTable === 'اثاثه اداری'){
-                            return ''
+                            return <OfficeFurnitureTable/>
                         } else if (context.currentPropertyTable === 'اثاثه تاسیساتی'){
-                            return ''
+                            return <FacilityFurnitureTable/>
                         } else if (context.currentPropertyTable === 'اثاثه فرودگاهی'){
-                            return ''
+                            return <AirportFurnitureTable/>
                         } else if (context.currentPropertyTable === 'اثاثه دیجیتالی'){
-                            return ''
+                            return <DigitalFurnitureTable/>
                         } else if (context.currentPropertyTable === 'ابزار آلات غیر صنعتی'){
-                            return ''
+                            return <NoneIndustrialTable/>
                         } else if (context.currentPropertyTable === 'ابزار آلات صنعتی'){
-                            return ''
+                            return <IndustrialTable/>
                         } else if (context.currentPropertyTable === 'اقلام پشتیبانی'){
-                            return ''
+                            return <SupportItemTable/>
                         } else if (context.currentPropertyTable === 'امتیازات'){
-                            return ''
+                            return <BenefitTable/>
                         }
                     })()}
                 </>

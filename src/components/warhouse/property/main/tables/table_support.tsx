@@ -12,7 +12,7 @@ import {useNavigate} from "react-router-dom";
 import {useReactToPrint} from "react-to-print";
 import qs from "qs";
 import {Context} from "../../../../../context";
-import TablePrint from "../ptrint_table/table_print_safety_equipment";
+import TablePrint from "../ptrint_table/table_print_support";
 
 interface DataType {
     key: React.Key;
@@ -23,9 +23,11 @@ interface DataType {
     name: number;
     property_number: number;
     document_code: number;
-    use_for: string;
+    sub_item_type: string;
+    model: string;
     user: string;
-    install_location: string;
+    using_location: string;
+    description: string;
 }
 
 
@@ -37,7 +39,7 @@ interface TypeProduct {
 }
 
 
-const SafetyEquipmentTable: React.FC = () => {
+const SupportItemTable: React.FC = () => {
     const [searchText, setSearchText] = useState('');
     const [searchedColumn, setSearchedColumn] = useState('');
     const searchInput = useRef<InputRef>(null);
@@ -60,7 +62,7 @@ const SafetyEquipmentTable: React.FC = () => {
 
     const fetchData = async () => {
        setLoading(true)
-        await axios.get(`${Url}/api/property/?size=${pagination.pageSize}&page=${pagination.current}&fields=code,category,factorCode,inventory,name,property_number,document_code,use_for,user,install_location&${qs.stringify(filteredInfo, {
+        await axios.get(`${Url}/api/property/?size=${pagination.pageSize}&page=${pagination.current}&fields=code,category,factorCode,inventory,name,property_number,document_code,model,user,sub_item_type,using_location,description&${qs.stringify(filteredInfo, {
                 encode: false,
                 arrayFormat: 'comma'
             })}&inventory=${context.permission === 'مدیر' || context.permission === 'مشاهده' ? qs.stringify(filteredInfo, {
@@ -113,10 +115,10 @@ const SafetyEquipmentTable: React.FC = () => {
             return 'نام اموال'
         } else if (dataIndex === "user") {
             return 'یوزر'
-        } else if (dataIndex === "install_location") {
-            return 'محل نصب'
-        } else if (dataIndex === "use_for") {
-            return 'مورد استفاده'
+        } else if (dataIndex === "using_location") {
+            return 'محل استفاده'
+        } else if (dataIndex === "model") {
+            return 'مدل'
         } else if (dataIndex === "property_number") {
             return 'شماره اموال'
         } else if (dataIndex === "factorCode") {
@@ -276,12 +278,18 @@ const SafetyEquipmentTable: React.FC = () => {
             filteredValue: filteredInfo.document_code || null,
         }, {
             align: "center",
-            title: 'مورد استفاده',
-            dataIndex: 'use_for',
+            title: 'نوع قلم',
+            dataIndex: 'sub_item_type',
             width: '3%',
-            key: 'use_for',
-            ...getColumnSearchProps('use_for'),
-            filteredValue: filteredInfo.use_for || null,
+            key: 'sub_item_type',
+        }, {
+            align: "center",
+            title: 'مدل',
+            dataIndex: 'model',
+            width: '3%',
+            key: 'model',
+            ...getColumnSearchProps('model'),
+            filteredValue: filteredInfo.model || null,
         }, {
             align: "center",
             title: 'یوزر',
@@ -292,12 +300,18 @@ const SafetyEquipmentTable: React.FC = () => {
             filteredValue: filteredInfo.user || null,
         }, {
             align: "center",
-            title: 'محل نصب',
-            dataIndex: 'install_location',
+            title: 'محل استفاده',
+            dataIndex: 'using_location',
             width: '3%',
-            key: 'install_location',
-            ...getColumnSearchProps('install_location'),
-            filteredValue: filteredInfo.install_location || null,
+            key: 'using_location',
+            ...getColumnSearchProps('using_location'),
+            filteredValue: filteredInfo.using_location || null,
+        }, {
+            align: "center",
+            title: 'شرح',
+            dataIndex: 'description',
+            width: '3%',
+            key: 'description',
         }, {
             align: "center",
             title: 'انبار',
@@ -353,9 +367,10 @@ const SafetyEquipmentTable: React.FC = () => {
         {label: 'شماره اموال', value: 'property_number'},
         {label: 'شماره ثبت سیستم', value: 'factorCode'},
         {label: 'شناسه فاکتور', value: 'document_code'},
-        {label: 'مورد استفاده', value: 'use_for'},
         {label: 'یوزر', value: 'user'},
-        {label: 'محل نصب', value: 'install_location'},
+        {label: 'مدل', value: 'model'},
+        {label: 'شرح', value: 'description'},
+        {label: 'محل استفاده', value: 'using_location'},
     ];
 
 
@@ -401,4 +416,4 @@ const SafetyEquipmentTable: React.FC = () => {
     )
 };
 
-export default SafetyEquipmentTable;
+export default SupportItemTable;

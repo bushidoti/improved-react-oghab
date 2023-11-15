@@ -12,7 +12,7 @@ import {useNavigate} from "react-router-dom";
 import {useReactToPrint} from "react-to-print";
 import qs from "qs";
 import {Context} from "../../../../../context";
-import TablePrint from "../ptrint_table/table_print_safety_equipment";
+import TablePrint from "../ptrint_table/vehicle_table_print";
 
 interface DataType {
     key: React.Key;
@@ -23,9 +23,16 @@ interface DataType {
     name: number;
     property_number: number;
     document_code: number;
-    use_for: string;
+    owner: string;
+    year_made: string;
+    model: string;
     user: string;
-    install_location: string;
+    motor: string;
+    chassis: string;
+    part1plate: string;
+    cityPlate: string;
+    part2plate: string;
+    part3plate: string;
 }
 
 
@@ -37,7 +44,7 @@ interface TypeProduct {
 }
 
 
-const SafetyEquipmentTable: React.FC = () => {
+const VehicleTable: React.FC = () => {
     const [searchText, setSearchText] = useState('');
     const [searchedColumn, setSearchedColumn] = useState('');
     const searchInput = useRef<InputRef>(null);
@@ -60,7 +67,7 @@ const SafetyEquipmentTable: React.FC = () => {
 
     const fetchData = async () => {
        setLoading(true)
-        await axios.get(`${Url}/api/property/?size=${pagination.pageSize}&page=${pagination.current}&fields=code,category,factorCode,inventory,name,property_number,document_code,use_for,user,install_location&${qs.stringify(filteredInfo, {
+        await axios.get(`${Url}/api/property/?size=${pagination.pageSize}&page=${pagination.current}&fields=code,category,factorCode,inventory,name,property_number,document_code,owner,year_made,model,user,motor,chassis,part1plate,cityPlate,part2plate,part3plate&${qs.stringify(filteredInfo, {
                 encode: false,
                 arrayFormat: 'comma'
             })}&inventory=${context.permission === 'مدیر' || context.permission === 'مشاهده' ? qs.stringify(filteredInfo, {
@@ -113,16 +120,18 @@ const SafetyEquipmentTable: React.FC = () => {
             return 'نام اموال'
         } else if (dataIndex === "user") {
             return 'یوزر'
-        } else if (dataIndex === "install_location") {
-            return 'محل نصب'
-        } else if (dataIndex === "use_for") {
-            return 'مورد استفاده'
+        } else if (dataIndex === "model") {
+            return 'مدل'
         } else if (dataIndex === "property_number") {
             return 'شماره اموال'
         } else if (dataIndex === "factorCode") {
             return 'شماره ثبت سیستم'
         } else if (dataIndex === "code") {
             return 'کد اموال'
+        } else if (dataIndex === "owner") {
+            return 'مالک'
+        } else if (dataIndex === "year_made") {
+            return 'سال ساخت'
         }
     }
 
@@ -276,12 +285,39 @@ const SafetyEquipmentTable: React.FC = () => {
             filteredValue: filteredInfo.document_code || null,
         }, {
             align: "center",
-            title: 'مورد استفاده',
-            dataIndex: 'use_for',
+            title: 'مدل',
+            dataIndex: 'model',
             width: '3%',
-            key: 'use_for',
-            ...getColumnSearchProps('use_for'),
-            filteredValue: filteredInfo.use_for || null,
+            key: 'model',
+            ...getColumnSearchProps('model'),
+            filteredValue: filteredInfo.model || null,
+        }, {
+            align: "center",
+            title: 'سال ساخت',
+            dataIndex: 'year_made',
+            width: '3%',
+            key: 'year_made',
+            ...getColumnSearchProps('year_made'),
+            filteredValue: filteredInfo.year_made || null,
+        }, {
+            align: "center",
+            title: 'شماره موتور',
+            dataIndex: 'motor',
+            width: '3%',
+            key: 'motor',
+        }, {
+            align: "center",
+            title: 'پلاک',
+            dataIndex: 'plate',
+            width: '3%',
+            key: 'plate',
+            render: (_value, record) => record.part3plate + ' / ' + record.part2plate + ' - ' + record.cityPlate + ' - ' + record.part1plate,
+        }, {
+            align: "center",
+            title: 'شماره شاسی',
+            dataIndex: 'chassis',
+            width: '3%',
+            key: 'chassis',
         }, {
             align: "center",
             title: 'یوزر',
@@ -292,12 +328,12 @@ const SafetyEquipmentTable: React.FC = () => {
             filteredValue: filteredInfo.user || null,
         }, {
             align: "center",
-            title: 'محل نصب',
-            dataIndex: 'install_location',
+            title: 'مالک',
+            dataIndex: 'owner',
             width: '3%',
-            key: 'install_location',
-            ...getColumnSearchProps('install_location'),
-            filteredValue: filteredInfo.install_location || null,
+            key: 'owner',
+            ...getColumnSearchProps('owner'),
+            filteredValue: filteredInfo.owner || null,
         }, {
             align: "center",
             title: 'انبار',
@@ -353,9 +389,12 @@ const SafetyEquipmentTable: React.FC = () => {
         {label: 'شماره اموال', value: 'property_number'},
         {label: 'شماره ثبت سیستم', value: 'factorCode'},
         {label: 'شناسه فاکتور', value: 'document_code'},
-        {label: 'مورد استفاده', value: 'use_for'},
+        {label: 'مالک', value: 'owner'},
+        {label: 'شماره شاسی', value: 'chassis'},
+        {label: 'سال ساخت', value: 'year_made'},
+        {label: 'شماره موتور', value: 'motor'},
         {label: 'یوزر', value: 'user'},
-        {label: 'محل نصب', value: 'install_location'},
+        {label: 'پلاک', value: 'plate'},
     ];
 
 
@@ -390,7 +429,7 @@ const SafetyEquipmentTable: React.FC = () => {
                 columns={columns.filter(col => !filteredColumns.includes(col.key as string))}
                 dataSource={property?.results}
                 tableLayout={"fixed"}
-                scroll={{x: 2000, y: '60vh'}}
+                scroll={{x: 2500, y: '60vh'}}
                 rowKey="code"
                 onChange={handleChange}
                 loading={loading}
@@ -401,4 +440,4 @@ const SafetyEquipmentTable: React.FC = () => {
     )
 };
 
-export default SafetyEquipmentTable;
+export default VehicleTable;

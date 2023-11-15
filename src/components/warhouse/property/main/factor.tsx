@@ -11,17 +11,38 @@ import {useReactToPrint} from "react-to-print";
 interface DataType {
     key: string;
     name: string;
-    scale: string;
-    date: string;
     category: string;
-    receiver: string;
-    seller: string;
-    buyer: string;
-    product: number;
-    input: number;
+    property: number;
+    factorCode: number;
+    description: string;
+    code: number;
 }
 
-const columns: ColumnsType<DataType> = [
+
+
+interface Factor {
+    code: number;
+    factor: string;
+    factor_type: string;
+    inventory: string;
+    jsonData: any[];
+}
+
+const PropertyFactor: React.FC = () => {
+    const [loading, setLoading] = useState(true);
+    const navigate = useNavigate();
+    const [Factor, setFactor] = useState<Factor>()
+    const [property, setProperty] = useState<any[]>([])
+    const context = useContext(Context)
+    const [visible, setVisible] = useState(false);
+    const componentPDF = useRef(null);
+    const generatePDF = useReactToPrint({
+        content: () => componentPDF.current,
+        documentTitle: "فاکتور",
+    });
+
+    const columns: ColumnsType<DataType> = Factor?.factor_type === 'ثبت اولیه / خرید' ?
+         [
     {
         align: "center",
         title: 'ردیف',
@@ -33,70 +54,53 @@ const columns: ColumnsType<DataType> = [
     }, {
         title: 'کد کالا',
         align: "center",
-        dataIndex: 'product',
-        key: 'product',
+        dataIndex: 'code',
+        key: 'code',
     }, {
         title: 'نام کالا',
         align: "center",
         dataIndex: 'name',
         key: 'name',
     }, {
-        title: 'تعداد',
-        align: "center",
-        dataIndex: 'input',
-        key: 'input',
-    }, {
-        title: 'مقیاس',
-        align: "center",
-        dataIndex: 'scale',
-        key: 'scale',
-    }, {
         title: 'گروه',
         align: "center",
         dataIndex: 'category',
         key: 'category',
-    }, {
-        title: 'تاریخ',
-        align: "center",
-        dataIndex: 'date',
-        key: 'date',
-    }, {
-        title: 'گیرنده',
-        align: "center",
-        dataIndex: 'receiver',
-        key: 'receiver',
-    }, {
-        title: 'خریدار',
-        align: "center",
-        dataIndex: 'buyer',
-        key: 'buyer',
-    }, {
-        title: 'فروشنده',
-        align: "center",
-        dataIndex: 'seller',
-        key: 'seller',
     }
-];
+]
+        :
+        [
+    {
+        align: "center",
+        title: 'ردیف',
+        dataIndex: 'index',
+        fixed: "left",
+        width: '4.88%',
+        key: 'index',
+        render: (_value, _record, index) => index + 1,
+    }, {
+        title: 'کد کالا',
+        align: "center",
+        dataIndex: 'property',
+        key: 'property',
+    }, {
+        title: 'نام کالا',
+        align: "center",
+        dataIndex: 'name',
+        key: 'name',
+        render: (_value, record) =>
+                (property.filter(property => property.code === record.property).map((data) => {
+                    return data.name
+                }))
+            ,
+    }, {
+        title: 'شرح',
+        align: "center",
+        dataIndex: 'description',
+        key: 'description',
+    }
+]
 
-
-interface Factor {
-    code: number;
-    factor: string;
-    inventory: string;
-    jsonData: any[];
-}
-
-const PropertyFactor: React.FC = () => {
-    const [loading, setLoading] = useState(true);
-    const navigate = useNavigate();
-    const [Factor, setFactor] = useState<Factor>()
-    const context = useContext(Context)
-    const [visible, setVisible] = useState(false);
-    const componentPDF = useRef(null);
-    const generatePDF = useReactToPrint({
-        content: () => componentPDF.current,
-        documentTitle: "فاکتور",
-    });
 
     const fetchData = async () => {
         await axios.get(
@@ -108,7 +112,18 @@ const PropertyFactor: React.FC = () => {
             return response
         }).then(async data => {
             setFactor(data.data)
-        }).finally(() => {
+        }).then(() => {
+            axios.get(
+            `${Url}/api/property/?fields=code,name`, {
+                headers: {
+                    'Authorization': 'Bearer ' + localStorage.getItem('access_token'),
+                }
+            }).then(response => {
+            return response
+        }).then(async data => {
+            setProperty(data.data)
+        })
+            }).finally(() => {
             setLoading(false)
         }).catch((error) => {
             if (error.request.status === 403) {
@@ -168,11 +183,11 @@ const PropertyFactor: React.FC = () => {
             <Table
                 loading={loading}
                 columns={columns}
-                rowKey="product"
+                rowKey="code"
                 pagination={{position: ["bottomCenter"]}}
                 dataSource={Factor?.jsonData}/>
             {Factor !== undefined ?
-                <TableFactorPrint componentPDF={componentPDF} Factor={Factor}/>
+                <TableFactorPrint componentPDF={componentPDF} property={property} Factor={Factor}/>
                 :
                 null
             }

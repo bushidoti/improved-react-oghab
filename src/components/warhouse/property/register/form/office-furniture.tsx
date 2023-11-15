@@ -74,6 +74,7 @@ const OfficeFurniture    = () => {
                     `${Url}/api/factor_property/`, {
                                 code: form.getFieldValue(['property','factorCode']),
                                 inventory: context.office,
+                                factor_type: 'ثبت اولیه / خرید',
                                 factor: context.compressed,
                                 jsonData: context.propertyCapsule,
                             }, {
@@ -143,6 +144,7 @@ const OfficeFurniture    = () => {
                                 code: form.getFieldValue(['property','factorCode']),
                                 inventory: context.office,
                                 factor: context.compressed,
+                                factor_type: 'تعمیرات',
                                 jsonData: context.propertyCapsule,
                             }, {
                         headers: {

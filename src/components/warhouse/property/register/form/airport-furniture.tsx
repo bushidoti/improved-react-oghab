@@ -74,6 +74,7 @@ const AirportFurniture    = () => {
                                 code: form.getFieldValue(['property','factorCode']),
                                 inventory: context.office,
                                 factor: context.compressed,
+                                factor_type: 'ثبت اولیه / خرید',
                                 jsonData: context.propertyCapsule,
                             }, {
                         headers: {
@@ -141,6 +142,7 @@ const AirportFurniture    = () => {
                     `${Url}/api/factor_property/`, {
                                 code: form.getFieldValue(['property','factorCode']),
                                 inventory: context.office,
+                                factor_type: 'تعمیرات',
                                 factor: context.compressed,
                                 jsonData: context.propertyCapsule,
                             }, {

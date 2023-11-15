@@ -56,6 +56,7 @@ const NoneIndustrial = () => {
                     `${Url}/api/factor_property/`, {
                                 code: form.getFieldValue(['property','factorCode']),
                                 inventory: context.office,
+                                factor_type: 'ثبت اولیه / خرید',
                                 factor: context.compressed,
                                 jsonData: context.propertyCapsule,
                             }, {
@@ -106,7 +107,7 @@ const NoneIndustrial = () => {
                    if (data.status === 200) {
                        message.success('کد فاکتور بروز شد');
                        await fetchData()
-                       context.setPropertyCapsule(oldArray => [])
+                       context.setPropertyCapsule(() => [])
                    }
                }).catch(async (error) => {
                    if (error.request.status === 403) {

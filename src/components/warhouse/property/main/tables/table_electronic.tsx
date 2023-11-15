@@ -13,6 +13,7 @@ import {useReactToPrint} from "react-to-print";
 import qs from "qs";
 import {Context} from "../../../../../context";
 import TablePrint from "../ptrint_table/table_print_electronic";
+import FactorSearchBar from "../factor_searchbar";
 
 interface DataType {
     key: React.Key;
@@ -377,9 +378,7 @@ const ElectronicFurnitureTable: React.FC = () => {
                 <Button onClick={clearAll}>پاک کردن فیلتر و مرتب کننده ها</Button>
                 <Button onClick={generatePDF}>چاپ</Button>
                 <Space.Compact>
-                    <Input placeholder={'شناسه مدرک'} onChange={(e) => {
-                            context.setCurrentPropertyFactor(Number(e.target.value))
-                    }}/>
+                    <FactorSearchBar/>
                     <Button type={"primary"} loading={loading} disabled={context.currentPropertyFactor === 0} onClick={() => {
                             navigate(`/warhouse/property/factor/${context.currentPropertyFactor}`)
                     }}>مشاهده</Button>

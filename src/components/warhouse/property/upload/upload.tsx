@@ -1,39 +1,21 @@
 import {Button, ConfigProvider, Image, message, Select, Space} from "antd";
-import React, {useContext, useEffect, useState} from "react";
+import React, {useContext, useState} from "react";
 import {Context} from "../../../../context";
 import Url from "../../../api-configue";
 import {useNavigate} from "react-router-dom";
 import axios from "axios";
 
-export const UploadProductDocs = () => {
+export const UploadPropertyFactor = () => {
     const [visible, setVisible] = useState(false);
     const [loading, setLoading] = useState<boolean>(false);
-    const [selectedDoc, setSelectedDoc] = useState<string>('');
     const [selectedDocSub, setSelectedDocSub] = useState<string>('');
-    const [listDocs, setListDocs] = useState<any>([]);
     const navigate = useNavigate();
 
     const context = useContext(Context)
     const filterOption = (input: string, option?: { label: string; value: string }) =>
         (option?.label ?? '').toLowerCase().includes(input.toLowerCase());
 
-    const fetchData = async () => {
-        setLoading(true)
-        await axios.get(`${Url}/api/${selectedDoc === 'فاکتور' ? 'factorsproduct' : 'checksproduct' }/?fields=code,inventory,jsonData&inventory=${context.permission === 'مدیر' ? '' : context.office }`, {
-            headers: {
-                'Authorization': 'Bearer ' + localStorage.getItem('access_token'),
-            }
-        }).then(response => {
-            return response
-        }).then(async data => {
-            setListDocs(data.data)
-        }).catch((error) => {
-            if (error.request.status === 403) {
-                navigate('/no_access')
-            }
-        }).finally(() => setLoading(false)
-        )
-    }
+
 
     function scanImage() {
         if (document.readyState === "complete") {
@@ -41,18 +23,9 @@ export const UploadProductDocs = () => {
         }
     }
 
-    useEffect(() => {
-            if (selectedDoc !== ''){
-                void fetchData()
-            }
-        },
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-        [selectedDoc])
-
         const onFinish = async () => {
             setLoading(true)
-            if (selectedDoc === 'فاکتور'){
-               await axios.put(`${Url}/api/factorsproduct/${selectedDocSub}/`, {
+               await axios.put(`${Url}/api/factor_property/${selectedDocSub}/`, {
                     code: selectedDocSub,
                     factor: context.compressed,
                 }, {
@@ -74,53 +47,21 @@ export const UploadProductDocs = () => {
                         setLoading(false)
                     }
                 })
-            }else  if (selectedDoc === 'حواله'){
-               await axios.put(`${Url}/api/checksproduct/${selectedDocSub}/`, {
-                    code: selectedDocSub,
-                    checks: context.compressed,
-                }, {
-                    headers: {
-                        'Authorization': 'Bearer ' + localStorage.getItem('access_token'),
-                    }
-                }).then(response => {
-                    return response
-                }).then(async data => {
-                    if (data.status === 200) {
-                        message.success('حواله بروز شد.');
-                        setLoading(false)
-                    }
-                }).catch(async (error) => {
-                    if (error.request.status === 403) {
-                        navigate('/no_access')
-                    } else if (error.request.status === 400) {
-                        message.error('عدم ثبت');
-                        setLoading(false)
-                    }
-                })
-            }
         }
 
     return (
         <>
             <Space.Compact>
-                <Select placeholder="نوع مدرک"
-                            onChange={value => setSelectedDoc(value)}
-                            options={[
-                            { value: 'فاکتور', label: 'فاکتور' },
-                            { value: 'حواله', label: 'حواله' },
-                          ]}
-                />
-                <Select placeholder={`${selectedDoc} انتخاب کنید`}
+                <Select placeholder={`فاکتور را انتخاب کنید`}
                             optionFilterProp="children"
                             style={{width: 400}}
                             allowClear
                             showSearch
-                            disabled={selectedDoc === ''}
                             loading={loading}
                             onChange={value => setSelectedDocSub(value)}
                             filterOption={filterOption}
-                            options={listDocs.map((item: { code: string; jsonData: { checkCode: number; document_code: number; }[]; inventory: string; }) => ({
-                                label: ' کد سیستم ' + item.code +   ` شناسه ${selectedDoc} `  + (selectedDoc === 'فاکتور' ? item.jsonData[0].document_code : item.jsonData[0].checkCode) + ' انبار ' + item.inventory,
+                            options={context.listPropertyFactor.map((item:any) => ({
+                                label: ' کد سیستم ' + item.code +   ' شناسه فاکتور '  + item.jsonData[0].document_code + ' انبار ' + item.inventory,
                                 value: item.code
                             }))}
                     />
@@ -133,10 +74,10 @@ export const UploadProductDocs = () => {
                             colorPrimary: '#faad14',
                         }
                     }}>
-                    <Button type={"primary"} disabled={selectedDoc === '' || selectedDocSub === ''} onClick={scanImage} loading={loading}>اسکن</Button>
+                    <Button type={"primary"} disabled={selectedDocSub === ''} onClick={scanImage} loading={loading}>اسکن</Button>
                     </ConfigProvider>
-                    <Button type={"primary"} disabled={selectedDoc === '' || selectedDocSub === ''} onClick={() => setVisible(true)} loading={loading}>پیش نمایش</Button>
-                    <Button type={"dashed"} htmlType={"submit"} disabled={selectedDoc === '' || selectedDocSub === '' || context.compressed === '' } onClick={onFinish} loading={loading}>بارگزاری</Button>
+                    <Button type={"primary"} disabled={selectedDocSub === ''} onClick={() => setVisible(true)} loading={loading}>پیش نمایش</Button>
+                    <Button type={"dashed"} htmlType={"submit"} disabled={selectedDocSub === '' || context.compressed === '' } onClick={onFinish} loading={loading}>بارگزاری</Button>
             </Space.Compact>
             <Image
                 width={200}

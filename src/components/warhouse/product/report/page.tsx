@@ -69,6 +69,7 @@ const ReportProduct: React.FC = () => {
     const [optionCategory, setOptionCategory] = useState<any[]>([]);
     const context = useContext(Context)
     const [filteredColumns, setFilteredColumns] = useState<string[]>([])
+    const [listDocs, setListDocs] = useState<any[]>([]);
 
     const generatePDF = useReactToPrint({
         content: () => componentPDF.current,
@@ -121,11 +122,39 @@ const ReportProduct: React.FC = () => {
     }
 
 
+    const fetchDataDocList = async () => {
+        setLoading(true)
+        await axios.get(`${Url}/api/${selectedDoc === 'فاکتور' ? 'factorsproduct' : 'checksproduct' }/?fields=code,inventory,jsonData&inventory=${context.permission === 'مدیر' ? '' : context.office }`, {
+            headers: {
+                'Authorization': 'Bearer ' + localStorage.getItem('access_token'),
+            }
+        }).then(response => {
+            return response
+        }).then(async data => {
+            setListDocs(data.data)
+        }).catch((error) => {
+            if (error.request.status === 403) {
+                navigate('/no_access')
+            }
+        }).finally(() => setLoading(false)
+        )
+    }
+
     useEffect(() => {
             void fetchData()
+
         },
         // eslint-disable-next-line react-hooks/exhaustive-deps
         [JSON.stringify(filteredInfo),pagination])
+
+    useEffect(() => {
+            if (selectedDoc !== ''){
+                 void fetchDataDocList()
+            }
+
+        },
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        [selectedDoc])
 
     const handleSearch = (
         selectedKeys: string[],
@@ -499,6 +528,10 @@ const ReportProduct: React.FC = () => {
             label: 'فاکتور',
         }
     ]
+
+    const filterOption = (input: string, option?: { label: string; value: string }) =>
+        (option?.label ?? '').toLowerCase().includes(input.toLowerCase());
+
     return (
         <>
             <Space style={{marginBottom: 16}}>
@@ -513,13 +546,26 @@ const ReportProduct: React.FC = () => {
                         placeholder="مدرک مورد نظر"
                         options={optionsDoc}
                     />
-                    <Input placeholder={'شناسه مدرک'} disabled={selectedDoc === ''} onChange={(e) => {
-                        if (selectedDoc === 'فاکتور') {
-                            context.setCurrentProductFactor(Number(e.target.value))
-                        } else if (selectedDoc === 'حواله') {
-                            context.setCurrentProductCheck(Number(e.target.value))
-                        }
-                    }}/>
+                    <Select placeholder={`${selectedDoc} انتخاب کنید`}
+                            optionFilterProp="children"
+                            style={{width: 400}}
+                            allowClear
+                            showSearch
+                            disabled={selectedDoc === ''}
+                            loading={loading}
+                            onChange={(value) => {
+                                if (selectedDoc === 'فاکتور') {
+                                    context.setCurrentProductFactor(Number(value))
+                                } else if (selectedDoc === 'حواله') {
+                                    context.setCurrentProductCheck(Number(value))
+                                }
+                            }}
+                            filterOption={filterOption}
+                            options={listDocs.map((item) => ({
+                                label: ' کد سیستم ' + item.code +   ` شناسه ${selectedDoc} `  + (selectedDoc === 'فاکتور' ? item.jsonData[0].document_code : item.jsonData[0].checkCode) + ' انبار ' + item.inventory,
+                                value: item.code
+                            }))}
+                    />
                     <Button type={"primary"} loading={loading} disabled={selectedDoc === ''} onClick={() => {
                         if (selectedDoc === 'فاکتور') {
                             navigate(`/warhouse/product/factor/${context.currentProductFactor}`)

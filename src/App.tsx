@@ -41,7 +41,21 @@ const App: React.FC = () => {
     const [currentPropertyForm, setCurrentPropertyForm] = useState<string>('');
     const [currentPropertyTable, setCurrentPropertyTable] = useState<string>('');
     const [propertyTab, setPropertyTab] = useState<string>('ثبت اولیه / خرید');
+    const [listPropertyFactor, setListPropertyFactor] = useState<any>([]);
 
+
+    useEffect(() => {
+        (async () => {
+            if (isLogged) {
+                const {data} = (await axios.get(`${Url}/permission/`, {
+                    headers: {
+                        'Authorization': 'Bearer ' + localStorage.getItem('access_token'),
+                    }
+                }));
+                setPermission(data.message);
+            }
+        })()
+    }, [isLogged]);
 
     useEffect(() => {
         (async () => {
@@ -69,6 +83,33 @@ const App: React.FC = () => {
             })()
         }
     }, [isLogged]);
+
+     const fetchData = async () => {
+        setLoading(true)
+        await axios.get(`${Url}/api/factor_property/?fields=code,jsonData,inventory&inventory=${permission === 'مدیر' ? '' : office }`, {
+            headers: {
+                'Authorization': 'Bearer ' + localStorage.getItem('access_token'),
+            }
+        }).then(response => {
+            return response
+        }).then(async data => {
+            setListPropertyFactor(data.data)
+        }).catch((error) => {
+            if (error.request.status === 403) {
+                navigate('/no_access')
+            }
+        }).finally(() => setLoading(false)
+        )
+    }
+
+    useEffect(() => {
+                if (isLogged) {
+                    void fetchData()
+                }
+        },
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        [isLogged])
+
 
     useEffect(() => {
         if (isLogged) {
@@ -167,6 +208,7 @@ const App: React.FC = () => {
                 <Context.Provider value={{
                     setLogged,
                     currentContract,
+                    listPropertyFactor,
                     setCurrentContract,
                     fullName,
                     setCurrentProductDoc,

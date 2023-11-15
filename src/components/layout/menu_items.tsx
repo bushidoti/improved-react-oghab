@@ -89,10 +89,11 @@ export const MenuLayout = () => {
             getItem(<Link to='../warhouse/property/report'>گزارش</Link>, '17'),
             getItem(<Link to='../warhouse/property/sent'>ارسالی</Link>, '18'),
             getItem(<Link to='../warhouse/property/recycle'>بایگانی</Link>, '19'),
+            getItem(<Link to='../warhouse/property/upload'>بارگذاری فاکتور</Link>, '20'),
         ]),
-        getItem(<Link to='../warhouse/handling'>انبارگردانی</Link>, '20')
+        getItem(<Link to='../warhouse/handling'>انبارگردانی</Link>, '21')
     ] , !(context.permission === 'مدیر' || context.permission === 'انباردار')),
-    getItem(<Link to='../logout'>خروج</Link>, '21', <PoweroffOutlined/>,undefined,undefined,true),
+    getItem(<Link to='../logout'>خروج</Link>, '22', <PoweroffOutlined/>,undefined,undefined,true),
 ];
     return (
          <Menu

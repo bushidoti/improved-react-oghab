@@ -31,6 +31,8 @@ import EditContract from "../contract/register/edit";
 import MainDocument from "../document/main/page";
 import EditImmovable from "../document/register/edit_immovable";
 import EditMovable from "../document/register/edit_movable";
+import {UploadPropertyFactor} from "../warhouse/property/upload/upload";
+import PropertyFactor from "../warhouse/property/main/factor";
 
 export const RouteLayout = () => {
     const context = useContext(Context)
@@ -67,7 +69,10 @@ export const RouteLayout = () => {
                 <Route path={'/warhouse/property/register'} element={<RegisterProperty/>}/>
                 <Route path={'/warhouse/property/report'} element={<MainProperty/>}/>
                 <Route path={'/warhouse/property/sent'} element={<SentProperty/>}/>
+                 <Route path={`/warhouse/property/factor/${context.currentPropertyFactor}`}
+                           element={<PropertyFactor/>}/>
                 <Route path={'/warhouse/property/recycle'} element={<RecycleProperty/>}/>
+                <Route path={'/warhouse/property/upload'} element={<UploadPropertyFactor/>}/>
                 <Route path={'/warhouse/handling'} element={<Handling/>}/>
                 <Route path={'/'} element={<Home/>}/>
                 <Route path={'/logout'} element={<Logout/>}/>

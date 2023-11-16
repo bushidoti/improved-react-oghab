@@ -38,6 +38,11 @@ const SentProperty: React.FC = () => {
             key: 'index',
             render: (_value, _record, index) => index + 1,
         }, {
+            title: 'دسته',
+            align: "center",
+            dataIndex: 'category',
+            key: 'category',
+        }, {
             title: 'کد اموال',
             align: "center",
             dataIndex: 'code',
@@ -103,13 +108,18 @@ const SentProperty: React.FC = () => {
                             onConfirm={async () => {
                                 await axios.put(`${Url}/api/property/${record.code}/`, {
                                     code: record.code,
+                                    movement_description: '',
+                                    dst_inventory: '',
                                     movement_status: 'ارسال شده',
+                                    movement_message: `ارسال شده به ${context.office} `
                                 }, {
                                     headers: {
                                         'Authorization': 'Bearer ' + localStorage.getItem('access_token'),
                                     }
                                 }).then(response => {
                                     return response
+                                }).then(() => {
+                                    record.movement_message = `دریافت شده از انبار ${record.inventory} با کد ${record.code}`
                                 }).then(() => {
                                     record.code = autoIncrement.filter(value => value.name === record.category)[0].increment
                                     record.inventory = context.office

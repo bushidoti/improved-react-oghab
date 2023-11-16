@@ -36,7 +36,6 @@ const AirportFurniture    = () => {
             }).then(async data => {
                 if (data.status === 200) {
                     message.success('کد کالا بروز شد');
-                    await fetchData()
                 }
             }).then(async () => {
                  context.setPropertyCapsule(oldArray => [...oldArray, {

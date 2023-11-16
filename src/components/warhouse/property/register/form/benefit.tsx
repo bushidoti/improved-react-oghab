@@ -32,7 +32,6 @@ const Benefit = () => {
         }).then(async data => {
             if (data.status === 200) {
                 message.success('کد کالا بروز شد');
-                await fetchData()
             }
         }).then(() => {
               context.setPropertyCapsule(oldArray => [...oldArray, {

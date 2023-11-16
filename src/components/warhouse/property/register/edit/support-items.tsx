@@ -5,6 +5,7 @@ import {useNavigate} from "react-router-dom";
 import {Context} from "../../../../../context";
 import Url from "../../../../api-configue";
 import TextArea from "antd/es/input/TextArea";
+import {SendProperty} from "../send";
 
 
 /* eslint-disable no-template-curly-in-string */
@@ -135,6 +136,7 @@ const EditSupportItem = () => {
                            rules={[{required: true}]}>
                     <TextArea/>
                </Form.Item>
+                <SendProperty/>
             </Form.Item>
             <Form.Item>
                 <Form.Item>

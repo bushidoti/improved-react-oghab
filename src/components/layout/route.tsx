@@ -6,7 +6,6 @@ import RegisterDocument from "../document/register/page";
 import UploadDocument from "../document/upload/page";
 import RegisterProduct from "../warhouse/product/register/page";
 import ReportProduct from "../warhouse/product/report/page";
-import RecycleProperty from "../warhouse/property/recycle/page";
 import RegisterProperty from "../warhouse/property/register/page";
 import SentProperty from "../warhouse/property/sent/page";
 import RegisterPersonal from "../personal/register/page";
@@ -83,7 +82,6 @@ export const RouteLayout = () => {
                 <Route path={'/warhouse/property/sent'} element={<SentProperty/>}/>
                  <Route path={`/warhouse/property/factor/${context.currentPropertyFactor}`}
                            element={<PropertyFactor/>}/>
-                <Route path={'/warhouse/property/recycle'} element={<RecycleProperty/>}/>
                 <Route path={`/warhouse/property/airport-equipment/edit/${context.currentProperty}`} element={<EditAirportEquipment/>}/>
                 <Route path={`/warhouse/property/airport-furniture/edit/${context.currentProperty}`} element={<EditAirportFurniture/>}/>
                 <Route path={`/warhouse/property/benefit/edit/${context.currentProperty}`} element={<EditBenefit/>}/>

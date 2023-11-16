@@ -4,6 +4,7 @@ import axios from "axios";
 import {useNavigate} from "react-router-dom";
 import {Context} from "../../../../../context";
 import Url from "../../../../api-configue";
+import {SendProperty} from "../send";
 
 
 /* eslint-disable no-template-curly-in-string */
@@ -136,6 +137,7 @@ const EditAirportEquipment  = () => {
                            rules={[{required: true}]}>
                     <Input/>
                 </Form.Item>
+            <SendProperty/>
             </Form.Item>
             <Form.Item>
                 <Form.Item>

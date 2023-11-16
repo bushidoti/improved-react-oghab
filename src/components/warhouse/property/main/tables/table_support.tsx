@@ -2,7 +2,7 @@ import {SearchOutlined} from '@ant-design/icons';
 import React, {useContext, useEffect, useRef, useState} from 'react';
 import Highlighter from "react-highlight-words";
 import type {InputRef, TableProps} from 'antd';
-import {Button, Input, Select, Space, Table} from 'antd';
+import {Badge, Button, Input, Select, Space, Table} from 'antd';
 import axios from "axios";
 import type {ColumnsType, ColumnType} from 'antd/es/table';
 import type {FilterConfirmProps, FilterValue} from 'antd/es/table/interface';
@@ -27,6 +27,7 @@ interface DataType {
     sub_item_type: string;
     model: string;
     user: string;
+    movement_status: string;
     using_location: string;
     description: string;
 }
@@ -63,7 +64,7 @@ const SupportItemTable: React.FC = () => {
 
     const fetchData = async () => {
        setLoading(true)
-        await axios.get(`${Url}/api/property/?size=${pagination.pageSize}&page=${pagination.current}&fields=code,category,factorCode,inventory,name,property_number,document_code,model,user,sub_item_type,using_location,description&${qs.stringify(filteredInfo, {
+        await axios.get(`${Url}/api/property/?size=${pagination.pageSize}&page=${pagination.current}&fields=code,movement_status,category,factorCode,inventory,name,property_number,document_code,model,user,sub_item_type,using_location,description&${qs.stringify(filteredInfo, {
                 encode: false,
                 arrayFormat: 'comma'
             })}&inventory=${context.permission === 'مدیر' || context.permission === 'مشاهده' ? qs.stringify(filteredInfo, {
@@ -224,7 +225,20 @@ const SupportItemTable: React.FC = () => {
             fixed: "left",
             width: '3%',
             key: 'index',
-            render: (_value, _record, index) => index + 1,
+             render: (_value, record, index) =>
+                <>
+                    {(() => {
+                        if (record.movement_status === 'ارسال شده') {
+                            return (
+                                <Space>
+                                    <Badge color="red" status="processing"/> {index + 1}
+                                </Space>
+                            )
+                        } else {
+                            return index + 1
+                        }
+                    })()}
+                </>
         }, {
             align: "center",
             title: 'کد اموال',
@@ -234,7 +248,7 @@ const SupportItemTable: React.FC = () => {
             key: 'code',
             ...getColumnSearchProps('code'),
             filteredValue: filteredInfo.code || null,
-            render: (_value, record) => <Button type={"link"} onClick={() => {
+            render: (_value, record) => <Button disabled={record.movement_status === 'ارسال شده'} type={"link"} onClick={() => {
                 context.setCurrentProperty(record.code)
                 navigate(`/warhouse/property/support-item/edit/${record.code}`)
              }}>{record.code}</Button>,
@@ -378,6 +392,7 @@ const SupportItemTable: React.FC = () => {
     return (
         <>
             <Space className='mt-2' style={{marginBottom: 16}}>
+                <Badge color="red" status="processing" text="به معنی ارسال شده"/>
                 <Button onClick={clearFilters}>پاک کردن فیتلر ها</Button>
                 <Button onClick={clearAll}>پاک کردن فیلتر و مرتب کننده ها</Button>
                 <Button onClick={generatePDF}>چاپ</Button>

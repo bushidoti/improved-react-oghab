@@ -1,5 +1,5 @@
 import React, {useContext, useEffect, useState} from 'react';
-import {Button, ConfigProvider, Form, Image, Input, InputNumber, message, Select, Space} from 'antd';
+import {Button, ConfigProvider, Form, Image, Input, InputNumber, message, Space} from 'antd';
 import axios from "axios";
 import {useNavigate} from "react-router-dom";
 import {Context} from "../../../../../context";
@@ -12,168 +12,77 @@ const validateMessages = {
 };
 
 
-const Benefit = () => {
+const EditSafetyEquipment  = () => {
     const [form] = Form.useForm();
     const navigate = useNavigate();
     const context = useContext(Context)
-    const [autoIncrement, setAutoIncrement] = useState<number>()
-    const [autoIncrementFactor, setAutoIncrementFactor] = useState<number>()
     const [visible, setVisible] = useState(false);
 
+
     const subObjAdd = async () => {
-        await axios.put(`${Url}/api/autoincrement_property/${autoIncrement}/`, {
-            increment: form.getFieldValue(['property', 'code']) + 1
-        }, {
-            headers: {
-                'Authorization': 'Bearer ' + localStorage.getItem('access_token'),
-            }
-        }).then(response => {
-            return response
-        }).then(async data => {
-            if (data.status === 200) {
-                message.success('کد کالا بروز شد');
-                await fetchData()
-            }
-        }).then(() => {
-              context.setPropertyCapsule(oldArray => [...oldArray, {
-                            code : form.getFieldValue(['property','code']),
-                            category : context.currentPropertyForm,
-                            factorCode:  form.getFieldValue(['property','factorCode']),
-                            inventory: context.office,
-                            name: form.getFieldValue(['property','name']),
-                            property_number: form.getFieldValue(['property','property_number']),
-                            document_code: form.getFieldValue(['property','document_code']),
-                            number: form.getFieldValue(['property','number']),
-                            using_location: form.getFieldValue(['property','using_location']),
-                   }])
-        })
+           await axios.put(`${Url}/api/property/${context.currentProperty}/`, form.getFieldValue(['property']) , {
+                headers: {
+                    'Authorization': 'Bearer ' + localStorage.getItem('access_token'),
+                }
+            }).then(response => {
+                return response
+            }).then(async data => {
+                if (data.status === 200) {
+                    message.success('اموال بروز شد');
+                    await fetchData()
+                    navigate('/warhouse/property/report')
+
+                }
+            })
     }
 
-    const onFinish = async () => {
-        context.setLoadingAjax(true)
-                await axios.post(
-                    `${Url}/api/factor_property/`, {
-                                code: form.getFieldValue(['property','factorCode']),
-                                inventory: context.office,
-                                factor_type: 'ثبت اولیه / خرید',
-                                factor: context.compressed,
-                                jsonData: context.propertyCapsule,
-                            }, {
-                        headers: {
-                            'Authorization': 'Bearer ' + localStorage.getItem('access_token'),
-                        }
-                    }).then(
-                        response => {
-                    return response
-                }).then(async data => {
-                    if (data.status === 201) {
-                        message.success('فاکتور ثبت شد.');
-                        context.setLoadingAjax(false)
-                    }
-                }).catch(async (error) => {
-                    if (error.request.status === 403) {
-                        navigate('/no_access')
-                    } else if (error.request.status === 400) {
-                        message.error('عدم ثبت');
-                        context.setLoadingAjax(false)
-                        await handleResetSubmit()
-                    }
-                }).then(async () => {
-               await axios.post(
-                   `${Url}/api/property/`, context.propertyCapsule,  {
-                       headers: {
-                           'Authorization': 'Bearer ' + localStorage.getItem('access_token'),
-                       }
-                   }).then(response => {
-                   return response
-               }).then(async data => {
-                   if (data.status === 201) {
-                       message.success('ثبت شد');
-                       await handleResetSubmit()
-                       context.setLoadingAjax(false)
-                   }
-               }).then(async () => {
-                   return await axios.put(`${Url}/api/autoincrement_property_factor/${autoIncrementFactor}/`, {
-                       increment: form.getFieldValue(['property','factorCode']) + 1
-                   }, {
-                       headers: {
-                           'Authorization': 'Bearer ' + localStorage.getItem('access_token'),
-                       }
-                   })
-               }).then(response => {
-                   return response
-               }).then(async data => {
-                   if (data.status === 200) {
-                       message.success('کد فاکتور بروز شد');
-                       await fetchData()
-                       context.setPropertyCapsule(() => [])
-                   }
-               }).catch(async (error) => {
-                   if (error.request.status === 403) {
-                       navigate('/no_access')
-                   } else if (error.request.status === 400) {
-                       message.error('عدم ثبت');
-                       context.setLoadingAjax(false)
-                       await handleResetSubmit()
-                   }
-               })
-           })
 
-    };
+
 
     const handleResetSubmit = async () => {
         form.resetFields()
         await fetchData()
     }
 
-    const fetchData = async () => {
-        await axios.get(`${Url}/api/autoincrement_property/?inventory=${context.office}&name=${context.currentPropertyForm}`, {
-            headers: {
-                'Authorization': 'Bearer ' + localStorage.getItem('access_token'),
-            }
-        }).then(response => {
-            return response
-        }).then(async data => {
-            form.setFieldsValue({
-                property : {
-                    code: data.data[0].increment,
-                }
-            });
-            setAutoIncrement(data.data[0].id)
-        }).then(async () => {
-            return await axios.get(`${Url}/api/autoincrement_property_factor/?inventory=${context.office}`, {
+
+        const fetchData = async () => {
+        await axios.get(`${Url}/api/property/${context.currentProperty}`, {
                 headers: {
                     'Authorization': 'Bearer ' + localStorage.getItem('access_token'),
                 }
-            })
-        }).then(response => {
+            }).then(response => {
             return response
         }).then(async data => {
-            form.setFieldsValue({
-                property : {
-                    factorCode: data.data[0].increment,
-                }
+              form.setFieldsValue({
+                property: {
+                    code: data.data.code,
+                    factorCode: data.data.factorCode,
+                    inventory: data.data.inventory,
+                    name: data.data.name,
+                    property_number: data.data.property_number,
+                    document_code: data.data.document_code,
+                    use_for: data.data.use_for,
+                    user: data.data.user,
+                    install_location: data.data.install_location,
+                },
             });
-            setAutoIncrementFactor(data.data[0].id)
-
-        }).catch((error) => {
-            if (error.request.status === 403) {
-                navigate('/no_access')
-            }
         })
     }
+
+
 
     useEffect(() => {
             void fetchData()
         },
         // eslint-disable-next-line react-hooks/exhaustive-deps
-        [])
+        [context.propertyTab])
 
      function scanImage() {
             if (document.readyState === "complete") {
                 window.ws.send("1100");
             }
         }
+
 
     return (
         <>
@@ -193,17 +102,7 @@ const Benefit = () => {
                  </Form.Item>
             </Form.Item>
             <Form.Item>
-                <Form.Item name={['property', 'name']} className='w-[233px] inline-block m-2' label="نوع خط"
-                           rules={[{required: true}]}>
-                    <Select
-                    placeholder="انتخاب کنید"
-                    options={[
-                        {value: 'سیم کارت', label: 'سیم کارت'},
-                        {value: 'ثابت', label: 'ثابت'},
-                ]}/>
-
-                </Form.Item>
-                <Form.Item name={['property', 'number']} className='w-[233px] inline-block m-2' label="شماره خط"
+                  <Form.Item name={['property', 'name']} className='w-[233px] inline-block m-2' label="نام تجهیزات"
                            rules={[{required: true}]}>
                     <Input/>
                 </Form.Item>
@@ -215,7 +114,15 @@ const Benefit = () => {
                            rules={[{required: true}]}>
                     <Input/>
                 </Form.Item>
-               <Form.Item name={['property', 'using_location']} className='w-[233px] inline-block m-2' label="محل استفاده"
+                <Form.Item name={['property', 'use_for']} className='w-[233px] inline-block m-2' label="مورد استفاده"
+                           rules={[{required: true}]}>
+                    <Input/>
+                </Form.Item>
+               <Form.Item name={['property', 'user']} className='w-[233px] inline-block m-2' label="یوزر"
+                           rules={[{required: true}]}>
+                    <Input/>
+               </Form.Item>
+               <Form.Item name={['property', 'install_location']} className='w-[233px] inline-block m-2' label="محل نصب"
                            rules={[{required: true}]}>
                     <Input/>
                </Form.Item>
@@ -237,6 +144,7 @@ const Benefit = () => {
                 </Form.Item>
             </Form.Item>
             <Form.Item>
+                <Form.Item>
                     <Form.Item style={{margin: 8}}>
                         <ConfigProvider theme={{
                             components: {
@@ -252,27 +160,13 @@ const Benefit = () => {
                             </Button>
                         </ConfigProvider>
                     </Form.Item>
-                      <Form.Item style={{margin: 8}}>
-                        <ConfigProvider theme={{
-                                    components: {
-                                        Button: {
-                                            groupBorderColor: '#ff0000',
-                                        }
-                                        }, token: {
-                                            colorPrimary: 'rgba(255,0,0,0.72)'
-                            }
-                        }}>
-                                  <Button onClick={onFinish}  type={"primary"} block htmlType="button">
-                                     پایان
-                                  </Button>
-                        </ConfigProvider>
-                    </Form.Item>
                     <Form.Item style={{margin: 8}}>
                         <Button onClick={handleResetSubmit} block loading={context.loadingAjax} htmlType="button">
                             ریست
                         </Button>
                     </Form.Item>
                 </Form.Item>
+            </Form.Item>
         </Form>
         <Image
                 width={200}
@@ -291,4 +185,4 @@ const Benefit = () => {
     );
 }
 
-export default Benefit;
+export default EditSafetyEquipment ;

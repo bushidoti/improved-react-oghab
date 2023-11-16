@@ -33,6 +33,7 @@ const App: React.FC = () => {
     const [currentContract, setCurrentContract] = useState<number>(0)
     const [currentDocProperty, setCurrentDocProperty] = useState<number>(0)
     const [currentProduct, setCurrentProduct] = useState<number>(0)
+    const [currentProperty, setCurrentProperty] = useState<number>(0)
     const [currentProductFactor, setCurrentProductFactor] = useState<number>(0)
     const [currentPropertyFactor, setCurrentPropertyFactor] = useState<number>(0)
     const [currentProductCheck, setCurrentProductCheck] = useState<number>(0)
@@ -219,6 +220,8 @@ const App: React.FC = () => {
                     currentPropertyFactor,
                     loadingAjax,
                     currentProductDoc,
+                    setCurrentProperty,
+                    currentProperty,
                     setCurrentProduct,
                     setCurrentProductCheck,
                     setPropertyCapsule,

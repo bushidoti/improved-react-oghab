@@ -1,5 +1,5 @@
 import React, {useContext, useEffect, useState} from 'react';
-import {Button, ConfigProvider, Form, Image, Input, InputNumber, message, Select, Space} from 'antd';
+import {Button, ConfigProvider, Form, Image, Input, InputNumber, message, Space} from 'antd';
 import axios from "axios";
 import {useNavigate} from "react-router-dom";
 import {Context} from "../../../../../context";
@@ -12,7 +12,7 @@ const validateMessages = {
 };
 
 
-const Benefit = () => {
+const EditNoneIndustrial = () => {
     const [form] = Form.useForm();
     const navigate = useNavigate();
     const context = useContext(Context)
@@ -43,7 +43,8 @@ const Benefit = () => {
                             name: form.getFieldValue(['property','name']),
                             property_number: form.getFieldValue(['property','property_number']),
                             document_code: form.getFieldValue(['property','document_code']),
-                            number: form.getFieldValue(['property','number']),
+                            year_buy: form.getFieldValue(['property','year_buy']),
+                            user: form.getFieldValue(['property','user']),
                             using_location: form.getFieldValue(['property','using_location']),
                    }])
         })
@@ -181,7 +182,7 @@ const Benefit = () => {
               autoComplete="off"
               name="property"
               layout="vertical"
-              onFinish={subObjAdd}
+              onFinish={onFinish}
               validateMessages={validateMessages}
         >
             <Form.Item>
@@ -193,17 +194,7 @@ const Benefit = () => {
                  </Form.Item>
             </Form.Item>
             <Form.Item>
-                <Form.Item name={['property', 'name']} className='w-[233px] inline-block m-2' label="نوع خط"
-                           rules={[{required: true}]}>
-                    <Select
-                    placeholder="انتخاب کنید"
-                    options={[
-                        {value: 'سیم کارت', label: 'سیم کارت'},
-                        {value: 'ثابت', label: 'ثابت'},
-                ]}/>
-
-                </Form.Item>
-                <Form.Item name={['property', 'number']} className='w-[233px] inline-block m-2' label="شماره خط"
+                  <Form.Item name={['property', 'name']} className='w-[233px] inline-block m-2' label="نام ابزار"
                            rules={[{required: true}]}>
                     <Input/>
                 </Form.Item>
@@ -212,6 +203,14 @@ const Benefit = () => {
                     <Input/>
                 </Form.Item>
                  <Form.Item name={['property', 'document_code']} className='w-[233px] inline-block m-2' label="شناسه فاکتور"
+                           rules={[{required: true}]}>
+                    <Input/>
+                </Form.Item>
+                <Form.Item name={['property', 'year_buy']} className='w-[233px] inline-block m-2' label="سال خرید"
+                           rules={[{required: true, len: 4}]}>
+                    <Input  maxLength={4} type={'number'}/>
+                </Form.Item>
+                  <Form.Item name={['property', 'user']} className='w-[233px] inline-block m-2' label="یوزر"
                            rules={[{required: true}]}>
                     <Input/>
                 </Form.Item>
@@ -237,6 +236,7 @@ const Benefit = () => {
                 </Form.Item>
             </Form.Item>
             <Form.Item>
+                <Form.Item>
                     <Form.Item style={{margin: 8}}>
                         <ConfigProvider theme={{
                             components: {
@@ -247,7 +247,7 @@ const Benefit = () => {
                                 colorPrimary: '#52c41a'
                             }
                         }}>
-                            <Button  danger={context.loadingAjax} type={"primary"} loading={context.loadingAjax} block htmlType="submit">
+                            <Button  danger={context.loadingAjax} onClick={subObjAdd} type={"primary"} loading={context.loadingAjax} block htmlType="button">
                                 ثبت
                             </Button>
                         </ConfigProvider>
@@ -262,7 +262,7 @@ const Benefit = () => {
                                             colorPrimary: 'rgba(255,0,0,0.72)'
                             }
                         }}>
-                                  <Button onClick={onFinish}  type={"primary"} block htmlType="button">
+                                  <Button  type={"primary"} block htmlType="submit">
                                      پایان
                                   </Button>
                         </ConfigProvider>
@@ -273,6 +273,7 @@ const Benefit = () => {
                         </Button>
                     </Form.Item>
                 </Form.Item>
+            </Form.Item>
         </Form>
         <Image
                 width={200}
@@ -291,4 +292,4 @@ const Benefit = () => {
     );
 }
 
-export default Benefit;
+export default EditNoneIndustrial  ;

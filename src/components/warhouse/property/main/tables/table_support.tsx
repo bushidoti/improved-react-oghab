@@ -235,8 +235,8 @@ const SupportItemTable: React.FC = () => {
             ...getColumnSearchProps('code'),
             filteredValue: filteredInfo.code || null,
             render: (_value, record) => <Button type={"link"} onClick={() => {
-                context.setCurrentProduct(record.code)
-                navigate(`/warhouse/property/edit/${record.code}`)
+                context.setCurrentProperty(record.code)
+                navigate(`/warhouse/property/support-item/edit/${record.code}`)
              }}>{record.code}</Button>,
         }, {
             align: "center",

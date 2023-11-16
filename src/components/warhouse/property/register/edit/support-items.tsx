@@ -4,6 +4,7 @@ import axios from "axios";
 import {useNavigate} from "react-router-dom";
 import {Context} from "../../../../../context";
 import Url from "../../../../api-configue";
+import TextArea from "antd/es/input/TextArea";
 
 
 /* eslint-disable no-template-curly-in-string */
@@ -12,7 +13,7 @@ const validateMessages = {
 };
 
 
-const Benefit = () => {
+const EditSupportItem = () => {
     const [form] = Form.useForm();
     const navigate = useNavigate();
     const context = useContext(Context)
@@ -43,8 +44,11 @@ const Benefit = () => {
                             name: form.getFieldValue(['property','name']),
                             property_number: form.getFieldValue(['property','property_number']),
                             document_code: form.getFieldValue(['property','document_code']),
-                            number: form.getFieldValue(['property','number']),
+                            model: form.getFieldValue(['property','model']),
+                            sub_item_type: form.getFieldValue(['property','sub_item_type']),
+                            user: form.getFieldValue(['property','user']),
                             using_location: form.getFieldValue(['property','using_location']),
+                            description: form.getFieldValue(['property','description']),
                    }])
         })
     }
@@ -106,7 +110,7 @@ const Benefit = () => {
                    if (data.status === 200) {
                        message.success('کد فاکتور بروز شد');
                        await fetchData()
-                       context.setPropertyCapsule(() => [])
+                       context.setPropertyCapsule(oldArray => [])
                    }
                }).catch(async (error) => {
                    if (error.request.status === 403) {
@@ -175,13 +179,23 @@ const Benefit = () => {
             }
         }
 
+     const item_type=[
+            {value: 'اداری', label: 'اداری'},
+            {value: 'تاسیسات', label: 'تاسیسات'},
+            {value: 'الکترونیک', label: 'الکترونیک'},
+            {value: 'آشپزخانه', label: 'آشپزخانه'},
+            {value: 'تجهیزاتی', label: 'تجهیزاتی'},
+            {value: 'ابزارآلات', label: 'ابزارآلات'},
+            {value: 'متفرقه', label: 'متفرقه'},
+    ]
+
     return (
         <>
         <Form form={form}
               autoComplete="off"
               name="property"
               layout="vertical"
-              onFinish={subObjAdd}
+              onFinish={onFinish}
               validateMessages={validateMessages}
         >
             <Form.Item>
@@ -193,17 +207,13 @@ const Benefit = () => {
                  </Form.Item>
             </Form.Item>
             <Form.Item>
-                <Form.Item name={['property', 'name']} className='w-[233px] inline-block m-2' label="نوع خط"
+                  <Form.Item name={['property', 'sub_item_type']} className='w-[233px] inline-block m-2' label="نوع قلم"
                            rules={[{required: true}]}>
                     <Select
                     placeholder="انتخاب کنید"
-                    options={[
-                        {value: 'سیم کارت', label: 'سیم کارت'},
-                        {value: 'ثابت', label: 'ثابت'},
-                ]}/>
-
+                    options={item_type}/>
                 </Form.Item>
-                <Form.Item name={['property', 'number']} className='w-[233px] inline-block m-2' label="شماره خط"
+                  <Form.Item name={['property', 'name']} className='w-[233px] inline-block m-2' label="نام قلم"
                            rules={[{required: true}]}>
                     <Input/>
                 </Form.Item>
@@ -215,9 +225,21 @@ const Benefit = () => {
                            rules={[{required: true}]}>
                     <Input/>
                 </Form.Item>
+                <Form.Item name={['property', 'model']} className='w-[233px] inline-block m-2' label="مدل"
+                           rules={[{required: true}]}>
+                    <Input/>
+                </Form.Item>
+                  <Form.Item name={['property', 'user']} className='w-[233px] inline-block m-2' label="یوزر"
+                           rules={[{required: true}]}>
+                    <Input/>
+                </Form.Item>
                <Form.Item name={['property', 'using_location']} className='w-[233px] inline-block m-2' label="محل استفاده"
                            rules={[{required: true}]}>
                     <Input/>
+               </Form.Item>
+                <Form.Item name={['property', 'description']} className='w-[233px] inline-block m-2' label="شرح"
+                           rules={[{required: true}]}>
+                    <TextArea/>
                </Form.Item>
                 <Form.Item style={{margin: 8, display: 'inline-block'}} label="فایل">
                     <Space.Compact>
@@ -237,6 +259,7 @@ const Benefit = () => {
                 </Form.Item>
             </Form.Item>
             <Form.Item>
+                <Form.Item>
                     <Form.Item style={{margin: 8}}>
                         <ConfigProvider theme={{
                             components: {
@@ -247,7 +270,7 @@ const Benefit = () => {
                                 colorPrimary: '#52c41a'
                             }
                         }}>
-                            <Button  danger={context.loadingAjax} type={"primary"} loading={context.loadingAjax} block htmlType="submit">
+                            <Button  danger={context.loadingAjax} onClick={subObjAdd} type={"primary"} loading={context.loadingAjax} block htmlType="button">
                                 ثبت
                             </Button>
                         </ConfigProvider>
@@ -262,7 +285,7 @@ const Benefit = () => {
                                             colorPrimary: 'rgba(255,0,0,0.72)'
                             }
                         }}>
-                                  <Button onClick={onFinish}  type={"primary"} block htmlType="button">
+                                  <Button  type={"primary"} block htmlType="submit">
                                      پایان
                                   </Button>
                         </ConfigProvider>
@@ -273,6 +296,7 @@ const Benefit = () => {
                         </Button>
                     </Form.Item>
                 </Form.Item>
+            </Form.Item>
         </Form>
         <Image
                 width={200}
@@ -291,4 +315,4 @@ const Benefit = () => {
     );
 }
 
-export default Benefit;
+export default EditSupportItem;

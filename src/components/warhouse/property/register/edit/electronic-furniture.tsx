@@ -13,7 +13,7 @@ const validateMessages = {
 };
 
 
-const Vehicle  = () => {
+const EditElectronicFurniture   = () => {
     const [form] = Form.useForm();
     const navigate = useNavigate();
     const context = useContext(Context)
@@ -23,7 +23,7 @@ const Vehicle  = () => {
     const [listProperty, setListProperty] = useState<any[]>([]);
 
 
-        const subObjAdd = async () => {
+    const subObjAdd = async () => {
         if (context.propertyTab === 'ثبت اولیه / خرید'){
            await axios.put(`${Url}/api/autoincrement_property/${autoIncrement}/`, {
                 increment: form.getFieldValue(['property', 'code']) + 1
@@ -39,24 +39,18 @@ const Vehicle  = () => {
                     await fetchData()
                 }
             }).then(async () => {
-                     context.setPropertyCapsule(oldArray => [...oldArray, {
+                 context.setPropertyCapsule(oldArray => [...oldArray,{
                             code : form.getFieldValue(['property','code']),
                             category : context.currentPropertyForm,
                             factorCode:  form.getFieldValue(['property','factorCode']),
                             inventory: context.office,
                             name: form.getFieldValue(['property','name']),
-                            model: form.getFieldValue(['property','model']),
                             property_number: form.getFieldValue(['property','property_number']),
                             document_code: form.getFieldValue(['property','document_code']),
-                            year_made: form.getFieldValue(['property','year_made']),
-                            motor: form.getFieldValue(['property','motor']),
-                            chassis: form.getFieldValue(['property','chassis']),
+                            year_buy: form.getFieldValue(['property','year_buy']),
+                            model: form.getFieldValue(['property','model']),
                             user: form.getFieldValue(['property','user']),
-                            owner: form.getFieldValue(['property','owner']),
-                            part1plate: form.getFieldValue(['property','part1plate']),
-                            cityPlate: form.getFieldValue(['property','cityPlate']),
-                            part2plate: form.getFieldValue(['property','part2plate']),
-                            part3plate: form.getFieldValue(['property','part3plate']),
+                            install_location: form.getFieldValue(['property','install_location']),
                    }])
                await handleResetSubmit()
 
@@ -65,9 +59,6 @@ const Vehicle  = () => {
              context.setPropertyCapsule(oldArray => [...oldArray, {
                                 property : form.getFieldValue(['property','property']),
                                 factorCode:  form.getFieldValue(['property','factorCode']),
-                                kilometer:  form.getFieldValue(['property','kilometer']),
-                                type:  form.getFieldValue(['property','type']),
-                                year_change:  form.getFieldValue(['property','year_change']),
                                 document_code:  form.getFieldValue(['property','document_code']),
                                 description:  form.getFieldValue(['property','description']),
                                 inventory: context.office,
@@ -272,50 +263,21 @@ const Vehicle  = () => {
         }
     }
 
+
     useEffect(() => {
             void fetchData()
         },
         // eslint-disable-next-line react-hooks/exhaustive-deps
-        [context.propertyTab, context.currentPropertyForm])
+        [context.propertyTab])
+
+    const filterOption = (input: string, option?: { label: string; value: string }) =>
+        (option?.label ?? '').toLowerCase().includes(input.toLowerCase());
 
      function scanImage() {
             if (document.readyState === "complete") {
                 window.ws.send("1100");
             }
         }
-
-    const options=[
-        {value: 'الف', label: 'الف'},
-        {value: 'ب', label: 'ب'},
-        {value: 'پ', label: 'پ'},
-        {value: 'ت', label: 'ت'},
-        {value: 'ث', label: 'ث'},
-        {value: 'ج', label: 'ج'},
-        {value: 'د', label: 'د'},
-        {value: 'ز', label: 'ز'},
-        {value: 'س', label: 'س'},
-        {value: 'ش', label: 'ش'},
-        {value: 'ص', label: 'ص'},
-        {value: 'ط', label: 'ط'},
-        {value: 'ع', label: 'ع'},
-        {value: 'ف', label: 'ف'},
-        {value: 'ق', label: 'ق'},
-        {value: 'ک', label: 'ک'},
-        {value: 'گ', label: 'گ'},
-        {value: 'ل', label: 'ل'},
-        {value: 'م', label: 'م'},
-        {value: 'ن', label: 'ن'},
-        {value: 'و', label: 'و'},
-        {value: 'ه', label: 'ه'},
-        {value: 'ی', label: 'ی'},
-        {value: 'معلولین', label: 'معلولین'},
-        {value: 'تشریفات', label: 'تشریفات'},
-        {value: 'D', label: 'D'},
-        {value: 'S', label: 'S'},
-    ]
-
-    const filterOption = (input: string, option?: { label: string; value: string }) =>
-        (option?.label ?? '').toLowerCase().includes(input.toLowerCase());
 
     return (
         <>
@@ -339,15 +301,7 @@ const Vehicle  = () => {
                  </Form.Item>
             </Form.Item>
             <Form.Item>
-                <Form.Item name={['property', 'name']} className='w-[233px] inline-block m-2' label="نام وسیله نقلیه"
-                           rules={[{required: true}]}>
-                    <Input/>
-                </Form.Item>
-                  <Form.Item name={['property', 'year_made']} className='w-[233px] inline-block m-2' label="سال ساخت"
-                           rules={[{required: true, len: 4}]}>
-                    <Input  maxLength={4} type={'number'}/>
-                </Form.Item>
-                  <Form.Item name={['property', 'model']} className='w-[233px] inline-block m-2' label="مدل"
+                  <Form.Item name={['property', 'name']} className='w-[233px] inline-block m-2' label="نام اثاث"
                            rules={[{required: true}]}>
                     <Input/>
                 </Form.Item>
@@ -359,37 +313,19 @@ const Vehicle  = () => {
                            rules={[{required: true}]}>
                     <Input/>
                 </Form.Item>
-                {context.currentPropertyForm === 'هواپیما' ? null :
-                    <Space.Compact>
-                       <Form.Item name={['property', 'part3plate']} label="سریال" hasFeedback className='w-[80px] inline-block ms-2 mt-2' rules={[{required: true, len: 2}]}>
-                            <Input maxLength={2} type={'number'} placeholder={'- -'} className='text-center'/>
-                       </Form.Item>
-                        <Form.Item name={['property', 'part2plate']} label="راست" hasFeedback className='w-[80px] inline-block mt-2' rules={[{required: true, len: 3}]}>
-                              <Input type={'number'} maxLength={3} placeholder={'- - -'} className='text-center'/>
-                       </Form.Item>
-                        <Form.Item name={['property', 'cityPlate']} label="شهر" className='w-[120px] inline-block mt-2' rules={[{required: true}]}>
-                          <Select
-                            placeholder="انتخاب کنید"
-                            options={options}/>
-                       </Form.Item>
-                        <Form.Item name={['property', 'part1plate']} label="چپ" hasFeedback className='w-[80px] inline-block mt-2' rules={[{required: true, len: 2}]}>
-                           <Input maxLength={2} type={'number'} placeholder={'- -'} className='text-center'/>
-                       </Form.Item>
-                    </Space.Compact>
-                }
+                <Form.Item name={['property', 'year_buy']} className='w-[233px] inline-block m-2' label="سال خرید"
+                           rules={[{required: true, len: 4}]}>
+                    <Input  maxLength={4} type={'number'}/>
+                </Form.Item>
+               <Form.Item name={['property', 'model']} className='w-[233px] inline-block m-2' label="مدل"
+                           rules={[{required: true}]}>
+                    <Input/>
+               </Form.Item>
                <Form.Item name={['property', 'user']} className='w-[233px] inline-block m-2' label="یوزر"
                            rules={[{required: true}]}>
                     <Input/>
                </Form.Item>
-               <Form.Item name={['property', 'owner']} className='w-[233px] inline-block m-2' label="مالکیت"
-                           rules={[{required: true}]}>
-                    <Input/>
-               </Form.Item>
-                <Form.Item name={['property', 'chassis']} className='w-[233px] inline-block m-2' label="شماره شاسی"
-                           rules={[{required: true}]}>
-                    <Input/>
-               </Form.Item>
-                <Form.Item name={['property', 'motor']} className='w-[233px] inline-block m-2' label="شماره موتور"
+               <Form.Item name={['property', 'install_location']} className='w-[233px] inline-block m-2' label="محل نصب"
                            rules={[{required: true}]}>
                     <Input/>
                </Form.Item>
@@ -436,29 +372,6 @@ const Vehicle  = () => {
                                                                     value: item.code
                                                                 }))}
                                                         />
-                                     </Form.Item>
-                                     <Form.Item name={['property', 'type']} className='w-[233px] inline-block m-2' label="تجهیزات مورد نظر برای ثبت تعمیر"
-                                                   rules={[{required: true}]}>
-                                            <Select placeholder="انتخاب کنید"
-                                                                optionFilterProp="children"
-                                                                showSearch
-                                                                filterOption={filterOption}
-                                                                options={[
-                                                                    {label: 'تعویض روغن', value: 'تعویض روغن'},
-                                                                    {label: 'تعویض باتری', value: 'تعویض باتری'},
-                                                                    {label: 'تعویض قطعات', value: 'تعویض قطعات'},
-                                                                    {label: 'تعویض لاستیک', value: 'تعویض لاستیک'},
-                                                                    {label: 'سایر', value: 'سایر'},
-                                                                ]}
-                                            />
-                                     </Form.Item>
-                                     <Form.Item name={['property', 'kilometer']} className='w-[233px] inline-block m-2' label="کیلومتر"
-                                                   rules={[{required: true}]}>
-                                            <Input/>
-                                     </Form.Item>
-                                     <Form.Item name={['property', 'year_change']} className='w-[233px] inline-block m-2' label="سال تعویض"
-                                                rules={[{required: true, len: 4}]}>
-                                             <Input  maxLength={4} type={'number'}/>
                                      </Form.Item>
                                      <Form.Item name={['property', 'description']} className='w-[233px] inline-block m-2' label="شرح تعمیرات"
                                                    rules={[{required: true}]}>
@@ -542,4 +455,4 @@ const Vehicle  = () => {
     );
 }
 
-export default Vehicle;
+export default EditElectronicFurniture ;

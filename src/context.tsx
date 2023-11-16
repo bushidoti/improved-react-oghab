@@ -7,6 +7,8 @@ export const Context = createContext({
     },
     setCurrentPersonal: (_value: number) => {
     },
+    setCurrentProperty: (_value: number) => {
+    },
     setCurrentPropertyForm: (_value: string) => {
     },
     setCurrentContract: (_value: number) => {
@@ -42,6 +44,7 @@ export const Context = createContext({
     currentPropertyForm: '',
     currentPersonal: 0,
     currentDocProperty: 0,
+    currentProperty: 0,
     currentProductCheck: 0,
     currentPropertyFactor: 0,
     currentProduct: 0,

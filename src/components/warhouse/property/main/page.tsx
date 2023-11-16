@@ -27,7 +27,7 @@ import ElectronicFurnitureTable from "./tables/table_electronic";
 import OfficeFurnitureTable from "./tables/table_office";
 import FacilityFurnitureTable from "./tables/table_facility";
 import AirportFurnitureTable from "./tables/table_airport";
-import DigitalFurnitureTable from "./tables/digital_table";
+import DigitalFurnitureTable from "./tables/table_digital";
 import NoneIndustrialTable from "./tables/table_none_industrial";
 import IndustrialTable from "./tables/table_industrial";
 import BenefitTable from "./tables/table_benefit";

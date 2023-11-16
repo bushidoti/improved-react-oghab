@@ -13,17 +13,19 @@ const validateMessages = {
 };
 
 
-const Vehicle  = () => {
+const EditDigitalFurniture = () => {
     const [form] = Form.useForm();
     const navigate = useNavigate();
     const context = useContext(Context)
     const [autoIncrement, setAutoIncrement] = useState<number>()
     const [autoIncrementFactor, setAutoIncrementFactor] = useState<number>()
+    const [currentDigitalForm, setCurrentDigitalForm] = useState<string>('')
+    const [currentConnectionDevice, setCurrentConnectionDevice] = useState<string>('')
     const [visible, setVisible] = useState(false);
     const [listProperty, setListProperty] = useState<any[]>([]);
 
 
-        const subObjAdd = async () => {
+    const subObjAdd = async () => {
         if (context.propertyTab === 'ثبت اولیه / خرید'){
            await axios.put(`${Url}/api/autoincrement_property/${autoIncrement}/`, {
                 increment: form.getFieldValue(['property', 'code']) + 1
@@ -39,24 +41,24 @@ const Vehicle  = () => {
                     await fetchData()
                 }
             }).then(async () => {
-                     context.setPropertyCapsule(oldArray => [...oldArray, {
+                context.setPropertyCapsule(oldArray => [...oldArray, {
                             code : form.getFieldValue(['property','code']),
                             category : context.currentPropertyForm,
                             factorCode:  form.getFieldValue(['property','factorCode']),
                             inventory: context.office,
                             name: form.getFieldValue(['property','name']),
-                            model: form.getFieldValue(['property','model']),
                             property_number: form.getFieldValue(['property','property_number']),
                             document_code: form.getFieldValue(['property','document_code']),
-                            year_made: form.getFieldValue(['property','year_made']),
-                            motor: form.getFieldValue(['property','motor']),
-                            chassis: form.getFieldValue(['property','chassis']),
-                            user: form.getFieldValue(['property','user']),
-                            owner: form.getFieldValue(['property','owner']),
-                            part1plate: form.getFieldValue(['property','part1plate']),
-                            cityPlate: form.getFieldValue(['property','cityPlate']),
-                            part2plate: form.getFieldValue(['property','part2plate']),
-                            part3plate: form.getFieldValue(['property','part3plate']),
+                            case: form.getFieldValue(['property','case']),
+                            hdd: form.getFieldValue(['property','hdd']),
+                            power: form.getFieldValue(['property','power']),
+                            phone_feature: form.getFieldValue(['property','phone_feature']),
+                            ram: form.getFieldValue(['property','ram']),
+                            motherboard: form.getFieldValue(['property','motherboard']),
+                            cpu: form.getFieldValue(['property','cpu']),
+                            sub_item_type: form.getFieldValue(['property','sub_item_type']),
+                            model: form.getFieldValue(['property','model']),
+                            install_location: form.getFieldValue(['property','install_location']),
                    }])
                await handleResetSubmit()
 
@@ -65,9 +67,6 @@ const Vehicle  = () => {
              context.setPropertyCapsule(oldArray => [...oldArray, {
                                 property : form.getFieldValue(['property','property']),
                                 factorCode:  form.getFieldValue(['property','factorCode']),
-                                kilometer:  form.getFieldValue(['property','kilometer']),
-                                type:  form.getFieldValue(['property','type']),
-                                year_change:  form.getFieldValue(['property','year_change']),
                                 document_code:  form.getFieldValue(['property','document_code']),
                                 description:  form.getFieldValue(['property','description']),
                                 inventory: context.office,
@@ -77,7 +76,7 @@ const Vehicle  = () => {
     }
 
 
-         const onFinish = async () => {
+    const onFinish = async () => {
         if (context.propertyTab === 'ثبت اولیه / خرید'){
                 context.setLoadingAjax(true)
                 await axios.post(
@@ -272,11 +271,12 @@ const Vehicle  = () => {
         }
     }
 
+
     useEffect(() => {
             void fetchData()
         },
         // eslint-disable-next-line react-hooks/exhaustive-deps
-        [context.propertyTab, context.currentPropertyForm])
+        [context.propertyTab])
 
      function scanImage() {
             if (document.readyState === "complete") {
@@ -284,38 +284,30 @@ const Vehicle  = () => {
             }
         }
 
-    const options=[
-        {value: 'الف', label: 'الف'},
-        {value: 'ب', label: 'ب'},
-        {value: 'پ', label: 'پ'},
-        {value: 'ت', label: 'ت'},
-        {value: 'ث', label: 'ث'},
-        {value: 'ج', label: 'ج'},
-        {value: 'د', label: 'د'},
-        {value: 'ز', label: 'ز'},
-        {value: 'س', label: 'س'},
-        {value: 'ش', label: 'ش'},
-        {value: 'ص', label: 'ص'},
-        {value: 'ط', label: 'ط'},
-        {value: 'ع', label: 'ع'},
-        {value: 'ف', label: 'ف'},
-        {value: 'ق', label: 'ق'},
-        {value: 'ک', label: 'ک'},
-        {value: 'گ', label: 'گ'},
-        {value: 'ل', label: 'ل'},
-        {value: 'م', label: 'م'},
-        {value: 'ن', label: 'ن'},
-        {value: 'و', label: 'و'},
-        {value: 'ه', label: 'ه'},
-        {value: 'ی', label: 'ی'},
-        {value: 'معلولین', label: 'معلولین'},
-        {value: 'تشریفات', label: 'تشریفات'},
-        {value: 'D', label: 'D'},
-        {value: 'S', label: 'S'},
+
+    const name_digital=[
+            {value: 'کامپیوتر', label: 'کامپیوتر'},
+            {value: 'پرینتر', label: 'پرینتر'},
+            {value: 'مانیتور', label: 'مانیتور'},
+            {value: 'لپ تاپ', label: 'لپ تاپ'},
+            {value: 'دوربین', label: 'دوربین'},
+            {value: 'تلفن , سانترال و مودم', label: 'تلفن , سانترال و مودم'},
+    ]
+
+    const printer_type=[
+            {value: 'پرینتر لیزری', label: 'پرینتر لیزری'},
+            {value: 'پرینتر جامد جوهر', label: 'پرینتر جامد جوهر'},
+            {value: 'پرینتر LED', label: 'پرینتر LED'},
+            {value: 'پرینتر جوهر افشان', label: 'پرینتر جوهر افشان'},
+            {value: 'پرینتر چند کاره', label: 'پرینتر چند کاره'},
+            {value: 'پرینتر ضربه‌ای ماتریس نقطه‌ای', label: 'پرینتر ضربه‌ای ماتریس نقطه‌ای'},
+            {value: 'پرینتر سه‌بعدی', label: 'پرینتر سه‌بعدی'},
+            {value: 'پرینتر A3', label: 'پرینتر A3'},
     ]
 
     const filterOption = (input: string, option?: { label: string; value: string }) =>
         (option?.label ?? '').toLowerCase().includes(input.toLowerCase());
+
 
     return (
         <>
@@ -324,6 +316,10 @@ const Vehicle  = () => {
               name="property"
               layout="vertical"
               onFinish={subObjAdd}
+              onValuesChange={(changedValues, values) => {
+                  setCurrentDigitalForm(values.property.name)
+                  setCurrentConnectionDevice(values.property.sub_item_type)
+              }}
               validateMessages={validateMessages}
         >
             {(() => {
@@ -337,62 +333,139 @@ const Vehicle  = () => {
                  <Form.Item name={['property', 'factorCode']} className='w-[233px] m-2 inline-block' label="شماره ثبت سیستم فاکتور">
                         <InputNumber className='w-[233px]' disabled/>
                  </Form.Item>
+                 <Form.Item name={['property', 'name']} className='w-[233px] inline-block m-2' label="نوع اثاث"
+                           rules={[{required: true}]}>
+                    <Select
+                    placeholder="انتخاب کنید"
+                    options={name_digital}/>
+                 </Form.Item>
+                <Form.Item name={['property', 'property_number']} className='w-[233px] inline-block m-2' label="شماره اموال"
+                                  rules={[{required: true}]}>
+                                  <Input/>
+                </Form.Item>
+                <Form.Item name={['property', 'document_code']} className='w-[233px] inline-block m-2' label="شناسه فاکتور"
+                                  rules={[{required: true}]}>
+                                  <Input/>
+                </Form.Item>
             </Form.Item>
             <Form.Item>
-                <Form.Item name={['property', 'name']} className='w-[233px] inline-block m-2' label="نام وسیله نقلیه"
-                           rules={[{required: true}]}>
-                    <Input/>
+                {(() => {
+                    if (currentDigitalForm === 'کامپیوتر'){
+                        return (
+                            <>
+                              <Form.Item name={['property', 'cpu']} className='w-[233px] inline-block m-2' label="مدل سی پی یو"
+                                  rules={[{required: true}]}>
+                                  <Input/>
+                              </Form.Item>
+                                <Form.Item name={['property', 'motherboard']} className='w-[233px] inline-block m-2' label="مدل مادربرد"
+                                  rules={[{required: true}]}>
+                                  <Input/>
+                              </Form.Item>
+                                <Form.Item name={['property', 'ram']} className='w-[233px] inline-block m-2' label="مقدار رم"
+                                  rules={[{required: true}]}>
+                                  <Input/>
+                              </Form.Item>
+                                <Form.Item name={['property', 'power']} className='w-[233px] inline-block m-2' label="مدل پاور"
+                                  rules={[{required: true}]}>
+                                  <Input/>
+                              </Form.Item>
+                                <Form.Item name={['property', 'hdd']} className='w-[233px] inline-block m-2' label="فضای هارد"
+                                  rules={[{required: true}]}>
+                                  <Input/>
+                              </Form.Item>
+                                <Form.Item name={['property', 'case']} className='w-[233px] inline-block m-2' label="مدل کیس"
+                                  rules={[{required: true}]}>
+                                  <Input/>
+                              </Form.Item>
+                            </>
+                        )
+                    }else  if (currentDigitalForm === 'پرینتر'){
+                        return (
+                            <>
+                              <Form.Item name={['property', 'sub_item_type']} className='w-[233px] inline-block m-2' label="نوع پرینتر"
+                                  rules={[{required: true}]}>
+                                  <Select
+                                        placeholder="انتخاب کنید"
+                                        options={printer_type}/>
+                              </Form.Item>
+                              <Form.Item name={['property', 'model']} className='w-[233px] inline-block m-2' label="مدل پرینتر"
+                                  rules={[{required: true}]}>
+                                    <Input/>
+                              </Form.Item>
+                            </>
+                        )
+                    }else  if (currentDigitalForm === 'مانیتور'){
+                        return (
+                            <>
+                              <Form.Item name={['property', 'model']} className='w-[233px] inline-block m-2' label="مدل مانیتور"
+                                  rules={[{required: true}]}>
+                                    <Input/>
+                              </Form.Item>
+                            </>
+                        )
+                    }else  if (currentDigitalForm === 'لپ تاپ'){
+                        return (
+                            <>
+                              <Form.Item name={['property', 'model']} className='w-[233px] inline-block m-2' label="مدل لپ تاپ"
+                                  rules={[{required: true}]}>
+                                    <Input/>
+                              </Form.Item>
+                            </>
+                        )
+                    }else  if (currentDigitalForm === 'دوربین'){
+                        return (
+                            <>
+                              <Form.Item name={['property', 'sub_item_type']} className='w-[233px] inline-block m-2' label="نوع دوربین"
+                                  rules={[{required: true}]}>
+                                  <Select
+                                        placeholder="انتخاب کنید"
+                                        options={[
+                                            {value: 'آنالوگ', label: 'آنالوگ'},
+                                            {value: 'تحت شبکه', label: 'تحت شبکه'},
+                                        ]}/>
+                              </Form.Item>
+                              <Form.Item name={['property', 'model']} className='w-[233px] inline-block m-2' label="مدل دوربین"
+                                  rules={[{required: true}]}>
+                                    <Input/>
+                              </Form.Item>
+                            </>
+                        )
+                    }else  if (currentDigitalForm === 'تلفن , سانترال و مودم'){
+                        return (
+                            <>
+                              <Form.Item name={['property', 'sub_item_type']} className='w-[233px] inline-block m-2' label="نوع ابزار"
+                                  rules={[{required: true}]}>
+                                  <Select
+                                        placeholder="انتخاب کنید"
+                                        options={[
+                                            {value: 'تلفن', label: 'تلفن'},
+                                            {value: 'سانترال', label: 'سانترال'},
+                                            {value: 'مودم', label: 'مودم'},
+                                        ]}/>
+                              </Form.Item>
+                                {currentConnectionDevice === 'تلفن' ?
+                                      <Form.Item name={['property', 'phone_feature']} className='w-[233px] inline-block m-2' label="ویژگی تلفن"
+                                          rules={[{required: true}]}>
+                                             <Select
+                                                placeholder="انتخاب کنید"
+                                                options={[
+                                                    {value: 'با سانترال', label: 'با سانترال'},
+                                                    {value: 'بدون سانترال', label: 'بدون سانترال'},
+                                                ]}/>
+                                      </Form.Item>
+                                    : null}
+                              <Form.Item name={['property', 'model']} className='w-[233px] inline-block m-2' label="مدل"
+                                  rules={[{required: true}]}>
+                                    <Input/>
+                              </Form.Item>
+                            </>
+                        )
+                    }
+                })()}
+                <Form.Item name={['property', 'install_location']} className='w-[233px] inline-block m-2' label="محل نصب"
+                          rules={[{required: true}]}>
+                          <Input/>
                 </Form.Item>
-                  <Form.Item name={['property', 'year_made']} className='w-[233px] inline-block m-2' label="سال ساخت"
-                           rules={[{required: true, len: 4}]}>
-                    <Input  maxLength={4} type={'number'}/>
-                </Form.Item>
-                  <Form.Item name={['property', 'model']} className='w-[233px] inline-block m-2' label="مدل"
-                           rules={[{required: true}]}>
-                    <Input/>
-                </Form.Item>
-                <Form.Item name={['property', 'property_number']} className='w-[233px] inline-block m-2' label="شماره اموال"
-                           rules={[{required: true}]}>
-                    <Input/>
-                </Form.Item>
-                 <Form.Item name={['property', 'document_code']} className='w-[233px] inline-block m-2' label="شناسه فاکتور"
-                           rules={[{required: true}]}>
-                    <Input/>
-                </Form.Item>
-                {context.currentPropertyForm === 'هواپیما' ? null :
-                    <Space.Compact>
-                       <Form.Item name={['property', 'part3plate']} label="سریال" hasFeedback className='w-[80px] inline-block ms-2 mt-2' rules={[{required: true, len: 2}]}>
-                            <Input maxLength={2} type={'number'} placeholder={'- -'} className='text-center'/>
-                       </Form.Item>
-                        <Form.Item name={['property', 'part2plate']} label="راست" hasFeedback className='w-[80px] inline-block mt-2' rules={[{required: true, len: 3}]}>
-                              <Input type={'number'} maxLength={3} placeholder={'- - -'} className='text-center'/>
-                       </Form.Item>
-                        <Form.Item name={['property', 'cityPlate']} label="شهر" className='w-[120px] inline-block mt-2' rules={[{required: true}]}>
-                          <Select
-                            placeholder="انتخاب کنید"
-                            options={options}/>
-                       </Form.Item>
-                        <Form.Item name={['property', 'part1plate']} label="چپ" hasFeedback className='w-[80px] inline-block mt-2' rules={[{required: true, len: 2}]}>
-                           <Input maxLength={2} type={'number'} placeholder={'- -'} className='text-center'/>
-                       </Form.Item>
-                    </Space.Compact>
-                }
-               <Form.Item name={['property', 'user']} className='w-[233px] inline-block m-2' label="یوزر"
-                           rules={[{required: true}]}>
-                    <Input/>
-               </Form.Item>
-               <Form.Item name={['property', 'owner']} className='w-[233px] inline-block m-2' label="مالکیت"
-                           rules={[{required: true}]}>
-                    <Input/>
-               </Form.Item>
-                <Form.Item name={['property', 'chassis']} className='w-[233px] inline-block m-2' label="شماره شاسی"
-                           rules={[{required: true}]}>
-                    <Input/>
-               </Form.Item>
-                <Form.Item name={['property', 'motor']} className='w-[233px] inline-block m-2' label="شماره موتور"
-                           rules={[{required: true}]}>
-                    <Input/>
-               </Form.Item>
                 <Form.Item style={{margin: 8, display: 'inline-block'}} label="فایل">
                     <Space.Compact>
                         <ConfigProvider theme={{
@@ -436,29 +509,6 @@ const Vehicle  = () => {
                                                                     value: item.code
                                                                 }))}
                                                         />
-                                     </Form.Item>
-                                     <Form.Item name={['property', 'type']} className='w-[233px] inline-block m-2' label="تجهیزات مورد نظر برای ثبت تعمیر"
-                                                   rules={[{required: true}]}>
-                                            <Select placeholder="انتخاب کنید"
-                                                                optionFilterProp="children"
-                                                                showSearch
-                                                                filterOption={filterOption}
-                                                                options={[
-                                                                    {label: 'تعویض روغن', value: 'تعویض روغن'},
-                                                                    {label: 'تعویض باتری', value: 'تعویض باتری'},
-                                                                    {label: 'تعویض قطعات', value: 'تعویض قطعات'},
-                                                                    {label: 'تعویض لاستیک', value: 'تعویض لاستیک'},
-                                                                    {label: 'سایر', value: 'سایر'},
-                                                                ]}
-                                            />
-                                     </Form.Item>
-                                     <Form.Item name={['property', 'kilometer']} className='w-[233px] inline-block m-2' label="کیلومتر"
-                                                   rules={[{required: true}]}>
-                                            <Input/>
-                                     </Form.Item>
-                                     <Form.Item name={['property', 'year_change']} className='w-[233px] inline-block m-2' label="سال تعویض"
-                                                rules={[{required: true, len: 4}]}>
-                                             <Input  maxLength={4} type={'number'}/>
                                      </Form.Item>
                                      <Form.Item name={['property', 'description']} className='w-[233px] inline-block m-2' label="شرح تعمیرات"
                                                    rules={[{required: true}]}>
@@ -542,4 +592,4 @@ const Vehicle  = () => {
     );
 }
 
-export default Vehicle;
+export default EditDigitalFurniture  ;

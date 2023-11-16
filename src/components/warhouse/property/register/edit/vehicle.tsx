@@ -13,7 +13,7 @@ const validateMessages = {
 };
 
 
-const Vehicle  = () => {
+const EditVehicle  = () => {
     const [form] = Form.useForm();
     const navigate = useNavigate();
     const context = useContext(Context)
@@ -276,7 +276,7 @@ const Vehicle  = () => {
             void fetchData()
         },
         // eslint-disable-next-line react-hooks/exhaustive-deps
-        [context.propertyTab, context.currentPropertyForm])
+        [context.propertyTab])
 
      function scanImage() {
             if (document.readyState === "complete") {
@@ -542,4 +542,4 @@ const Vehicle  = () => {
     );
 }
 
-export default Vehicle;
+export default EditVehicle;

@@ -33,6 +33,18 @@ import EditImmovable from "../document/register/edit_immovable";
 import EditMovable from "../document/register/edit_movable";
 import {UploadPropertyFactor} from "../warhouse/property/upload/upload";
 import PropertyFactor from "../warhouse/property/main/factor";
+import EditAirportEquipment from "../warhouse/property/register/edit/airport-equipment";
+import EditAirportFurniture from "../warhouse/property/register/edit/airport-furniture";
+import EditBenefit from "../warhouse/property/register/edit/benefit";
+import EditDigitalFurniture from "../warhouse/property/register/edit/digital-furniture";
+import EditElectronicFurniture from "../warhouse/property/register/edit/electronic-furniture";
+import EditFacilityFurniture from "../warhouse/property/register/edit/facility-furniture";
+import EditIndustrial from "../warhouse/property/register/edit/industrial";
+import EditNoneIndustrial from "../warhouse/property/register/edit/none_industrial";
+import EditOfficeFurniture from "../warhouse/property/register/edit/office-furniture";
+import EditSafetyEquipment from "../warhouse/property/register/edit/safety-equipment";
+import EditSupportItem from "../warhouse/property/register/edit/support-items";
+import EditVehicle from "../warhouse/property/register/edit/vehicle";
 
 export const RouteLayout = () => {
     const context = useContext(Context)
@@ -72,6 +84,18 @@ export const RouteLayout = () => {
                  <Route path={`/warhouse/property/factor/${context.currentPropertyFactor}`}
                            element={<PropertyFactor/>}/>
                 <Route path={'/warhouse/property/recycle'} element={<RecycleProperty/>}/>
+                <Route path={`/warhouse/property/airport-equipment/edit/${context.currentProperty}`} element={<EditAirportEquipment/>}/>
+                <Route path={`/warhouse/property/airport-furniture/edit/${context.currentProperty}`} element={<EditAirportFurniture/>}/>
+                <Route path={`/warhouse/property/benefit/edit/${context.currentProperty}`} element={<EditBenefit/>}/>
+                <Route path={`/warhouse/property/digital-furniture/edit/${context.currentProperty}`} element={<EditDigitalFurniture/>}/>
+                <Route path={`/warhouse/property/electronic-furniture/edit/${context.currentProperty}`} element={<EditElectronicFurniture/>}/>
+                <Route path={`/warhouse/property/facility-furniture/edit/${context.currentProperty}`} element={<EditFacilityFurniture/>}/>
+                <Route path={`/warhouse/property/industrial/edit/${context.currentProperty}`} element={<EditIndustrial/>}/>
+                <Route path={`/warhouse/property/none_industrial/edit/${context.currentProperty}`} element={<EditNoneIndustrial/>}/>
+                <Route path={`/warhouse/property/office-furniture/edit/${context.currentProperty}`} element={<EditOfficeFurniture/>}/>
+                <Route path={`/warhouse/property/safety-equipment/edit/${context.currentProperty}`} element={<EditSafetyEquipment/>}/>
+                <Route path={`/warhouse/property/support-item/edit/${context.currentProperty}`} element={<EditSupportItem/>}/>
+                <Route path={`/warhouse/property/vehicle/edit/${context.currentProperty}`} element={<EditVehicle/>}/>
                 <Route path={'/warhouse/property/upload'} element={<UploadPropertyFactor/>}/>
                 <Route path={'/warhouse/handling'} element={<Handling/>}/>
                 <Route path={'/'} element={<Home/>}/>

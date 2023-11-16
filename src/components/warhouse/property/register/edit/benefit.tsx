@@ -12,7 +12,7 @@ const validateMessages = {
 };
 
 
-const Benefit = () => {
+const EditBenefit = () => {
     const [form] = Form.useForm();
     const navigate = useNavigate();
     const context = useContext(Context)
@@ -181,7 +181,7 @@ const Benefit = () => {
               autoComplete="off"
               name="property"
               layout="vertical"
-              onFinish={subObjAdd}
+              onFinish={onFinish}
               validateMessages={validateMessages}
         >
             <Form.Item>
@@ -237,6 +237,7 @@ const Benefit = () => {
                 </Form.Item>
             </Form.Item>
             <Form.Item>
+                <Form.Item>
                     <Form.Item style={{margin: 8}}>
                         <ConfigProvider theme={{
                             components: {
@@ -247,7 +248,7 @@ const Benefit = () => {
                                 colorPrimary: '#52c41a'
                             }
                         }}>
-                            <Button  danger={context.loadingAjax} type={"primary"} loading={context.loadingAjax} block htmlType="submit">
+                            <Button  danger={context.loadingAjax} onClick={subObjAdd} type={"primary"} loading={context.loadingAjax} block htmlType="button">
                                 ثبت
                             </Button>
                         </ConfigProvider>
@@ -262,7 +263,7 @@ const Benefit = () => {
                                             colorPrimary: 'rgba(255,0,0,0.72)'
                             }
                         }}>
-                                  <Button onClick={onFinish}  type={"primary"} block htmlType="button">
+                                  <Button  type={"primary"} block htmlType="submit">
                                      پایان
                                   </Button>
                         </ConfigProvider>
@@ -273,6 +274,7 @@ const Benefit = () => {
                         </Button>
                     </Form.Item>
                 </Form.Item>
+            </Form.Item>
         </Form>
         <Image
                 width={200}
@@ -291,4 +293,4 @@ const Benefit = () => {
     );
 }
 
-export default Benefit;
+export default EditBenefit;

@@ -2,7 +2,7 @@ import {SearchOutlined} from '@ant-design/icons';
 import React, {useContext, useEffect, useRef, useState} from 'react';
 import Highlighter from "react-highlight-words";
 import type {InputRef, TableProps} from 'antd';
-import {Badge, Button, Input, Select, Space, Table} from 'antd';
+import {Badge, Button, Input, Select, Space, Table, Tooltip} from 'antd';
 import axios from "axios";
 import type {ColumnsType, ColumnType} from 'antd/es/table';
 import type {FilterConfirmProps, FilterValue} from 'antd/es/table/interface';
@@ -34,6 +34,7 @@ interface DataType {
     part1plate: string;
     cityPlate: string;
     part2plate: string;
+    movement_message: string;
     part3plate: string;
 }
 
@@ -69,7 +70,7 @@ const VehicleTable: React.FC = () => {
 
     const fetchData = async () => {
        setLoading(true)
-        await axios.get(`${Url}/api/property/?size=${pagination.pageSize}&page=${pagination.current}&fields=code,movement_status,category,factorCode,inventory,name,property_number,document_code,owner,year_made,model,user,motor,chassis,part1plate,cityPlate,part2plate,part3plate&${qs.stringify(filteredInfo, {
+        await axios.get(`${Url}/api/property/?size=${pagination.pageSize}&page=${pagination.current}&fields=code,movement_status,category,factorCode,inventory,name,property_number,document_code,owner,year_made,model,user,motor,chassis,part1plate,cityPlate,part2plate,part3plate,movement_message&${qs.stringify(filteredInfo, {
                 encode: false,
                 arrayFormat: 'comma'
             })}&inventory=${context.permission === 'مدیر' || context.permission === 'مشاهده' ? qs.stringify(filteredInfo, {
@@ -237,9 +238,11 @@ const VehicleTable: React.FC = () => {
                     {(() => {
                         if (record.movement_status === 'ارسال شده') {
                             return (
-                                <Space>
-                                    <Badge color="red" status="processing"/> {index + 1}
-                                </Space>
+                                <Tooltip title={record.movement_message}>
+                                    <Space>
+                                        <Badge color="red" status="processing"/> {index + 1}
+                                    </Space>
+                                </Tooltip>
                             )
                         } else {
                             return index + 1

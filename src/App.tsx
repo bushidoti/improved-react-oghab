@@ -97,7 +97,7 @@ const App: React.FC = () => {
             setListPropertyFactor(data.data)
         }).catch((error) => {
             if (error.request.status === 403) {
-                navigate('/no_access')
+                navigate('/')
             }
         }).finally(() => setLoading(false)
         )

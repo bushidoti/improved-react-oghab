@@ -237,7 +237,15 @@ const SupportItemTable: React.FC = () => {
                                     </Space>
                                 </Tooltip>
                             )
-                        } else {
+                        }else if (record.movement_status === 'دریافت شد') {
+                            return (
+                                <Tooltip title={record.movement_message}>
+                                    <Space>
+                                        <Badge color="green" status="processing"/> {index + 1}
+                                    </Space>
+                                </Tooltip>
+                            )
+                        }  else {
                             return index + 1
                         }
                     })()}

@@ -40,9 +40,7 @@ root.render(
     }}>
         <JalaliLocaleListener/>
         <BrowserRouter>
-            <React.StrictMode>
                 <App/>
-            </React.StrictMode>
         </BrowserRouter>
     </ConfigProvider>
 );

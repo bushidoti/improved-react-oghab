@@ -123,7 +123,7 @@ const SentProperty: React.FC = () => {
                                 }).then(() => {
                                     record.code = autoIncrement.filter(value => value.name === record.category)[0].increment
                                     record.inventory = context.office
-                                    record.movement_status = ''
+                                    record.movement_status = 'دریافت شد'
                                     record.dst_inventory = ''
                                     record.movement_description = ''
                                 }).then(async () => {

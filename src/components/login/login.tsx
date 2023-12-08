@@ -1,6 +1,6 @@
 import {LockOutlined, UserOutlined} from '@ant-design/icons';
-import {Button, Form, Input, message} from 'antd';
-import {useContext} from "react";
+import {Avatar, Button, Form, Input, message} from 'antd';
+import React, {useContext} from "react";
 import Url from '../api-configue'
 import axios from "axios";
 import {Context} from "../../context";
@@ -47,41 +47,44 @@ const Login: React.FC = () => {
 
 
     return (
-        <div className='login-form'>
-            <Form
-                name="normal_login"
-                initialValues={{remember: true}}
-                onFinish={onFinish}
-            >
-                <Form.Item
-                    className='message-login'
-                    name="username"
-                    rules={[{required: true, message: 'لطفا نام کاربری را وارد کنید!'}]}
+        <div className='grid h-screen place-items-center'>
+            <div className='w-[30vw] shadow-2xl shadow-indigo-500/50 bg-cyan-50 p-[2vw] rounded-[25px]  border-[25px]'>
+                <div className='flex flex-col items-center mb-5'>
+                    <Avatar shape="square" src={require('../../assets/icons/icon-512x512.png')} size={100} />
+                </div>
+                <Form
+                    name="normal_login"
+                    initialValues={{remember: true}}
+                    onFinish={onFinish}
                 >
-                    <Input prefix={<UserOutlined className="site-form-item-icon"/>} placeholder="نام کاربری"/>
-                </Form.Item>
-                <Form.Item
-                    className='message-login'
-                    name="password"
-                    rules={[{required: true, message: 'لطفا رمز عبور را وارد کنید!'}]}
-                >
-                    <Input.Password
-                        prefix={<LockOutlined className="site-form-item-icon"/>}
-                        type="password"
-                        placeholder="رمز عبور"
-                    />
-                </Form.Item>
-                <Form.Item>
-
-                </Form.Item>
-
-                <Form.Item>
-                    <Button type="primary" htmlType="submit" className="w-full">
-                        ورود
-                    </Button>
-
-                </Form.Item>
-            </Form>
+                    <Form.Item
+                        className='message-login'
+                        name="username"
+                        rules={[{required: true, message: 'لطفا نام کاربری را وارد کنید!'}]}
+                    >
+                        <Input prefix={<UserOutlined className="site-form-item-icon"/>} placeholder="نام کاربری"/>
+                    </Form.Item>
+                    <Form.Item
+                        className='message-login'
+                        name="password"
+                        rules={[{required: true, message: 'لطفا رمز عبور را وارد کنید!'}]}
+                    >
+                        <Input.Password
+                            prefix={<LockOutlined className="site-form-item-icon"/>}
+                            type="password"
+                            placeholder="رمز عبور"
+                        />
+                    </Form.Item>
+                    <Form.Item>
+                    </Form.Item>
+                    <Form.Item>
+                        <Button type="primary" htmlType="submit" className="w-full">
+                            ورود
+                        </Button>
+                    </Form.Item>
+                </Form>
+                <div className='text-center text-sm'>v2.0.0</div>
+            </div>
         </div>
     );
 };

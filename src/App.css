@@ -2,18 +2,6 @@ body {
     background-color: #b5f5ec;
 }
 
-
-.login-form {
-    position: absolute;
-    width: 50vw;
-    top: 25vh;
-    padding: 2vw;
-    left: 25vw;
-    border-radius: 25px;
-    background-color: #e6f4ff;
-    box-shadow: 4px 5px 25px;
-}
-
 .message-login {
     direction: rtl;
 }

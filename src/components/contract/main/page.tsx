@@ -1,7 +1,7 @@
 import {SearchOutlined} from '@ant-design/icons';
 import React, {useContext, useEffect, useRef, useState} from 'react';
 import Highlighter from "react-highlight-words";
-import type {InputRef, TableProps} from 'antd';
+import {InputRef, TableProps, Tooltip} from 'antd';
 import {Badge, Button, Input, Select, Space, Table} from 'antd';
 import axios from "axios";
 import type {ColumnsType, ColumnType} from 'antd/es/table';
@@ -320,13 +320,19 @@ const MainContract: React.FC = () => {
             fixed: 'left',
             dataIndex: 'name',
             width: '7%',
+             ellipsis: {
+              showTitle: false,
+            },
             key: 'name',
             ...getColumnSearchProps('name'),
             filteredValue: filteredInfo.name || null,
-            render: (_value, record) => <Button type={"link"} onClick={() => {
+            render: (_value, record) =>
+              <Tooltip placement="topLeft" title={record.name}>
+                <Button type={"link"} onClick={() => {
                 context.setCurrentContract(record.id)
                 navigate(`/contract/edit/${record.id}`)
-            }}>{record.name}</Button>,
+            }}>{record.name}</Button>
+              </Tooltip>,
 
         }, {
             align: "center",
@@ -359,11 +365,18 @@ const MainContract: React.FC = () => {
             align: "center",
             title: 'موضوع قرارداد',
             width: '7%',
+            ellipsis: {
+              showTitle: false,
+            },
             dataIndex: 'topicContract',
             key: 'topicContract',
             ...getColumnSearchProps('topicContract'),
             filteredValue: filteredInfo.topicContract || null,
-
+             render: (_value, record) => (
+              <Tooltip placement="topLeft" title={record.topicContract}>
+                {record.topicContract}
+              </Tooltip>
+            ),
         }, {
             align: "center",
             title: 'مبلغ قرارداد',

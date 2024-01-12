@@ -77,11 +77,24 @@ const ReceiveDoc = () => {
                     {value: 'doc_8', label: 'صفحه 8'},
                     {value: 'doc_9', label: 'صفحه 9'},
                     {value: 'doc_10', label: 'صفحه 10'},
+                    {value: 'doc_11', label: 'صفحه 11'},
+                    {value: 'doc_12', label: 'صفحه 12'},
+                    {value: 'doc_13', label: 'صفحه 13'},
+                    {value: 'doc_14', label: 'صفحه 14'},
+                    {value: 'doc_15', label: 'صفحه 15'},
+                    {value: 'doc_16', label: 'صفحه 16'},
+                    {value: 'doc_17', label: 'صفحه 17'},
+                    {value: 'doc_18', label: 'صفحه 18'},
+                    {value: 'doc_19', label: 'صفحه 19'},
+                    {value: 'doc_20', label: 'صفحه 20'},
             ])
         } else if (value === 'تضامین') {
             setSubDocument([
                 {value: 'doc_bail_1', label: 'ضمانت اول'},
                 {value: 'doc_bail_2', label: 'ضمانت دوم'},
+                {value: 'doc_bail_3', label: 'ضمانت سوم'},
+                {value: 'doc_bail_4', label: 'ضمانت چهارم'},
+                {value: 'doc_bail_5', label: 'ضمانت پنجم'},
             ])
         }
     }

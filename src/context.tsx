@@ -19,6 +19,9 @@ export const Context = createContext({
     },
     setCurrentDocProperty: (_value: number) => {
     },
+    setCompressed: (_value: string) => {
+    }
+    ,
     setLoadingAjax: (_value: boolean) => {
     },
     setCurrentProductCheck: (_value: number) => {

@@ -229,6 +229,7 @@ const App: React.FC = () => {
                     currentProductCheck,
                     setCurrentProductFactor,
                     setCurrentPropertyTable,
+                    setCompressed,
                     currentPropertyTable,
                     currentPropertyForm,
                     setCurrentPropertyForm,

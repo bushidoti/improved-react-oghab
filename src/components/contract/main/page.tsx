@@ -268,7 +268,7 @@ const MainContract: React.FC = () => {
     });
 
 
-    const columns: ColumnsType<DataType> = [
+     const columns: ColumnsType<DataType> = [
         {
             align: "center",
             title: 'شماره ثبت',
@@ -340,9 +340,16 @@ const MainContract: React.FC = () => {
             width: '6.30%',
             dataIndex: 'contractNumber',
             key: 'contractNumber',
+             ellipsis: {
+              showTitle: false,
+            },
             filteredValue: filteredInfo.contractNumber || null,
             ...getColumnSearchProps('contractNumber'),
-
+             render: (_value, record) => (
+              <Tooltip placement="topLeft" title={record.contractNumber}>
+                {record.contractNumber}
+              </Tooltip>
+            ),
         }, {
             align: "center",
             title: 'تاریخ قرارداد',
@@ -381,7 +388,7 @@ const MainContract: React.FC = () => {
             align: "center",
             title: 'مبلغ قرارداد',
             dataIndex: 'contractPrice',
-            width: '6%',
+            width: '7%',
             key: 'contractPrice',
         }, {
             align: "center",

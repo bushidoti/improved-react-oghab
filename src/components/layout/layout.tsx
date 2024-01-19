@@ -26,8 +26,8 @@ const LayoutForm: React.FC = () => {
                 <MenuLayout/>
             </Sider>
             <Layout>
-                <Content className='me-8 p-2 h-[100vh]' style={{overflow: 'initial'}}>
-                    <div className='bg-white rounded' style={{padding: 24}}>
+                <Content className='p-2 h-[100%]' style={{overflow: 'initial'}}>
+                    <div className='bg-white rounded min-h-[100vh]' style={{padding: 24}}>
                         <RouteLayout/>
                     </div>
                 </Content>

@@ -16,7 +16,7 @@ const LayoutForm: React.FC = () => {
     const context = useContext(Context)
 
     return (
-        <Layout >
+        <Layout>
               <Sider breakpoint="xl" collapsedWidth="0">
                 <div className='flex flex-col items-center m-5'>
                     <Avatar className='bg-sky-500' size={100} icon={<UserOutlined />} />

@@ -47,16 +47,25 @@ const App: React.FC = () => {
 
     useEffect(() => {
         (async () => {
-            if (isLogged) {
-                const {data} = (await axios.get(`${Url}/permission/`, {
+                await axios.get(`${Url}/permission/`, {
                     headers: {
                         'Authorization': 'Bearer ' + localStorage.getItem('access_token'),
                     }
-                }));
-                setPermission(data.message);
-            }
+                }).then(response => {
+                    return response
+                }).then(async data => {
+                    setPermission(data.data.message);
+                }).catch((error) => {
+                    if (error.request.status === 401) {
+                        localStorage.removeItem("access_token");
+                        localStorage.removeItem("refresh_token");
+                        setLogged(false)
+                        navigate('/login')
+                    }
+                }).finally(() => setLoading(false)
+                )
         })()
-    }, [isLogged]);
+    }, [navigate]);
 
     useEffect(() => {
         (async () => {

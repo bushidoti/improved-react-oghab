@@ -67,18 +67,7 @@ const App: React.FC = () => {
         })()
     }, [navigate]);
 
-    useEffect(() => {
-        (async () => {
-            if (isLogged) {
-                const {data} = (await axios.get(`${Url}/permission/`, {
-                    headers: {
-                        'Authorization': 'Bearer ' + localStorage.getItem('access_token'),
-                    }
-                }));
-                setPermission(data.message);
-            }
-        })()
-    }, [isLogged]);
+
 
 
     useEffect(() => {

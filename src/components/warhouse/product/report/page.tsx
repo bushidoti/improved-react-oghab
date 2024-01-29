@@ -1,7 +1,7 @@
 import {SearchOutlined} from '@ant-design/icons';
 import React, {useContext, useEffect, useRef, useState} from 'react';
 import Highlighter from "react-highlight-words";
-import type {InputRef, TableProps} from 'antd';
+import {Flex, InputRef, TableProps} from 'antd';
 import {Button, Input, Select, Space, Table} from 'antd';
 import axios from "axios";
 import type {ColumnsType, ColumnType} from 'antd/es/table';
@@ -538,6 +538,8 @@ const ReportProduct: React.FC = () => {
                 <Button onClick={clearFilters}>پاک کردن فیتلر ها</Button>
                 <Button onClick={clearAll}>پاک کردن فیلتر و مرتب کننده ها</Button>
                 <Button onClick={generatePDF}>چاپ</Button>
+            </Space>
+            <Flex wrap="wrap" gap="large" className='mb-4'>
                 <Space.Compact>
                     <Select
                         style={{width: 170}}
@@ -574,8 +576,6 @@ const ReportProduct: React.FC = () => {
                         }
                     }}>مشاهده</Button>
                 </Space.Compact>
-            </Space>
-            <Space style={{marginBottom: 16, marginRight: 16}}>
                 <Select
                     mode="multiple"
                     allowClear
@@ -585,7 +585,7 @@ const ReportProduct: React.FC = () => {
                     onChange={onChange}
                     options={options}
                 />
-            </Space>
+            </Flex>
             <Table
                 bordered
                 columns={columns.filter(col => !filteredColumns.includes(col.key as string))}

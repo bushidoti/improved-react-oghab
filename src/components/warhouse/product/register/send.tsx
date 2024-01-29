@@ -324,7 +324,7 @@ const SendForm: React.FC = () => {
                             <>
                                 <Flex vertical gap={20}>
                                     {subFields.map((subField) => (
-                                        <Space key={subField.key} size={20}>
+                                        <Flex key={subField.key} wrap="wrap" gap={30}>
                                             <Form.Item name={[subField.name, 'product']} style={{width: 300}}
                                                        label='نام کالا' rules={[{required: true}]}>
                                                 <Select placeholder="انتخاب کنید"
@@ -394,7 +394,7 @@ const SendForm: React.FC = () => {
                                                 />
                                             </Form.Item>
 
-                                        </Space>
+                                        </Flex>
                                     ))}
 
                                     <Button type="dashed" style={{marginBottom: 10}} loading={loading}

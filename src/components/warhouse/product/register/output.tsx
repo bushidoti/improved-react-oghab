@@ -63,7 +63,7 @@ const OutputForm: React.FC = () => {
         }).then(async data => {
             setListProduct(data.data)
         }).then(async () => {
-            return await axios.get(`${Url}/api/allproducts/?fields=product,input,output`, {
+            return await axios.get(`${Url}/api/allproducts/?fields=product,input,output&inventory=${context.office}`, {
                 headers: {
                     'Authorization': 'Bearer ' + localStorage.getItem('access_token'),
                 }
@@ -382,6 +382,7 @@ const OutputForm: React.FC = () => {
                                                                                 scale: data.data[0].scale,
                                                                                 category: data.data[0].category,
                                                                                 name: data.data[0].name,
+                                                                                left_stock: data.data[0].left_stock,
                                                                             }
                                                                         }
                                                                     });
@@ -400,7 +401,13 @@ const OutputForm: React.FC = () => {
                                                        disabled
                                                 />
                                             </Form.Item>
-                                            <Form.Item name={[subField.name, 'output']} rules={[{required: true}]}
+                                            <Form.Item name={[subField.name, 'output']} rules={[{required: true,validator: (_: any, value) => {
+                                                if (value <= form.getFieldValue(['products'])[subField.key].left_stock[0].left_stock) {
+                                                  return Promise.resolve();
+                                                }else {
+                                                    return Promise.reject(new Error('عدم موجودی کافی'));
+                                                }
+                                              }}]}
                                                        label='تعداد'>
                                                 <InputNumber min={1} placeholder="تعداد"/>
                                             </Form.Item>

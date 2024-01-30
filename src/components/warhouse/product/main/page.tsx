@@ -23,7 +23,7 @@ interface DataType {
     input: string;
     scale: string;
     output: string;
-    left: string;
+    left_stock: string;
 }
 
 
@@ -49,7 +49,6 @@ const MainProduct: React.FC = () => {
     const [sortedInfo, setSortedInfo] = useState<SorterResult<DataType>>({});
     const navigate = useNavigate();
     const componentPDF = useRef(null);
-    const [productSub, setProductSub] = useState<any[]>([])
     const generatePDF = useReactToPrint({
         content: () => componentPDF.current,
         documentTitle: "کالا ها",
@@ -73,16 +72,6 @@ const MainProduct: React.FC = () => {
             return response
         }).then(async data => {
             setProduct(data.data)
-        }).then(async () => {
-            return await axios.get(`${Url}/api/allproducts/?fields=product,input,output,id`, {
-                headers: {
-                    'Authorization': 'Bearer ' + localStorage.getItem('access_token'),
-                }
-            })
-        }).then(response => {
-            return response
-        }).then(async data => {
-            setProductSub(data.data)
         }).then(async () => {
             return await axios.get(`${Url}/api/category-list`, {
                 headers: {
@@ -260,32 +249,18 @@ const MainProduct: React.FC = () => {
             width: '4.55%',
             dataIndex: 'input',
             key: 'input',
-            render: (_value, record) =>
-                (productSub.filter(productSub =>
-                    productSub.product === record.code).reduce((a, v) => a + v.input, 0))
-            ,
         }, {
             align: "center",
             title: 'خروج',
             width: '4.55%',
             dataIndex: 'output',
             key: 'output',
-            render: (_value, record) =>
-                (productSub.filter(productSub =>
-                    productSub.product === record.code).reduce((a, v) => a + v.output, 0))
-            ,
         }, {
             align: "center",
             title: 'مانده',
             width: '4.55%',
-            dataIndex: 'left',
-            key: 'left',
-            render: (_value, record) =>
-                (productSub.filter(productSub =>
-                    productSub.product === record.code).reduce((a, v) => a + v.input, 0))
-                - (productSub.filter(productSub =>
-                    productSub.product === record.code).reduce((a, v) => a + v.output, 0))
-            ,
+            dataIndex: 'left_stock',
+            key: 'left_stock',
         }, {
             align: "center",
             title: 'مقیاس',
@@ -362,7 +337,7 @@ const MainProduct: React.FC = () => {
                 pagination={{position: ["bottomCenter"],total:product?.count,showSizeChanger:true}}
                 // rowClassName={(record, index) =>  date.format('YYYY-MM-DD').replaceAll('/' , '-') > record.expireDate  ? 'table-expired-rows' :  ''}
             />
-            <TablePrint componentPDF={componentPDF} contract={product !== undefined ? product?.results : []} productSub={productSub}/>
+            <TablePrint componentPDF={componentPDF} contract={product !== undefined ? product?.results : []}/>
         </>
     )
 };

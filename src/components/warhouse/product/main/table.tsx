@@ -5,7 +5,6 @@ import persian from "react-date-object/calendars/persian";
 const TablePrint = (props: {
     componentPDF: React.LegacyRef<HTMLTableElement> | undefined,
     contract: any[],
-    productSub: any[];
 }) => {
     const date = new DateObject({calendar: persian})
     return (
@@ -31,10 +30,10 @@ const TablePrint = (props: {
                         <th className='th' scope="row">{data.code}</th>
                         <td className='td'>{data.name}</td>
                         <td className='td'>{data.category}</td>
-                        <td className='td'>{(props.productSub.filter(products => products.product === data.code).reduce((a, v) => a + v.input, 0))}</td>
-                        <td className='td'>{(props.productSub.filter(products => products.product === data.code).reduce((a, v) => a + v.output, 0))}</td>
-                        <td className='td'>{(props.productSub.filter(products => products.product === data.code).reduce((a, v) => a + v.input, 0))
-                            - (props.productSub.filter(products => products.product === data.code).reduce((a, v) => a + v.output, 0))}</td>
+                        <td className='td'>{data.input}</td>
+                        <td className='td'>{data.output}</td>
+                        <td className='td'>{data.left_stock}</td>
+
                     </tr>
                 ))
                 }

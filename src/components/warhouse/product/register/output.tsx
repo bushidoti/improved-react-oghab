@@ -402,7 +402,7 @@ const OutputForm: React.FC = () => {
                                                 />
                                             </Form.Item>
                                             <Form.Item name={[subField.name, 'output']} rules={[{required: true,validator: (_: any, value) => {
-                                                if (value <= form.getFieldValue(['products'])[subField.key].left_stock[0].left_stock) {
+                                                if (value <= form.getFieldValue(['products'])[subField.key].left_stock) {
                                                   return Promise.resolve();
                                                 }else {
                                                     return Promise.reject(new Error('عدم موجودی کافی'));

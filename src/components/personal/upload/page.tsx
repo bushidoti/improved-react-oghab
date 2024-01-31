@@ -249,7 +249,7 @@ export default function UploadPersonal() {
 
             <Form.Item
                 style={{width: 200, marginBottom: 50}}
-                name={['document', 'name']}
+                name={['document', 'personal']}
                 rules={[{required: true, message: 'شخص مورد نظر را انتخاب کنید!'}]}
             >
                 <Select

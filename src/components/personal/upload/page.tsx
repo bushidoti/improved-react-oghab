@@ -40,7 +40,7 @@ export default function UploadPersonal() {
         {value: 'مدرک تحصیلی', label: 'مدرک تحصیلی'},
     ];
     const onValuesChange = (changedValues: any, allValues: any) => {
-            if (allValues.document.name) {
+            if (allValues.document.personal) {
                   setScanButton((prevState) => ({
                       ...prevState,
                       scan: false,

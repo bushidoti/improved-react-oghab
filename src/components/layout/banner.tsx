@@ -12,7 +12,6 @@ export const Banner = () => {
     const context = useContext(Context)
     const [message , setMessage] = useState<any>('')
     const [event , setEvent] = useState<any>([])
-    console.log(event)
     useEffect(() => {
         if (context.isLogged) {
             (async () => {

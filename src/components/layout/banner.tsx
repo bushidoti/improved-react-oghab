@@ -33,7 +33,7 @@ export const Banner = () => {
             }
             )
         }
-    }, [context.isLogged, dayEvent, monthEvent, yearEvent]);
+    }, [context.isLogged, monthEvent, yearEvent]);
 
 
     return (

@@ -38,6 +38,7 @@ export default function UploadPersonal() {
         {value: 'اقرارنامه', label: 'اقرارنامه'},
         {value: 'عکس پرسنلی', label: 'عکس پرسنلی'},
         {value: 'مدرک تحصیلی', label: 'مدرک تحصیلی'},
+        {value: 'قرارداد', label: 'قرارداد'},
     ];
     const onValuesChange = (changedValues: any, allValues: any) => {
             if (allValues.document.personal) {
@@ -103,6 +104,29 @@ export default function UploadPersonal() {
             } else if (allValues.document.type === 'اقرارنامه') {
                 setSubDocument([
                     {value: 'اقرارنامه', label: 'اقرارنامه'},
+                ])
+            }else if (allValues.document.type === 'قرارداد') {
+                setSubDocument([
+                    {value: 'صفحه 1', label: 'صفحه 1'},
+                    {value: 'صفحه 2', label: 'صفحه 2'},
+                    {value: 'صفحه 3', label: 'صفحه 3'},
+                    {value: 'صفحه 4', label: 'صفحه 4'},
+                    {value: 'صفحه 5', label: 'صفحه 5'},
+                    {value: 'صفحه 6', label: 'صفحه 6'},
+                    {value: 'صفحه 7', label: 'صفحه 7'},
+                    {value: 'صفحه 8', label: 'صفحه 8'},
+                    {value: 'صفحه 9', label: 'صفحه 9'},
+                    {value: 'صفحه 10', label: 'صفحه 10'},
+                    {value: 'صفحه 11', label: 'صفحه 10'},
+                    {value: 'صفحه 12', label: 'صفحه 10'},
+                    {value: 'صفحه 13', label: 'صفحه 10'},
+                    {value: 'صفحه 14', label: 'صفحه 10'},
+                    {value: 'صفحه 15', label: 'صفحه 10'},
+                    {value: 'صفحه 16', label: 'صفحه 10'},
+                    {value: 'صفحه 17', label: 'صفحه 10'},
+                    {value: 'صفحه 18', label: 'صفحه 10'},
+                    {value: 'صفحه 19', label: 'صفحه 10'},
+                    {value: 'صفحه 20', label: 'صفحه 10'},
                 ])
             }
         } else if (changedValues.document.sub) {
@@ -177,6 +201,86 @@ export default function UploadPersonal() {
             } else if (allValues.document.sub === 'صفحه چهارم') {
                 setScannedObject({
                     Birth_certificate4: context.compressed
+                })
+            }else if (allValues.document.sub === 'صفحه 1') {
+                setScannedObject({
+                    doc_1: context.compressed
+                })
+            } else if (allValues.document.sub === 'صفحه 2') {
+                setScannedObject({
+                    doc_2: context.compressed
+                })
+            } else if (allValues.document.sub === 'صفحه 3') {
+                setScannedObject({
+                    doc_3: context.compressed
+                })
+            } else if (allValues.document.sub === 'صفحه 4') {
+                setScannedObject({
+                    doc_4: context.compressed
+                })
+            } else if (allValues.document.sub === 'صفحه 5') {
+                setScannedObject({
+                    doc_5: context.compressed
+                })
+            } else if (allValues.document.sub === 'صفحه 6') {
+                setScannedObject({
+                    doc_6: context.compressed
+                })
+            } else if (allValues.document.sub === 'صفحه 7') {
+                setScannedObject({
+                    doc_7: context.compressed
+                })
+            } else if (allValues.document.sub === 'صفحه 8') {
+                setScannedObject({
+                    doc_8: context.compressed
+                })
+            } else if (allValues.document.sub === 'صفحه 9') {
+                setScannedObject({
+                    doc_9: context.compressed
+                })
+            } else if (allValues.document.sub === 'صفحه 10') {
+                setScannedObject({
+                    doc_10: context.compressed
+                })
+            }else if (allValues.document.sub === 'صفحه 11') {
+                setScannedObject({
+                    doc_11: context.compressed
+                })
+            }else if (allValues.document.sub === 'صفحه 12') {
+                setScannedObject({
+                    doc_12: context.compressed
+                })
+            }else if (allValues.document.sub === 'صفحه 13') {
+                setScannedObject({
+                    doc_13: context.compressed
+                })
+            }else if (allValues.document.sub === 'صفحه 14') {
+                setScannedObject({
+                    doc_14: context.compressed
+                })
+            }else if (allValues.document.sub === 'صفحه 15') {
+                setScannedObject({
+                    doc_15: context.compressed
+                })
+            }else if (allValues.document.sub === 'صفحه 16') {
+                setScannedObject({
+                    doc_16: context.compressed
+                })
+            }else if (allValues.document.sub === 'صفحه 17') {
+                setScannedObject({
+                    doc_17: context.compressed
+                })
+            }else if (allValues.document.sub === 'صفحه 18') {
+                setScannedObject({
+                    doc_18: context.compressed
+                })
+            }else if (allValues.document.sub === 'صفحه 19') {
+                setScannedObject({
+                    doc_19: context.compressed
+                })
+            }else if (allValues.document.sub === 'صفحه 20') {
+                setScannedObject({
+                    doc_20: context.compressed
                 })
             }
         }

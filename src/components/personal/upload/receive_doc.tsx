@@ -23,6 +23,7 @@ const ReceiveDoc = () => {
         {value: 'اقرارنامه', label: 'اقرارنامه'},
         {value: 'عکس پرسنلی', label: 'عکس پرسنلی'},
         {value: 'مدرک تحصیلی', label: 'مدرک تحصیلی'},
+        {value: 'قرارداد', label: 'قرارداد'},
     ];
     const onFinish = async () => {
         setLoading(true)
@@ -112,6 +113,29 @@ const ReceiveDoc = () => {
         } else if (value === 'اقرارنامه') {
             setSubDocument([
                 {value: 'affidavitDoc', label: 'اقرارنامه'},
+            ])
+        }else if (value === 'قرارداد') {
+            setSubDocument([
+                    {value: 'doc_1', label: 'صفحه 1'},
+                    {value: 'doc_2', label: 'صفحه 2'},
+                    {value: 'doc_3', label: 'صفحه 3'},
+                    {value: 'doc_4', label: 'صفحه 4'},
+                    {value: 'doc_5', label: 'صفحه 5'},
+                    {value: 'doc_6', label: 'صفحه 6'},
+                    {value: 'doc_7', label: 'صفحه 7'},
+                    {value: 'doc_8', label: 'صفحه 8'},
+                    {value: 'doc_9', label: 'صفحه 9'},
+                    {value: 'doc_10', label: 'صفحه 10'},
+                    {value: 'doc_11', label: 'صفحه 11'},
+                    {value: 'doc_12', label: 'صفحه 12'},
+                    {value: 'doc_13', label: 'صفحه 13'},
+                    {value: 'doc_14', label: 'صفحه 14'},
+                    {value: 'doc_15', label: 'صفحه 15'},
+                    {value: 'doc_16', label: 'صفحه 16'},
+                    {value: 'doc_17', label: 'صفحه 17'},
+                    {value: 'doc_18', label: 'صفحه 18'},
+                    {value: 'doc_19', label: 'صفحه 19'},
+                    {value: 'doc_20', label: 'صفحه 20'},
             ])
         }
     }

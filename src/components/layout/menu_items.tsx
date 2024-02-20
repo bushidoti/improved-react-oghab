@@ -50,7 +50,7 @@ export const MenuLayout = () => {
       };
 
   const items: MenuItem[] = [
-    getItem(<Link to='/'>خانه</Link>, '1', <HomeOutlined/>),
+    getItem(<Link to='/'>خانه</Link>, '/', <HomeOutlined/>),
     getItem(<Link target={"_blank"} style={context.permission !== 'مدیر' ? {pointerEvents:'none'} : {}} to='https://api.oghab-asaluyeh.ir/admin/'>پنل مدیریت</Link>, '2', <PieChartOutlined/> ,  undefined , context.permission !== 'مدیر'),
 
     getItem(<Link target={"_blank"} style={context.permission !== 'مدیر' ? {pointerEvents:'none'} : {}} to='http://www.oghab-asaluyeh.ir:2082/cpsess6008508683/frontend/
@@ -59,45 +59,45 @@ export const MenuLayout = () => {
 
     getItem('مدیریت قراردادها', 'sub1', <SolutionOutlined/>, [
 
-        getItem(<Link to='../contract'>قراردادها</Link>, 'sub2', null, [
-            getItem(<Link to='../contract/register'>ثبت</Link>, '4'),
-            getItem(<Link to='../contract/report'>گزارش</Link>, '5'),
-            getItem(<Link to='../contract/upload'>باگذاری</Link>, '6'),
+        getItem(<Link to='../contract'>قراردادها</Link>, '/contract', null, [
+            getItem(<Link to='../contract/register'>ثبت</Link>, '/contract/register'),
+            getItem(<Link to='../contract/report'>گزارش</Link>, '/contract/report'),
+            getItem(<Link to='../contract/upload'>باگذاری</Link>, '/contract/upload'),
         ]),
 
-        getItem(<Link to='../personal'>مدارک اشخاص</Link>, 'sub3', null, [
-            getItem(<Link to='../personal/register'>ثبت</Link>, '7'),
-            getItem(<Link to='../personal/report'>گزارش</Link>, '8'),
-            getItem(<Link to='../personal/upload'>باگذاری</Link>, '9'),
+        getItem(<Link to='../personal'>مدارک اشخاص</Link>, '/personal', null, [
+            getItem(<Link to='../personal/register'>ثبت</Link>, '/personal/register'),
+            getItem(<Link to='../personal/report'>گزارش</Link>, '/personal/report'),
+            getItem(<Link to='../personal/upload'>باگذاری</Link>, '/personal/upload'),
         ]),
     ], !(context.permission === 'مدیر' || context.permission === 'اداری' || context.permission === 'مدیر اداری' || context.permission === 'مشاهده')),
 
     getItem('مدیریت اسناد', 'sub4', <FileOutlined/>, [
-        getItem(<Link to='../document/register'>ثبت اسناد اموال</Link>, '10'),
-        getItem(<Link to='../document/report'>گزارش اسناد</Link>, '11'),
-        getItem(<Link to='../document/upload'>باگذاری اسناد</Link>, '12')
+        getItem(<Link to='../document/register'>ثبت اسناد اموال</Link>, '/document/register'),
+        getItem(<Link to='../document/report'>گزارش اسناد</Link>, '/document/report'),
+        getItem(<Link to='../document/upload'>باگذاری اسناد</Link>, '/document/upload')
     ],!(context.permission === 'مدیر' || context.permission === 'اداری' || context.permission === 'مدیر اداری' || context.permission === 'مشاهده')),
 
     getItem('انبارداری', 'sub5', <BarChartOutlined/>, [
-        getItem(<Link to='../warhouse/product'>انبار</Link>, 'sub6', null, [
-            getItem(<Link to='../warhouse/product/register'>ثبت</Link>, '13'),
-            getItem(<Link to='../warhouse/product/report'>گزارش</Link>, '14'),
-            getItem(<Link to='../warhouse/product/upload'>بارگزاری مدارک</Link>, '15'),
+        getItem(<Link to='../warhouse/product'>انبار</Link>, '/warhouse/product', null, [
+            getItem(<Link to='../warhouse/product/register'>ثبت</Link>, '/warhouse/product/register'),
+            getItem(<Link to='../warhouse/product/report'>گزارش</Link>, '/warhouse/product/report'),
+            getItem(<Link to='../warhouse/product/upload'>بارگزاری مدارک</Link>, '/warhouse/product/upload'),
         ]),
-        getItem(<Link to='../warhouse/property'>اموال</Link>, 'sub7', null, [
-            getItem(<Link to='../warhouse/property/register'>ثبت</Link>, '16'),
-            getItem(<Link to='../warhouse/property/report'>گزارش</Link>, '17'),
-            getItem(<Link to='../warhouse/property/sent'>ارسالی</Link>, '18'),
-            getItem(<Link to='../warhouse/property/upload'>بارگذاری فاکتور</Link>, '19'),
+        getItem(<Link to='../warhouse/property'>اموال</Link>, '/warhouse/property', null, [
+            getItem(<Link to='../warhouse/property/register'>ثبت</Link>, '/warhouse/property/register'),
+            getItem(<Link to='../warhouse/property/report'>گزارش</Link>, '/warhouse/property/report'),
+            getItem(<Link to='../warhouse/property/sent'>ارسالی</Link>, '/warhouse/property/sent'),
+            getItem(<Link to='../warhouse/property/upload'>بارگذاری فاکتور</Link>, '/warhouse/property/upload'),
         ]),
-        getItem(<Link to='../warhouse/handling'>انبارگردانی</Link>, '20')
+        getItem(<Link to='../warhouse/handling'>انبارگردانی</Link>, '/warhouse/handling')
     ] , !(context.permission === 'مدیر' || context.permission === 'انباردار')),
     getItem(<Link to='../logout'>خروج</Link>, '21', <PoweroffOutlined/>,undefined,undefined,true),
 ];
     return (
          <Menu
                 theme="dark"
-                defaultSelectedKeys={['1']}
+                defaultSelectedKeys={[window.location.pathname]}
                 mode="inline"
                 items={items}
                 openKeys={openKeys}

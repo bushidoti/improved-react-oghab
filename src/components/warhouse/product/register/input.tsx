@@ -1,7 +1,7 @@
 import React, {useContext, useEffect, useRef, useState} from 'react';
 import {CloseOutlined, PlusOutlined} from '@ant-design/icons';
 import {
-    Button,
+    Button, Checkbox, CheckboxProps,
     ConfigProvider,
     Divider,
     Flex,
@@ -33,10 +33,13 @@ const InputForm: React.FC = () => {
     const [allProduct, setAllProduct] = useState<any[]>([]);
     const navigate = useNavigate();
     const [visible, setVisible] = useState(false);
+    const [autoOut, setAutoOut] = useState<boolean>(false);
     const context = useContext(Context)
     const [autoIncrement, setAutoIncrement] = useState<number>()
     const [autoIncrementFactor, setAutoIncrementFactor] = useState<number>()
+    const [autoIncrementCheck, setAutoIncrementCheck] = useState<number>()
     const [isFactor, setIsFactor] = useState(false);
+    const [optionCons, setOptionCons] = useState<any[]>([]);
 
     const filterOption = (input: string, option?: { label: string; value: string }) =>
         (option?.label ?? '').toLowerCase().includes(input.toLowerCase());
@@ -75,6 +78,16 @@ const InputForm: React.FC = () => {
         }).then(async data => {
             setListProduct(data.data)
         }).then(async () => {
+            return await axios.get(`${Url}/api/consumable-list`, {
+                headers: {
+                    'Authorization': 'Bearer ' + localStorage.getItem('access_token'),
+                }
+            })
+        }).then(response => {
+            return response
+        }).then(async data => {
+            setOptionCons(data.data)
+        }).then(async () => {
             return await axios.get(`${Url}/api/allproducts/?fields=product,input,output`, {
                 headers: {
                     'Authorization': 'Bearer ' + localStorage.getItem('access_token'),
@@ -111,6 +124,20 @@ const InputForm: React.FC = () => {
                 FactorID: data.data[0].increment,
             });
             setAutoIncrementFactor(data.data[0].id)
+
+        }).then(async () => {
+            return await axios.get(`${Url}/api/autoincrementproductcheck/?inventory=${context.office}`, {
+                headers: {
+                    'Authorization': 'Bearer ' + localStorage.getItem('access_token'),
+                }
+            })
+        }).then(response => {
+            return response
+        }).then(async data => {
+            form.setFieldsValue({
+                CheckID: data.data[0].increment,
+            });
+            setAutoIncrementCheck(data.data[0].id)
 
         }).catch((error) => {
             if (error.request.status === 403) {
@@ -213,9 +240,12 @@ const InputForm: React.FC = () => {
 
     const handleResetSubmit = async () => {
         form.resetFields()
+        setAutoOut(false)
         await fetchData()
     }
-
+    const onChange: CheckboxProps['onChange'] = (e) => {
+        setAutoOut(e.target.checked)
+    };
 
     const onFinish = async () => {
         new Promise(resolve => resolve(
@@ -339,11 +369,114 @@ const InputForm: React.FC = () => {
                         }
                         : null
                 ).then(async () => {
+                    if (autoOut){
+                        await new Promise(resolve => resolve(
+            form.getFieldValue(['products']).map(async ( i: number) => {
+                form.setFieldsValue({
+                    products: {
+                        [i]: {
+                            afterOperator: form.getFieldValue(['products'])[i].afterOperator - form.getFieldValue(['products'])[i].input,
+                            output : form.getFieldValue(['products'])[i].input,
+                            document_type : 'حواله',
+                            input : null,
+                            buyer : '',
+                            seller : '',
+                            document_code : '',
+                        }
+                    }
+                });
+            })
+        )).then(
+            form.getFieldValue(['products']).map((obj:
+                                                      {
+                                                          document_code: string,
+                                                          document_type: string,
+                                                          receiver: string;
+                                                          systemID: string;
+                                                          checkCode: number;
+                                                          factorCode: any;
+                                                          operator: string;
+                                                          date: string;
+                                                      }) => {
+                obj.document_code = form.getFieldValue(['document_code'])
+                obj.document_type = form.getFieldValue(['document_type'])
+                obj.receiver = form.getFieldValue(['receiver'])
+                obj.systemID = form.getFieldValue(['CheckID'])
+                obj.checkCode = form.getFieldValue(['CheckID'])
+                obj.factorCode = null
+                obj.operator = 'خروج'
+                obj.date = dayjs().locale('fa').format('YYYY-MM-DD')
+                return obj;
+            })
+        ).then(() => setLoading(true)).then(async () => {
+                await axios.post(
+                    `${Url}/api/checksproduct/`, {
+                                code: form.getFieldValue(['CheckID']),
+                                inventory: context.office,
+                                jsonData: form.getFieldValue(['products']),
+                            }, {
+                        headers: {
+                            'Authorization': 'Bearer ' + localStorage.getItem('access_token'),
+                        }
+                    }).then(response => {
+                    return response
+                }).then(async data => {
+                    if (data.status === 201) {
+                        message.success('حواله ثبت شد.');
+                        setLoading(false)
+                    }
+                }).catch(async (error) => {
+                    if (error.request.status === 403) {
+                        navigate('/no_access')
+                    } else if (error.request.status === 400) {
+                        message.error('عدم ثبت');
+                        setLoading(false)
                         await handleResetSubmit()
                     }
+                })
+            }
+        ).then(
+                        async () => {
+                            return await axios.post(`${Url}/api/allproducts/`, form.getFieldValue(['products']), {
+                                headers: {
+                                    'Authorization': 'Bearer ' + localStorage.getItem('access_token'),
+                                }
+                            })
+                        }
+                ).then(
+                        response => {
+                            return response
+                        }
+                ).then(
+                        async data => {
+                            if (data.status === 201) {
+                                message.success('ثبت شد.');
+                            }
+                        }
+                ).then(async () => {
+                            return await axios.put(`${Url}/api/autoincrementproductcheck/${autoIncrementCheck}/`, {
+                                increment: form.getFieldValue(['CheckID']) + 1
+                            }, {
+                                headers: {
+                                    'Authorization': 'Bearer ' + localStorage.getItem('access_token'),
+                                }
+                            })
+                        }
+                ).then(response => {
+                            return response
+                        }
+                ).then(async data => {
+                            if (data.status === 200) {
+                                message.success('شمارنده حواله بروز شد');
+
+                            }
+                        }
                 )
-
-
+        }
+        }).then(async () => {
+                        await handleResetSubmit()
+                    }
+            )
     };
 
     function scanImage() {
@@ -368,17 +501,27 @@ const InputForm: React.FC = () => {
             }}
         >
             <>
+                    <Form.Item>
+                       <Form.Item className='inline-block m-2' label=" ">
+                            <Checkbox className='text-red-700' onChange={onChange}>خروج کالا های این فاکتور همزمان با ورود</Checkbox>
+                       </Form.Item>
+                    </Form.Item>
                 <Form.Item>
                     <Form.Item name={'code'} style={{margin: 8, display: 'inline-block'}} label="کد کالای جدید">
                         <InputNumber disabled/>
                     </Form.Item>
-
                     {isFactor ?
                         <Form.Item name={'FactorID'} style={{margin: 8, display: 'inline-block'}}
                                    label="شماره ثبت فاکتور">
                             <InputNumber disabled/>
                         </Form.Item>
                         : null}
+                    {autoOut ?
+                        <Form.Item name={'CheckID'} style={{margin: 8, display: 'inline-block'}}
+                                   label="شماره ثبت حواله">
+                            <InputNumber disabled/>
+                        </Form.Item>
+                    : null}
 
                     <Form.Item name={['document_type']} className='register-form-personal' label="نوع مدرک"
                                rules={[{required: true}]}>
@@ -412,6 +555,9 @@ const InputForm: React.FC = () => {
                             </Form.Item>
                         </>
                         : null}
+
+
+
                     {isFactor ?
                         <>
                             <Form.Item style={{margin: 8, display: 'inline-block'}} label="فایل">
@@ -445,6 +591,7 @@ const InputForm: React.FC = () => {
                             />
                         </>
                         : null}
+
 
                 </Form.Item>
                 <Form.Item>
@@ -555,6 +702,39 @@ const InputForm: React.FC = () => {
                                                        label='مقیاس'>
                                                 <Input placeholder="مقیاس" disabled/>
                                             </Form.Item>
+                                            {autoOut ?
+                                                    <Form.Item name={[subField.name, 'consumable']} style={{width: 250}}
+                                                           label='مورد مصرف' rules={[{required: true}]}>
+                                                    <Select placeholder="انتخاب کنید"
+                                                            optionFilterProp="children"
+                                                            showSearch
+                                                            filterOption={filterOption}
+                                                            dropdownRender={(menu) => (
+                                                                <>
+                                                                    {menu}
+                                                                    <Divider style={{margin: '8px 0'}}/>
+                                                                    <Space style={{margin: 10}}>
+                                                                        <Input
+                                                                            placeholder="آیتم مورد نظر را بنویسید"
+                                                                            ref={inputRef}
+                                                                            value={name}
+                                                                            onChange={onNameChange}
+                                                                        />
+                                                                        <Button type="primary" icon={<PlusOutlined/>}
+                                                                                onClick={addItem}/>
+
+                                                                    </Space>
+
+                                                                </>
+                                                            )}
+                                                            options={optionCons.map((item) => ({
+                                                                label: item.value,
+                                                                value: item.value
+                                                            }))}
+                                                    />
+                                                </Form.Item>
+                                            : null}
+
                                             <Form.Item label=' '>
                                                 <CloseOutlined
                                                     onClick={() => {

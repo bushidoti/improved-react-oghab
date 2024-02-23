@@ -54,6 +54,11 @@ const columns: ColumnsType<DataType> = [
         dataIndex: 'category',
         key: 'category',
     }, {
+        title: 'مورد مصرف',
+        align: "center",
+        dataIndex: 'consumable',
+        key: 'consumable',
+    }, {
         title: 'تاریخ',
         align: "center",
         dataIndex: 'date',

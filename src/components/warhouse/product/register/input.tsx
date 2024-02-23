@@ -371,7 +371,7 @@ const InputForm: React.FC = () => {
                 ).then(async () => {
                     if (autoOut){
                         await new Promise(resolve => resolve(
-            form.getFieldValue(['products']).map(async ( i: number) => {
+            form.getFieldValue(['products']).map(async (product: { product: number; }, i: number) => {
                 form.setFieldsValue({
                     products: {
                         [i]: {

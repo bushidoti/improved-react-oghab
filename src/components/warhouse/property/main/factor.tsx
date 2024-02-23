@@ -104,7 +104,7 @@ const PropertyFactor: React.FC = () => {
 
     const fetchData = async () => {
         await axios.get(
-            `${Url}/api/factor_property/${context.currentPropertyFactor}/`, {
+            `${Url}/api/factor_property/${context.path}/`, {
                 headers: {
                     'Authorization': 'Bearer ' + localStorage.getItem('access_token'),
                 }

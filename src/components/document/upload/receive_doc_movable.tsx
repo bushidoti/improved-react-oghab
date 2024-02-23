@@ -22,7 +22,7 @@ const ReceiveDocMovable = () => {
     ];
     const onFinish = async () => {
         setLoading(true)
-        await axios.get(`${Url}/api/movable/${context.currentDocProperty}/?fields=${selected}`, {
+        await axios.get(`${Url}/api/movable/${context.path}/?fields=${selected}`, {
             headers: {
                 'Authorization': 'Bearer ' + localStorage.getItem('access_token'),
             }
@@ -48,7 +48,7 @@ const ReceiveDocMovable = () => {
 
     const onPreview = async () => {
         setLoading(true)
-        await axios.get(`${Url}/api/movable/${context.currentDocProperty}/?fields=${selected}`, {
+        await axios.get(`${Url}/api/movable/${context.path}/?fields=${selected}`, {
             headers: {
                 'Authorization': 'Bearer ' + localStorage.getItem('access_token'),
             }

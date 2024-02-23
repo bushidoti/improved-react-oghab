@@ -27,7 +27,7 @@ const ReceiveDoc = () => {
     ];
     const onFinish = async () => {
         setLoading(true)
-        await axios.get(`${Url}/api/persons/${context.currentPersonal}/?fields=${selected}`, {
+        await axios.get(`${Url}/api/persons/${context.path}/?fields=${selected}`, {
             headers: {
                 'Authorization': 'Bearer ' + localStorage.getItem('access_token'),
             }
@@ -53,7 +53,7 @@ const ReceiveDoc = () => {
 
     const onPreview = async () => {
         setLoading(true)
-        await axios.get(`${Url}/api/persons/${context.currentPersonal}/?fields=${selected}`, {
+        await axios.get(`${Url}/api/persons/${context.path}/?fields=${selected}`, {
             headers: {
                 'Authorization': 'Bearer ' + localStorage.getItem('access_token'),
             }

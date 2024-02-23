@@ -43,6 +43,7 @@ const App: React.FC = () => {
     const [currentPropertyTable, setCurrentPropertyTable] = useState<string>('');
     const [propertyTab, setPropertyTab] = useState<string>('ثبت اولیه / خرید');
     const [listPropertyFactor, setListPropertyFactor] = useState<any>([]);
+    const path = window.location.pathname.split("/").slice(-1)[0]
 
 
     useEffect(() => {
@@ -210,6 +211,7 @@ const App: React.FC = () => {
                     listPropertyFactor,
                     setCurrentContract,
                     fullName,
+                    path,
                     setCurrentProductDoc,
                     setCurrentDocProperty,
                     currentDocProperty,

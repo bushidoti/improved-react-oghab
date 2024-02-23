@@ -63,7 +63,7 @@ const Edit: React.FC = () => {
     const onFinish = async (values: any) => {
         setLoading(true)
         await axios.put(
-            `${Url}/api/persons/${context.currentPersonal}/`, {
+            `${Url}/api/persons/${context.path}/`, {
                 type: values.contract.type,
                 full_name: values.contract.full_name,
                 caseNumber: values.contract.caseNumber,
@@ -107,7 +107,7 @@ const Edit: React.FC = () => {
 
 
     const fetchData = async () => {
-        await axios.get(`${Url}/api/persons/${context.currentPersonal}/?fields=affidavitStatus,id,type,full_name,expireDate,date,national_id,sex,office,caseNumber,job,approvedPrice,commitmentPrice,typeBail,firstBail,secondBail,clearedStatus,clearedDate,receivedDocument`, {
+        await axios.get(`${Url}/api/persons/${context.path}/?fields=affidavitStatus,id,type,full_name,expireDate,date,national_id,sex,office,caseNumber,job,approvedPrice,commitmentPrice,typeBail,firstBail,secondBail,clearedStatus,clearedDate,receivedDocument`, {
             headers: {
                 'Authorization': 'Bearer ' + localStorage.getItem('access_token'),
             }

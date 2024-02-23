@@ -405,7 +405,6 @@ export default function UploadPersonal() {
                     rules={[{required: true, message: 'مدرک مورد نظر را انتخاب کنید!'}]}
                 >
                     <Select placeholder="مدرک مورد نظر" disabled={scanButton.sub} options={subDocument}/>
-
                 </Form.Item>
             </Space.Compact>
             <Image

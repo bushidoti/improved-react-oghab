@@ -21,7 +21,7 @@ const EditOfficeFurniture    = () => {
 
 
     const subObjAdd = async () => {
-           await axios.put(`${Url}/api/property/${context.currentProperty}/`, form.getFieldValue(['property']) , {
+           await axios.put(`${Url}/api/property/${context.path}/`, form.getFieldValue(['property']) , {
                 headers: {
                     'Authorization': 'Bearer ' + localStorage.getItem('access_token'),
                 }
@@ -46,7 +46,7 @@ const EditOfficeFurniture    = () => {
 
 
     const fetchData = async () => {
-        await axios.get(`${Url}/api/property/${context.currentProperty}`, {
+        await axios.get(`${Url}/api/property/${context.path}`, {
                 headers: {
                     'Authorization': 'Bearer ' + localStorage.getItem('access_token'),
                 }

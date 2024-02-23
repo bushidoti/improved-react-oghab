@@ -100,7 +100,7 @@ const ProductFactor: React.FC = () => {
 
     const fetchData = async () => {
         await axios.get(
-            `${Url}/api/factorsproduct/${context.currentProductFactor}/`, {
+            `${Url}/api/factorsproduct/${context.path}/`, {
                 headers: {
                     'Authorization': 'Bearer ' + localStorage.getItem('access_token'),
                 }

@@ -44,6 +44,7 @@ export const Context = createContext({
     propertyCapsule: [],
     listPropertyFactor: [],
     compressed: '',
+    path: '',
     currentPropertyForm: '',
     currentPersonal: 0,
     currentDocProperty: 0,

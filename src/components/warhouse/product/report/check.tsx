@@ -88,7 +88,7 @@ const ProductCheck: React.FC = () => {
 
     const fetchData = async () => {
         await axios.get(
-            `${Url}/api/checksproduct/${context.currentProductCheck}/`, {
+            `${Url}/api/checksproduct/${context.path}/`, {
                 headers: {
                     'Authorization': 'Bearer ' + localStorage.getItem('access_token'),
                 }

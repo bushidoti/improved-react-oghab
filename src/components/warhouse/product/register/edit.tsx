@@ -35,14 +35,14 @@ export const EditDoc = () => {
 
     const fetchData = async () => {
         await axios.get(
-            `${Url}/api/${context.currentProductDoc === 'فاکتور' ?  'factorsproduct' :  'checksproduct' }/${context.currentProductDoc === 'فاکتور' ?  context.currentProductFactor :  context.currentProductCheck }/`, {
+            `${Url}/api/${decodeURIComponent(window.location.pathname.split("/").slice(-2)[0]) === 'فاکتور' ?  'factorsproduct' :  'checksproduct' }/${context.path}/`, {
                 headers: {
                     'Authorization': 'Bearer ' + localStorage.getItem('access_token'),
                 }
             }).then(response => {
             return response
         }).then(async data => {
-            if (context.currentProductDoc === 'فاکتور'){
+            if (decodeURIComponent(window.location.pathname.split("/").slice(-2)[0]) === 'فاکتور'){
                    form.setFieldsValue({
                         FactorID: data.data.code,
                         receiver: data.data.jsonData[0].receiver,
@@ -61,7 +61,7 @@ export const EditDoc = () => {
         }).finally(() => {
             setLoading(false)
         }).then(async () => {
-            return await axios.get(`${Url}/api/allproducts/?fields=id,systemID,product,input,output&systemID=${context.currentProductDoc === 'فاکتور' ?  context.currentProductFactor :  context.currentProductCheck }&inventory=${context.office}&document_type=${context.currentProductDoc}`, {
+            return await axios.get(`${Url}/api/allproducts/?fields=id,systemID,product,input,output&systemID=${context.path}&inventory=${context.office}&document_type=${decodeURIComponent(window.location.pathname.split("/").slice(-2)[0])}`, {
                 headers: {
                     'Authorization': 'Bearer ' + localStorage.getItem('access_token'),
                 }
@@ -152,7 +152,7 @@ export const EditDoc = () => {
     [])
 
     const onFinish = async () => {
-        if (context.currentProductDoc === 'حواله'){
+        if (decodeURIComponent(window.location.pathname.split("/").slice(-2)[0]) === 'حواله'){
                  new Promise(resolve => resolve(
             form.getFieldValue(['products']).map((obj:
                                   {
@@ -235,7 +235,7 @@ export const EditDoc = () => {
 
                     }
                 )
-        }else if (context.currentProductDoc === 'فاکتور'){
+        }else if (decodeURIComponent(window.location.pathname.split("/").slice(-2)[0]) === 'فاکتور'){
                    new Promise(resolve => resolve(
             form.getFieldValue(['products']).map((obj:
                                   {
@@ -330,12 +330,12 @@ export const EditDoc = () => {
     return (
         <Form
             form={form}
-            name={context.currentProductDoc === 'فاکتور' ? "InputForm" : "OutputForm"}
+            name={decodeURIComponent(window.location.pathname.split("/").slice(-2)[0]) === 'فاکتور' ? "InputForm" : "OutputForm"}
             layout={"vertical"}
             onFinish={onFinish}
             autoComplete="off"
         >
-            {context.currentProductDoc === 'حواله' ?
+            {decodeURIComponent(window.location.pathname.split("/").slice(-2)[0]) === 'حواله' ?
                         <>
 
                 <Form.Item>

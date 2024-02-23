@@ -23,7 +23,7 @@ const EditImmovable: React.FC = () => {
     const onFinish = async (values: any) => {
         setLoading(true)
         await axios.put(
-            `${Url}/api/immovable/${context.currentDocProperty}/`, {
+            `${Url}/api/immovable/${context.path}/`, {
                 typeEstate: values.document.typeEstate,
                 name: values.document.name,
                 docNumber: values.document.docNumber,
@@ -61,7 +61,7 @@ const EditImmovable: React.FC = () => {
 
     const fetchData = async () => {
         setLoading(true)
-        await axios.get(`${Url}/api/immovable/${context.currentDocProperty}/?fields=id,typeEstate,name,docNumber,plate,address,landlord,meter,location,madeOf,description,soldDate,buyer,soldStatus`, {
+        await axios.get(`${Url}/api/immovable/${context.path}/?fields=id,typeEstate,name,docNumber,plate,address,landlord,meter,location,madeOf,description,soldDate,buyer,soldStatus`, {
             headers: {
                 'Authorization': 'Bearer ' + localStorage.getItem('access_token'),
             }

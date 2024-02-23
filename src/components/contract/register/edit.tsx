@@ -99,7 +99,7 @@ const EditContract: React.FC = () => {
     const onFinish = async (values: any) => {
         setLoading(true)
         await axios.put(
-            `${Url}/api/documents/${context.currentContract}/`, {
+            `${Url}/api/documents/${context.path}/`, {
                 type_form: values.contract.type_form,
                 name: values.contract.name,
                 contractNumber: values.contract.contractNumber,
@@ -143,7 +143,7 @@ const EditContract: React.FC = () => {
 
 
     const fetchData = async () => {
-        await axios.get(`${Url}/api/documents/${context.currentContract}/?fields=id,contractNumber,name,type_form,dateContract,contractPrice,durationContract,prePaidPrice,goodPrice,typeBail1,firstBail,secondBail,commitmentPrice,typeBail2,firstBail2,secondBail2,topicContract,typeContract,clearedDate,receivedDocument,clearedStatus,office`, {
+        await axios.get(`${Url}/api/documents/${context.path}/?fields=id,contractNumber,name,type_form,dateContract,contractPrice,durationContract,prePaidPrice,goodPrice,typeBail1,firstBail,secondBail,commitmentPrice,typeBail2,firstBail2,secondBail2,topicContract,typeContract,clearedDate,receivedDocument,clearedStatus,office`, {
             headers: {
                 'Authorization': 'Bearer ' + localStorage.getItem('access_token'),
             }

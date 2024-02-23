@@ -1,9 +1,10 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useContext, useEffect, useRef, useState} from 'react';
 import {Button, ConfigProvider, Divider, Form, Input, InputRef, message, Select, Space} from 'antd';
 import Url from "../../../api-configue";
 import axios from "axios";
 import {PlusOutlined} from '@ant-design/icons';
 import {useNavigate} from "react-router-dom";
+import {Context} from "../../../../context";
 /* eslint-disable no-template-curly-in-string */
 const validateMessages = {
     required: '${label} مورد نیاز است !',
@@ -17,12 +18,13 @@ const Edit = (props: { form: any; }) => {
     const inputRef = useRef<InputRef>(null);
     const [name, setName] = useState('');
     const [option, setOption] = useState<any[]>([]);
+    const context = useContext(Context)
 
 
     const onFinish = async (values: any) => {
         setLoading(true)
         await axios.put(
-            `${Url}/api/product/${props.form.getFieldValue(['product', 'code'])}/`, {
+            `${Url}/api/product/${context.path}/`, {
                 code: props.form.getFieldValue(['product', 'code']),
                 name: values.product.name,
                 scale: values.product.scale,

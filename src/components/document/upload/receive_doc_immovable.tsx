@@ -22,7 +22,7 @@ const ReceiveDocImmovable = () => {
     ];
     const onFinish = async () => {
         setLoading(true)
-        await axios.get(`${Url}/api/immovable/${context.currentDocProperty}/?fields=${selected}`, {
+        await axios.get(`${Url}/api/immovable/${context.path}/?fields=${selected}`, {
             headers: {
                 'Authorization': 'Bearer ' + localStorage.getItem('access_token'),
             }
@@ -48,7 +48,7 @@ const ReceiveDocImmovable = () => {
 
     const onPreview = async () => {
         setLoading(true)
-        await axios.get(`${Url}/api/immovable/${context.currentDocProperty}/?fields=${selected}`, {
+        await axios.get(`${Url}/api/immovable/${context.path}/?fields=${selected}`, {
             headers: {
                 'Authorization': 'Bearer ' + localStorage.getItem('access_token'),
             }

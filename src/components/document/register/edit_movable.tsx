@@ -30,7 +30,7 @@ const EditMovable: React.FC = () => {
     const onFinish = async (values: any) => {
         setLoading(true)
         await axios.put(
-            `${Url}/api/movable/${context.currentDocProperty}/`, {
+            `${Url}/api/movable/${context.path}/`, {
                 typeVehicle: values.document.typeVehicle,
                 name: values.document.name,
                 docNumber: values.document.docNumber,
@@ -77,7 +77,7 @@ const EditMovable: React.FC = () => {
 
     const fetchData = async () => {
         setLoading(true)
-        await axios.get(`${Url}/api/movable/${context.currentDocProperty}/?fields=id,typeVehicle,name,docNumber,motorNumber,chassisNumber,owner,model,madeOf,part1plate,part2plate,part3plate,location,cityPlate,descriptionLocation,paperDoc,insurancePaper,gasCard,carCard,description,soldDate,buyer,soldStatus`, {
+        await axios.get(`${Url}/api/movable/${context.path}/?fields=id,typeVehicle,name,docNumber,motorNumber,chassisNumber,owner,model,madeOf,part1plate,part2plate,part3plate,location,cityPlate,descriptionLocation,paperDoc,insurancePaper,gasCard,carCard,description,soldDate,buyer,soldStatus`, {
             headers: {
                 'Authorization': 'Bearer ' + localStorage.getItem('access_token'),
             }

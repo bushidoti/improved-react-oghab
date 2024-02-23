@@ -63,7 +63,7 @@ const Card: React.FC = () => {
 
     const fetchData = async () => {
         await axios.get(
-            `${Url}/api/product/${context.currentProduct}`, {
+            `${Url}/api/product/${context.path}`, {
                 headers: {
                     'Authorization': 'Bearer ' + localStorage.getItem('access_token'),
                 }
@@ -71,8 +71,16 @@ const Card: React.FC = () => {
             return response
         }).then(async data => {
             setProduct(data.data)
+            form.setFieldsValue({
+                product: {
+                    code: data.data.code,
+                    name: data.data.name,
+                    scale: data.data.scale,
+                    category: data.data.category,
+                },
+            });
         }).then(async () => {
-            return await axios.get(`${Url}/api/allproducts/?fields=product,seller,systemID,input,output,document_code,document_type,date,operator,afterOperator,obsolete,consumable,buyer,receiver,amendment,id,scale,&product=${context.currentProduct}&${qs.stringify(filteredInfo, {
+            return await axios.get(`${Url}/api/allproducts/?fields=product,seller,systemID,input,output,document_code,document_type,date,operator,afterOperator,obsolete,consumable,buyer,receiver,amendment,id,scale,&product=${context.path}&${qs.stringify(filteredInfo, {
                 encode: false,
                 arrayFormat: 'comma'
             })}`, {
@@ -94,23 +102,6 @@ const Card: React.FC = () => {
             return response
         }).then(async data => {
             setOptionConsumable(data.data)
-        }).then(async () => {
-            return await axios.get(`${Url}/api/product/${context.currentProduct}`, {
-                headers: {
-                    'Authorization': 'Bearer ' + localStorage.getItem('access_token'),
-                }
-            })
-        }).then(response => {
-            return response
-        }).then(async data => {
-            form.setFieldsValue({
-                product: {
-                    code: data.data.code,
-                    name: data.data.name,
-                    scale: data.data.scale,
-                    category: data.data.category,
-                },
-            });
         }).finally(() => {
             setLoading(false)
         }).catch((error) => {

@@ -64,6 +64,7 @@ const EditDigitalFurniture = () => {
                     document_code: data.data.document_code,
                     case: data.data.case,
                     hdd: data.data.hdd,
+                    gpu: data.data.gpu,
                     power: data.data.power,
                     phone_feature: data.data.phone_feature,
                     ram: data.data.ram,
@@ -95,6 +96,7 @@ const EditDigitalFurniture = () => {
             {value: 'کامپیوتر', label: 'کامپیوتر'},
             {value: 'پرینتر', label: 'پرینتر'},
             {value: 'مانیتور', label: 'مانیتور'},
+            {value: 'اسکنر', label: 'اسکنر'},
             {value: 'لپ تاپ', label: 'لپ تاپ'},
             {value: 'دوربین', label: 'دوربین'},
             {value: 'تلفن , سانترال و مودم', label: 'تلفن , سانترال و مودم'},
@@ -174,6 +176,10 @@ const EditDigitalFurniture = () => {
                                   rules={[{required: true}]}>
                                   <Input/>
                               </Form.Item>
+                                 <Form.Item name={['property', 'gpu']} className='w-[233px] inline-block m-2' label="مدل گرافیک"
+                                  rules={[{required: true}]}>
+                                  <Input/>
+                              </Form.Item>
                                 <Form.Item name={['property', 'case']} className='w-[233px] inline-block m-2' label="مدل کیس"
                                   rules={[{required: true}]}>
                                   <Input/>
@@ -199,6 +205,15 @@ const EditDigitalFurniture = () => {
                         return (
                             <>
                               <Form.Item name={['property', 'model']} className='w-[233px] inline-block m-2' label="مدل مانیتور"
+                                  rules={[{required: true}]}>
+                                    <Input/>
+                              </Form.Item>
+                            </>
+                        )
+                    }else  if (currentDigitalForm === 'اسکنر'){
+                        return (
+                            <>
+                              <Form.Item name={['property', 'model']} className='w-[233px] inline-block m-2' label="مدل اسکنر"
                                   rules={[{required: true}]}>
                                     <Input/>
                               </Form.Item>

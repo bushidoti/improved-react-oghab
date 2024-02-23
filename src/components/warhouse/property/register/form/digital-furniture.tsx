@@ -50,6 +50,7 @@ const DigitalFurniture     = () => {
                             document_code: form.getFieldValue(['property','document_code']),
                             case: form.getFieldValue(['property','case']),
                             hdd: form.getFieldValue(['property','hdd']),
+                            gpu: form.getFieldValue(['property','gpu']),
                             power: form.getFieldValue(['property','power']),
                             phone_feature: form.getFieldValue(['property','phone_feature']),
                             ram: form.getFieldValue(['property','ram']),
@@ -287,6 +288,7 @@ const DigitalFurniture     = () => {
     const name_digital=[
             {value: 'کامپیوتر', label: 'کامپیوتر'},
             {value: 'پرینتر', label: 'پرینتر'},
+            {value: 'اسکنر', label: 'اسکنر'},
             {value: 'مانیتور', label: 'مانیتور'},
             {value: 'لپ تاپ', label: 'لپ تاپ'},
             {value: 'دوربین', label: 'دوربین'},
@@ -372,6 +374,10 @@ const DigitalFurniture     = () => {
                                   rules={[{required: true}]}>
                                   <Input/>
                               </Form.Item>
+                              <Form.Item name={['property', 'gpu']} className='w-[233px] inline-block m-2' label="مدل گرافیک"
+                                  rules={[{required: true}]}>
+                                  <Input/>
+                              </Form.Item>
                                 <Form.Item name={['property', 'case']} className='w-[233px] inline-block m-2' label="مدل کیس"
                                   rules={[{required: true}]}>
                                   <Input/>
@@ -397,6 +403,15 @@ const DigitalFurniture     = () => {
                         return (
                             <>
                               <Form.Item name={['property', 'model']} className='w-[233px] inline-block m-2' label="مدل مانیتور"
+                                  rules={[{required: true}]}>
+                                    <Input/>
+                              </Form.Item>
+                            </>
+                        )
+                    }else  if (currentDigitalForm === 'اسکنر'){
+                        return (
+                            <>
+                              <Form.Item name={['property', 'model']} className='w-[233px] inline-block m-2' label="مدل اسکنر"
                                   rules={[{required: true}]}>
                                     <Input/>
                               </Form.Item>

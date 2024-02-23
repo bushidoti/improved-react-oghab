@@ -409,7 +409,7 @@ const OutputForm: React.FC = () => {
                                                 }
                                               }}]}
                                                        label='تعداد'>
-                                                <InputNumber min={1} placeholder="تعداد"/>
+                                                <InputNumber min={0} placeholder="تعداد"/>
                                             </Form.Item>
                                             <Form.Item name={[subField.name, 'scale']} style={{width: 150}}
                                                        label='مقیاس'>

@@ -254,8 +254,8 @@ const OutputForm: React.FC = () => {
         }).catch((error) => {
             if (error.request.status === 403) {
                 navigate('/no_access')
-            } else if (error.request.status === 405) {
-                message.error('موجود است!');
+            } else if (error.request.status === 400) {
+                message.error(' ! موجود است');
             }
         })
     };

@@ -24,6 +24,7 @@ const InputForm: React.FC = () => {
     const [form] = Form.useForm();
     const inputRef = useRef<InputRef>(null);
     const [name, setName] = useState('');
+    const [nameCons, setNameCons] = useState('');
     const [productName, setProductName] = useState('');
     const [productScale, setProductScale] = useState('');
     const [productCategory, setProductCategory] = useState('');
@@ -46,6 +47,10 @@ const InputForm: React.FC = () => {
 
     const onNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setName(event.target.value);
+    };
+
+    const onNameChangeCons = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setNameCons(event.target.value);
     };
 
     const onProductNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -147,6 +152,36 @@ const InputForm: React.FC = () => {
     }
 
 
+     const addItemCons = async (e: React.MouseEvent<HTMLButtonElement | HTMLAnchorElement>) => {
+        await axios.post(
+            `${Url}/api/consumable-list/`, {
+                value: nameCons,
+            }, {
+                headers: {
+                    'Authorization': 'Bearer ' + localStorage.getItem('access_token'),
+                }
+            }).then(response => {
+            return response
+        }).then(async data => {
+            if (data.status === 201) {
+                message.success('اضافه شد');
+                await fetchData()
+                setNameCons('');
+                e.preventDefault();
+                setTimeout(() => {
+                    inputRef.current?.focus();
+                }, 0);
+
+            }
+        }).catch((error) => {
+            if (error.request.status === 403) {
+                navigate('/no_access')
+            } else if (error.request.status === 400) {
+                message.error(' ! موجود است');
+            }
+        })
+    };
+
     const addItem = async (e: React.MouseEvent<HTMLButtonElement | HTMLAnchorElement>) => {
         await axios.post(
             `${Url}/api/category-list/`, {
@@ -171,8 +206,8 @@ const InputForm: React.FC = () => {
         }).catch((error) => {
             if (error.request.status === 403) {
                 navigate('/no_access')
-            } else if (error.request.status === 405) {
-                message.error('موجود است!');
+            } else if (error.request.status === 400) {
+                message.error(' ! موجود است');
             }
         })
     };
@@ -716,12 +751,11 @@ const InputForm: React.FC = () => {
                                                                         <Input
                                                                             placeholder="آیتم مورد نظر را بنویسید"
                                                                             ref={inputRef}
-                                                                            value={name}
-                                                                            onChange={onNameChange}
+                                                                            value={nameCons}
+                                                                            onChange={onNameChangeCons}
                                                                         />
                                                                         <Button type="primary" icon={<PlusOutlined/>}
-                                                                                onClick={addItem}/>
-
+                                                                                onClick={addItemCons}/>
                                                                     </Space>
 
                                                                 </>

@@ -56,7 +56,6 @@ const InputForm: React.FC = () => {
         setProductScale(event.target.value);
     };
 
-
     const fetchData = async () => {
         setLoading(true)
         await axios.get(`${Url}/api/category-list`, {
@@ -232,7 +231,7 @@ const InputForm: React.FC = () => {
 
 
     useEffect(() => {
-            void fetchData()
+             void fetchData()
         },
         // eslint-disable-next-line react-hooks/exhaustive-deps
         [context.office])
@@ -683,7 +682,7 @@ const InputForm: React.FC = () => {
                                                             </>
                                                         )}
                                                         options={listProduct.map((item) => ({
-                                                            label: item.name,
+                                                            label: item.name + ' کد: ' + item.code,
                                                             value: item.code
                                                         }))}
                                                 />

@@ -18,13 +18,14 @@ declare global {
     }
 }
 
+
 const App: React.FC = () => {
     const navigate = useNavigate();
     const [isLogged, setLogged] = useState(false)
     const [loading, setLoading] = useState(true)
-    const [loadingAjax, setLoadingAjax] = useState(false)
+    const [loadingAjax, setLoadingAjax] = useState(true)
     const [fullName, setFullName] = useState('');
-    const [office, setOffice] = useState('');
+    const [office, setOffice] = useState <string>('');
     const [scan, setScan] = useState('');
     const [compress, setCompress] = useState('');
     const [compressed, setCompressed] = useState('');
@@ -46,8 +47,52 @@ const App: React.FC = () => {
     const path = window.location.pathname.split("/").slice(-1)[0]
 
 
+
+     const fetchData = async () => {
+        await axios.get(`${Url}/api/factor_property/?fields=code,jsonData,inventory&inventory=${permission === 'مدیر' ? '' : office }`, {
+            headers: {
+                'Authorization': 'Bearer ' + localStorage.getItem('access_token'),
+            }
+        }).then(response => {
+            return response
+        }).then(async data => {
+            setListPropertyFactor(data.data)
+        }).catch((error) => {
+            if (error.request.status === 403) {
+                navigate('/')
+            }
+        })
+    }
+
     useEffect(() => {
-        (async () => {
+                new Promise(async  resolve => resolve(() => {
+                    if (localStorage.getItem('access_token') !== null) {
+                         setLogged(true);
+                    } else {
+                         navigate('/login');
+                    }
+                })).then(async () => {
+                    if (localStorage.getItem('access_token') !== null) {
+                         setLogged(true);
+                    } else {
+                         navigate('/login');
+                    }
+                }).then(async () => {
+                    if (isLogged) {
+
+                        const {data} = (await axios.get(`${Url}/home/`, {
+                            headers: {
+                                'Authorization': 'Bearer ' + localStorage.getItem('access_token'),
+                            }
+                        }));
+                        setOffice(data.message);
+                    }
+            }).then(() => {
+                 if (isLogged) {
+                    void fetchData()
+                }
+            }).then(async () => {
+              if (isLogged) {
                 await axios.get(`${Url}/permission/`, {
                     headers: {
                         'Authorization': 'Bearer ' + localStorage.getItem('access_token'),
@@ -63,81 +108,22 @@ const App: React.FC = () => {
                         setLogged(false)
                         navigate('/login')
                     }
-                }).finally(() => setLoading(false)
-                )
-        })()
-    }, [navigate]);
-
-
-
-
-    useEffect(() => {
-        if (isLogged) {
-            (async () => {
+                })}}).then(async () => {
+            if (isLogged) {
                 const {data} = (await axios.get(`${Url}/name/`, {
                     headers: {
                         'Authorization': 'Bearer ' + localStorage.getItem('access_token'),
                     }
                 }));
                 setFullName(data.message);
-            })()
-        }
-    }, [isLogged]);
-
-     const fetchData = async () => {
-        setLoading(true)
-        await axios.get(`${Url}/api/factor_property/?fields=code,jsonData,inventory&inventory=${permission === 'مدیر' ? '' : office }`, {
-            headers: {
-                'Authorization': 'Bearer ' + localStorage.getItem('access_token'),
-            }
-        }).then(response => {
-            return response
-        }).then(async data => {
-            setListPropertyFactor(data.data)
-        }).catch((error) => {
-            if (error.request.status === 403) {
-                navigate('/')
-            }
-        }).finally(() => setLoading(false)
-        )
-    }
-
-    useEffect(() => {
-                if (isLogged) {
-                    void fetchData()
+            }}).then(async () => {
+                if (document.readyState === "complete") {
+                    setTimeout(() => setLoading(false), 3000)
                 }
-        },
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-        [isLogged])
-
-
-    useEffect(() => {
-        if (isLogged) {
-            (async () => {
-
-                const {data} = (await axios.get(`${Url}/home/`, {
-                    headers: {
-                        'Authorization': 'Bearer ' + localStorage.getItem('access_token'),
-                    }
-                }));
-                setOffice(data.message);
-            })()
-        }
-    }, [isLogged]);
-
-    useEffect(() => {
-        if (localStorage.getItem('access_token') !== null) {
-            setLogged(true);
-        } else {
-            navigate('/login');
-        }
+            })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isLogged, navigate]);
 
-    useEffect(() => {
-        if (document.readyState === "complete") {
-            setTimeout(() => setLoading(false), 3000)
-        }
-    }, [])
 
 
     if (document.readyState === "complete") {

@@ -390,7 +390,7 @@ const OutputForm: React.FC = () => {
                                                             })
                                                         }}
                                                         options={listProduct.map((item) => ({
-                                                            label: item.name,
+                                                            label: item.name + ' کد: ' + item.code,
                                                             value: item.code
                                                         }))}
                                                 />

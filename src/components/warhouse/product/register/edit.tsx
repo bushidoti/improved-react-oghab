@@ -400,7 +400,7 @@ export const EditDoc = () => {
                                                             })
                                                         }}
                                                         options={listProduct.map((item) => ({
-                                                            label: item.name,
+                                                            label: item.name + ' کد: ' + item.code,
                                                             value: item.code
                                                         }))}
                                                 />
@@ -538,7 +538,7 @@ export const EditDoc = () => {
                                                             })
                                                         }}
                                                         options={listProduct.map((item) => ({
-                                                            label: item.name,
+                                                            label: item.name + ' کد: ' + item.code,
                                                             value: item.code
                                                         }))}
                                                 />

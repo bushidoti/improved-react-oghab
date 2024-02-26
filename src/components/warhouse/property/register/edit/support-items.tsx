@@ -116,8 +116,7 @@ const EditSupportItem = () => {
                            rules={[{required: true}]}>
                     <Input/>
                 </Form.Item>
-                 <Form.Item name={['property', 'document_code']} className='w-[233px] inline-block m-2' label="شناسه فاکتور"
-                           rules={[{required: true}]}>
+                 <Form.Item name={['property', 'document_code']} className='w-[233px] inline-block m-2' label="شناسه فاکتور">
                     <Input/>
                 </Form.Item>
                 <Form.Item name={['property', 'model']} className='w-[233px] inline-block m-2' label="مدل"

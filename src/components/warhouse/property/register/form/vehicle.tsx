@@ -476,7 +476,7 @@ const Vehicle  = () => {
                                                    rules={[{required: true}]}>
                                             <Input/>
                                      </Form.Item>
-                                     <Form.Item name={['property', 'property']} className='w-[233px] inline-block m-2' label="تجهیزات مورد نظر برای ثبت تعمیر"
+                                     <Form.Item name={['property', 'property']} className='w-[350px] inline-block m-2' label="تجهیزات مورد نظر برای ثبت تعمیر"
                                                    rules={[{required: true}]}>
                                             <Select placeholder="انتخاب کنید"
                                                                 optionFilterProp="children"
@@ -484,7 +484,7 @@ const Vehicle  = () => {
                                                                 filterOption={filterOption}
 
                                                                 options={listProperty.map((item) => ({
-                                                                    label: item.name,
+                                                                    label: item.name + ' کد: ' + item.code + ' شماره اموال: ' + item.property_number,
                                                                     value: item.code
                                                                 }))}
                                                         />

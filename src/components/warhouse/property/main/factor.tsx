@@ -164,7 +164,6 @@ const PropertyFactor: React.FC = () => {
                     })
                 }} loading={loading}>دانلود</Button>
                 <Button onClick={generatePDF}>چاپ</Button>
-
             </Space.Compact>
 
             <Image

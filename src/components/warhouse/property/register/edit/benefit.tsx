@@ -107,8 +107,7 @@ const EditBenefit = () => {
                            rules={[{required: true}]}>
                     <Input/>
                 </Form.Item>
-                 <Form.Item name={['property', 'document_code']} className='w-[233px] inline-block m-2' label="شناسه فاکتور"
-                           rules={[{required: true}]}>
+                 <Form.Item name={['property', 'document_code']} className='w-[233px] inline-block m-2' label="شناسه فاکتور">
                     <Input/>
                 </Form.Item>
                <Form.Item name={['property', 'using_location']} className='w-[233px] inline-block m-2' label="محل استفاده"

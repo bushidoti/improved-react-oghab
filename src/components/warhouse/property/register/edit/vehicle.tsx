@@ -1,10 +1,11 @@
 import React, {useContext, useEffect} from 'react';
-import {Button, ConfigProvider, Form, Input, InputNumber, message, Select, Space} from 'antd';
+import {Button, ConfigProvider, Divider, Form, Input, InputNumber, message, Select, Space} from 'antd';
 import axios from "axios";
 import {useNavigate} from "react-router-dom";
 import {Context} from "../../../../../context";
 import Url from "../../../../api-configue";
 import {SendProperty} from "../send";
+import PropertyRepair from "../../main/repair_detail";
 
 
 /* eslint-disable no-template-curly-in-string */
@@ -149,8 +150,7 @@ const EditVehicle  = () => {
                            rules={[{required: true}]}>
                     <Input/>
                 </Form.Item>
-                 <Form.Item name={['property', 'document_code']} className='w-[233px] inline-block m-2' label="شناسه فاکتور"
-                           rules={[{required: true}]}>
+                 <Form.Item name={['property', 'document_code']} className='w-[233px] inline-block m-2' label="شناسه فاکتور">
                     <Input/>
                 </Form.Item>
                 {context.currentPropertyTable === 'هواپیما' ? null :
@@ -187,6 +187,8 @@ const EditVehicle  = () => {
                            rules={[{required: true}]}>
                     <Input/>
                </Form.Item>
+                <Divider>تعمیرات و تغییرات</Divider>
+                <PropertyRepair/>
                 <SendProperty/>
             </Form.Item>
             <Form.Item>

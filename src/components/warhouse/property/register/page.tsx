@@ -33,110 +33,114 @@ import SupportItem from "./form/support-items";
 import Benefit from "./form/benefit";
 import Industrial from "./form/industrial";
 
-const items: MenuProps['items'] = [
-  {
-    label: 'تجهیزات',
-    key: 'equipment',
-    icon: <HomeRepairServiceIcon />,
-    children: [
-         {
-            label: 'تجهیزات فرودگاهی',
-            key: 'تجهیزات فرودگاهی',
-            icon: <AirplaneTicketIcon />,
-          },
-          {
-            label:  'تجهیزات ایمنی',
-            key: 'تجهیزات ایمنی',
-            icon: <HealthAndSafetyIcon />,
-          }
-    ],
-  },
-  {
-    label: 'وسایل نقلیه',
-    key: 'vehicle',
-    icon: <DirectionsCarIcon />,
-    children: [
-         {
-            label: 'خودرو اداری',
-            key: 'خودرو اداری',
-            icon: <DirectionsCarFilledIcon />,
-          },
-          {
-            label: 'خودرو فرودگاهی',
-            key: 'خودرو فرودگاهی',
-            icon: <DirectionsBusFilledIcon />,
-          },
-          {
-            label: 'هواپیما',
-            key: 'هواپیما',
-            icon: <AirplanemodeActiveIcon />,
-          }
-    ],
-  },
-  {
-    label: 'اثاث',
-    key: 'furniture',
-    icon: <EventSeatIcon />,
-    children: [
-         {
-            label: 'اثاثه الکترونیکی',
-            key: 'اثاثه الکترونیکی',
-            icon: <ElectricBoltIcon />,
-         },
-         {
-            label: 'اثاثه اداری',
-            key: 'اثاثه اداری',
-            icon: <LocalPrintshopIcon />,
-         },
-         {
-            label: 'اثاثه تاسیساتی',
-            key: 'اثاثه تاسیساتی',
-            icon: <HeatPumpIcon />,
-         },
-         {
-            label: 'اثاثه فرودگاهی',
-            key: 'اثاثه فرودگاهی',
-            icon: <LivingIcon />,
-         },
-         {
-            label: 'اثاثه دیجیتالی',
-            key: 'اثاثه دیجیتالی',
-            icon: <DevicesIcon />,
-         }
-    ],
-  },
-  {
-    label: 'اموال منقول',
-    key: 'movable',
-    icon: <DevicesOtherIcon />,
-    children: [
-         {
-            label: 'ابزار آلات غیر صنعتی',
-            key: 'ابزار آلات غیر صنعتی',
-            icon: <ConstructionIcon />,
-          },
-          {
-            label: 'ابزار آلات صنعتی',
-            key: 'ابزار آلات صنعتی',
-            icon: <EngineeringIcon />,
-          },
-          {
-            label: 'امتیازات',
-            key: 'امتیازات',
-            icon: <CellWifiIcon />,
-          },
-          {
-            label: 'اقلام پشتیبانی',
-            key: 'اقلام پشتیبانی',
-            icon: <EmojiFoodBeverageIcon />,
-          }
-    ],
-  },
-];
+
 
 const RepairRegister: React.FC = () => {
   const context = useContext(Context)
+  const items: MenuProps['items'] = [
+          {
+            label: 'تجهیزات',
+            key: 'equipment',
+            icon: <HomeRepairServiceIcon />,
+            children: [
+                 {
+                    label: 'تجهیزات فرودگاهی',
+                    key: 'تجهیزات فرودگاهی',
+                    icon: <AirplaneTicketIcon />,
+                  },
+                  {
+                    label:  'تجهیزات ایمنی',
+                    key: 'تجهیزات ایمنی',
+                    icon: <HealthAndSafetyIcon />,
+                  }
+            ],
+          },
+          {
+            label: 'وسایل نقلیه',
+            key: 'vehicle',
+            icon: <DirectionsCarIcon />,
+            children: [
+                 {
+                    label: 'خودرو اداری',
+                    key: 'خودرو اداری',
+                    icon: <DirectionsCarFilledIcon />,
+                  },
+                  {
+                    label: 'خودرو فرودگاهی',
+                    key: 'خودرو فرودگاهی',
+                    icon: <DirectionsBusFilledIcon />,
+                  },
+                  {
+                    label: 'هواپیما',
+                    key: 'هواپیما',
+                    icon: <AirplanemodeActiveIcon />,
+                  }
+            ],
+          },
+          {
+            label: 'اثاث',
+            key: 'furniture',
+            icon: <EventSeatIcon />,
+            children: [
+                 {
+                    label: 'اثاثه الکترونیکی',
+                    key: 'اثاثه الکترونیکی',
+                    icon: <ElectricBoltIcon />,
+                 },
+                 {
+                    label: 'اثاثه اداری',
+                    key: 'اثاثه اداری',
+                    icon: <LocalPrintshopIcon />,
+                 },
+                 {
+                    label: 'اثاثه تاسیساتی',
+                    key: 'اثاثه تاسیساتی',
+                    icon: <HeatPumpIcon />,
+                 },
+                 {
+                    label: 'اثاثه فرودگاهی',
+                    key: 'اثاثه فرودگاهی',
+                    icon: <LivingIcon />,
+                 },
+                 {
+                    label: 'اثاثه دیجیتالی',
+                    key: 'اثاثه دیجیتالی',
+                    icon: <DevicesIcon />,
+                 }
+            ],
+          },
+          {
+            label: 'اموال منقول',
+            key: 'movable',
+            icon: <DevicesOtherIcon />,
+            children: [
+                 {
+                    label: 'ابزار آلات غیر صنعتی',
+                    key: 'ابزار آلات غیر صنعتی',
+                    icon: <ConstructionIcon />,
+                    disabled: context.propertyTab === 'تعمیرات'
+                  },
+                  {
+                    label: 'ابزار آلات صنعتی',
+                    key: 'ابزار آلات صنعتی',
+                    icon: <EngineeringIcon />,
+                  },
+                  {
+                    label: 'امتیازات',
+                    key: 'امتیازات',
+                    icon: <CellWifiIcon />,
+                    disabled: context.propertyTab === 'تعمیرات'
+                  },
+                  {
+                    label: 'اقلام پشتیبانی',
+                    key: 'اقلام پشتیبانی',
+                    icon: <EmojiFoodBeverageIcon />,
+                    disabled: context.propertyTab === 'تعمیرات'
 
+                  }
+            ],
+          },
+        ];
   const onClick: MenuProps['onClick'] = (e) => {
     context.setCurrentPropertyForm(e.key);
   };

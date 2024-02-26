@@ -34,7 +34,6 @@ export default function UploadContract() {
         {value: 'قرارداد', label: 'قرارداد'},
         {value: 'تضامین', label: 'تضامین'},
     ];
-        console.log(scanButton)
 
     const onValuesChange = (changedValues: any, allValues: any) => {
                 if (allValues.document.name) {

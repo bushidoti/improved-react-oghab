@@ -1,5 +1,17 @@
 import React, {useContext, useEffect, useState} from 'react';
-import {Button, ConfigProvider, Form, Image, Input, InputNumber, message, Select, Space} from 'antd';
+import {
+    Button,
+    Checkbox,
+    CheckboxProps,
+    ConfigProvider,
+    Form,
+    Image,
+    Input,
+    InputNumber,
+    message,
+    Select,
+    Space
+} from 'antd';
 import axios from "axios";
 import {useNavigate} from "react-router-dom";
 import {Context} from "../../../../../context";
@@ -21,6 +33,7 @@ const SafetyEquipment  = () => {
     const [autoIncrementFactor, setAutoIncrementFactor] = useState<number>()
     const [visible, setVisible] = useState(false);
     const [listProperty, setListProperty] = useState<any[]>([]);
+    const [noFactor, setNoFactor] = useState<boolean>(false);
 
 
     const subObjAdd = async () => {
@@ -41,7 +54,7 @@ const SafetyEquipment  = () => {
                 context.setPropertyCapsule(oldArray => [...oldArray, {
                 code: form.getFieldValue(['property', 'code']),
                 category: context.currentPropertyForm,
-                factorCode: form.getFieldValue(['property', 'factorCode']),
+                factorCode: noFactor ? form.getFieldValue(['property', 'factorCode']) : null,
                 inventory: context.office,
                 name: form.getFieldValue(['property', 'name']),
                 property_number: form.getFieldValue(['property', 'property_number']),
@@ -68,8 +81,9 @@ const SafetyEquipment  = () => {
 
      const onFinish = async () => {
         if (context.propertyTab === 'ثبت اولیه / خرید'){
-                context.setLoadingAjax(true)
-                await axios.post(
+                  context.setLoadingAjax(true)
+            if (noFactor){
+                 await axios.post(
                     `${Url}/api/factor_property/`, {
                                 code: form.getFieldValue(['property','factorCode']),
                                 inventory: context.office,
@@ -136,6 +150,32 @@ const SafetyEquipment  = () => {
                    }
                })
            })
+         }else {
+               await axios.post(
+                   `${Url}/api/property/`, context.propertyCapsule,  {
+                       headers: {
+                           'Authorization': 'Bearer ' + localStorage.getItem('access_token'),
+                       }
+                   }).then(response => {
+                   return response
+               }).then(async data => {
+                   if (data.status === 201) {
+                       message.success('ثبت شد');
+                       await handleResetSubmit()
+                       await fetchData()
+                       context.setPropertyCapsule(() => [])
+                       context.setLoadingAjax(false)
+                   }
+               }).catch(async (error) => {
+                   if (error.request.status === 403) {
+                       navigate('/no_access')
+                   } else if (error.request.status === 400) {
+                       message.error('عدم ثبت');
+                       context.setLoadingAjax(false)
+                       await handleResetSubmit()
+                   }
+               })
+          }
         }else if (context.propertyTab === 'تعمیرات') {
             context.setLoadingAjax(true)
                 await axios.post(
@@ -208,6 +248,10 @@ const SafetyEquipment  = () => {
         }
     };
 
+
+    const onChange: CheckboxProps['onChange'] = (e) => {
+        setNoFactor(e.target.checked)
+    };
 
     const handleResetSubmit = async () => {
         form.resetFields()
@@ -291,13 +335,20 @@ const SafetyEquipment  = () => {
                 if (context.propertyTab === 'ثبت اولیه / خرید'){
                     return (
                           <>
+                              <Form.Item>
+                       <Form.Item className='inline-block m-2' label=" ">
+                            <Checkbox className='text-red-700' onChange={onChange}>فاکتور دارد</Checkbox>
+                       </Form.Item>
+                    </Form.Item>
                             <Form.Item>
                  <Form.Item name={['property', 'code']} className='w-[233px] m-2 inline-block' label="شماره ثبت">
                     <InputNumber className='w-[233px]' disabled/>
                  </Form.Item>
-                 <Form.Item name={['property', 'factorCode']} className='w-[233px] m-2 inline-block' label="شماره ثبت سیستم فاکتور">
-                        <InputNumber className='w-[233px]' disabled/>
-                 </Form.Item>
+                 {noFactor ?
+                           <Form.Item name={['property', 'factorCode']} className='w-[233px] m-2 inline-block' label="شماره ثبت سیستم فاکتور">
+                                <InputNumber className='w-[233px]' disabled/>
+                           </Form.Item>
+                  : null}
             </Form.Item>
             <Form.Item>
                   <Form.Item name={['property', 'name']} className='w-[233px] inline-block m-2' label="نام تجهیزات"
@@ -308,10 +359,12 @@ const SafetyEquipment  = () => {
                            rules={[{required: true}]}>
                     <Input/>
                 </Form.Item>
-                 <Form.Item name={['property', 'document_code']} className='w-[233px] inline-block m-2' label="شناسه فاکتور"
+                 {noFactor ?
+                     <Form.Item name={['property', 'document_code']} className='w-[233px] inline-block m-2' label="شناسه فاکتور"
                            rules={[{required: true}]}>
-                    <Input/>
-                </Form.Item>
+                        <Input/>
+                     </Form.Item>
+                 : null}
                 <Form.Item name={['property', 'use_for']} className='w-[233px] inline-block m-2' label="مورد استفاده"
                            rules={[{required: true}]}>
                     <Input/>
@@ -324,22 +377,24 @@ const SafetyEquipment  = () => {
                            rules={[{required: true}]}>
                     <Input/>
                </Form.Item>
-                <Form.Item style={{margin: 8, display: 'inline-block'}} label="فایل">
-                    <Space.Compact>
-                        <ConfigProvider theme={{
-                            components: {
-                                Button: {
-                                    groupBorderColor: '#faad14',
+                {noFactor ?
+                    <Form.Item style={{margin: 8, display: 'inline-block'}} label="فایل فاکتور">
+                        <Space.Compact>
+                            <ConfigProvider theme={{
+                                components: {
+                                    Button: {
+                                        groupBorderColor: '#faad14',
+                                    }
+                                }, token: {
+                                    colorPrimary: '#faad14',
                                 }
-                            }, token: {
-                                colorPrimary: '#faad14',
-                            }
-                        }}>
-                            <Button type={"primary"} onClick={scanImage} loading={context.loadingAjax}>اسکن</Button>
-                        </ConfigProvider>
-                        <Button type={"primary"} onClick={() => setVisible(true)}>پیش نمایش</Button>
-                    </Space.Compact>
-                </Form.Item>
+                            }}>
+                                <Button type={"primary"} onClick={scanImage} loading={context.loadingAjax}>اسکن</Button>
+                            </ConfigProvider>
+                            <Button type={"primary"} onClick={() => setVisible(true)}>پیش نمایش</Button>
+                        </Space.Compact>
+                    </Form.Item>
+                : null}
             </Form.Item>
 
                 </>

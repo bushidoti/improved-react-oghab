@@ -23,7 +23,7 @@ const App: React.FC = () => {
     const navigate = useNavigate();
     const [isLogged, setLogged] = useState(false)
     const [loading, setLoading] = useState(true)
-    const [loadingAjax, setLoadingAjax] = useState(true)
+    const [loadingAjax, setLoadingAjax] = useState(false)
     const [fullName, setFullName] = useState('');
     const [office, setOffice] = useState <string>('');
     const [scan, setScan] = useState('');

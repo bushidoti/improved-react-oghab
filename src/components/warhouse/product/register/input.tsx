@@ -274,7 +274,6 @@ const InputForm: React.FC = () => {
 
     const handleResetSubmit = async () => {
         form.resetFields()
-        setAutoOut(false)
         await fetchData()
     }
     const onChange: CheckboxProps['onChange'] = (e) => {
@@ -411,7 +410,6 @@ const InputForm: React.FC = () => {
                         [i]: {
                             afterOperator: form.getFieldValue(['products'])[i].afterOperator - form.getFieldValue(['products'])[i].input,
                             output : form.getFieldValue(['products'])[i].input,
-                            document_type : 'حواله',
                             input : null,
                             buyer : '',
                             seller : '',
@@ -433,12 +431,12 @@ const InputForm: React.FC = () => {
                                                           date: string;
                                                       }) => {
                 obj.document_code = form.getFieldValue(['document_code'])
-                obj.document_type = form.getFieldValue(['document_type'])
                 obj.receiver = form.getFieldValue(['receiver'])
                 obj.systemID = form.getFieldValue(['CheckID'])
                 obj.checkCode = form.getFieldValue(['CheckID'])
                 obj.factorCode = null
                 obj.operator = 'خروج'
+                obj.document_type = 'حواله'
                 obj.date = dayjs().locale('fa').format('YYYY-MM-DD')
                 return obj;
             })

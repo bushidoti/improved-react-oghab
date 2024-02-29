@@ -93,17 +93,17 @@ export const MenuLayout = () => {
         ]),
         getItem(<Link to='../warhouse/handling'>انبارگردانی</Link>, '/warhouse/handling')
     ] , !(context.permission === 'مدیر' || context.permission === 'انباردار')),
-    getItem(<Link to='https://www.oghab-asaluyeh.ir/scanner.zip'>دانلود اسکنر</Link>, '21', <DownloadOutlined/>,undefined,undefined),
+    getItem(<a href='https://www.oghab-asaluyeh.ir/scanner.zip'>دانلود اسکنر</a>, '21', <DownloadOutlined/>,undefined,undefined),
     getItem(<Link to='../logout'>خروج</Link>, '22', <PoweroffOutlined/>,undefined,undefined,true),
 ];
     return (
          <Menu
-                theme="dark"
-                defaultSelectedKeys={[window.location.pathname]}
-                mode="inline"
-                items={items}
-                openKeys={openKeys}
-                onOpenChange={onOpenChange}
-            />
+            theme="dark"
+            defaultSelectedKeys={[window.location.pathname]}
+            mode="inline"
+            items={items}
+            openKeys={openKeys}
+            onOpenChange={onOpenChange}
+         />
     )
 }

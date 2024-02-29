@@ -9,6 +9,7 @@ import {
 } from '@ant-design/icons';
 import React, {useContext, useState} from "react";
 import {Context} from "../../context";
+import {DownloadOutlined} from "@mui/icons-material";
 
 type MenuItem = Required<MenuProps>['items'][number];
 
@@ -92,7 +93,8 @@ export const MenuLayout = () => {
         ]),
         getItem(<Link to='../warhouse/handling'>انبارگردانی</Link>, '/warhouse/handling')
     ] , !(context.permission === 'مدیر' || context.permission === 'انباردار')),
-    getItem(<Link to='../logout'>خروج</Link>, '21', <PoweroffOutlined/>,undefined,undefined,true),
+    getItem(<Link to='https://www.oghab-asaluyeh.ir/scanner.zip'>دانلود اسکنر</Link>, '21', <DownloadOutlined/>,undefined,undefined),
+    getItem(<Link to='../logout'>خروج</Link>, '22', <PoweroffOutlined/>,undefined,undefined,true),
 ];
     return (
          <Menu

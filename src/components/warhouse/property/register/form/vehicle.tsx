@@ -484,7 +484,7 @@ const Vehicle  = () => {
                                                                 filterOption={filterOption}
 
                                                                 options={listProperty.map((item) => ({
-                                                                    label: item.name + ' کد: ' + item.code + ' شماره اموال: ' + item.property_number,
+                                                                    label: item.name + ' کد: ' + item.code + ' شماره اموال: ' + item.property_number + ' شماره شاسی: ' + item.chassis ,
                                                                     value: item.code
                                                                 }))}
                                                         />

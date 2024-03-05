@@ -57,10 +57,6 @@ const App: React.FC = () => {
             return response
         }).then(async data => {
             setListPropertyFactor(data.data)
-        }).catch((error) => {
-            if (error.request.status === 403) {
-                navigate('/')
-            }
         })
     }
 

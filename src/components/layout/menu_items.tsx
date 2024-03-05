@@ -63,27 +63,27 @@ export const MenuLayout = () => {
         getItem(<Link to='../contract'>قراردادها</Link>, '/contract', null, [
             getItem(<Link to='../contract/register'>ثبت</Link>, '/contract/register'),
             getItem(<Link to='../contract/report'>گزارش</Link>, '/contract/report'),
-            getItem(<Link to='../contract/upload'>باگذاری</Link>, '/contract/upload'),
+            getItem(<Link to='../contract/upload'>بارگذاری</Link>, '/contract/upload'),
         ]),
 
         getItem(<Link to='../personal'>مدارک اشخاص</Link>, '/personal', null, [
             getItem(<Link to='../personal/register'>ثبت</Link>, '/personal/register'),
             getItem(<Link to='../personal/report'>گزارش</Link>, '/personal/report'),
-            getItem(<Link to='../personal/upload'>باگذاری</Link>, '/personal/upload'),
+            getItem(<Link to='../personal/upload'>بارگذاری</Link>, '/personal/upload'),
         ]),
     ], !(context.permission === 'مدیر' || context.permission === 'اداری' || context.permission === 'مدیر اداری' || context.permission === 'مشاهده')),
 
     getItem('مدیریت اسناد', 'sub4', <FileOutlined/>, [
         getItem(<Link to='../document/register'>ثبت اسناد اموال</Link>, '/document/register'),
         getItem(<Link to='../document/report'>گزارش اسناد</Link>, '/document/report'),
-        getItem(<Link to='../document/upload'>باگذاری اسناد</Link>, '/document/upload')
+        getItem(<Link to='../document/upload'>بارگذاری اسناد</Link>, '/document/upload')
     ],!(context.permission === 'مدیر' || context.permission === 'اداری' || context.permission === 'مدیر اداری' || context.permission === 'مشاهده')),
 
     getItem('انبارداری', 'sub5', <BarChartOutlined/>, [
         getItem(<Link to='../warhouse/product'>انبار</Link>, '/warhouse/product', null, [
             getItem(<Link to='../warhouse/product/register'>ثبت</Link>, '/warhouse/product/register'),
             getItem(<Link to='../warhouse/product/report'>گزارش</Link>, '/warhouse/product/report'),
-            getItem(<Link to='../warhouse/product/upload'>بارگزاری مدارک</Link>, '/warhouse/product/upload'),
+            getItem(<Link to='../warhouse/product/upload'>بارگذاری مدارک</Link>, '/warhouse/product/upload'),
         ]),
         getItem(<Link to='../warhouse/property'>اموال</Link>, '/warhouse/property', null, [
             getItem(<Link to='../warhouse/property/register'>ثبت</Link>, '/warhouse/property/register'),

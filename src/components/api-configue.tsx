@@ -1,2 +1,2 @@
-const Url = "http://127.0.0.1:8000"
+const Url = "https://api.oghab-asaluyeh.ir"
 export default Url

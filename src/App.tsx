@@ -45,6 +45,7 @@ const App: React.FC = () => {
     const [propertyTab, setPropertyTab] = useState<string>('ثبت اولیه / خرید');
     const [listPropertyFactor, setListPropertyFactor] = useState<any>([]);
     const path = window.location.pathname.split("/").slice(-1)[0]
+    const [permissionD, setPermissionD] = useState<[]>([]);
 
 
 
@@ -57,8 +58,13 @@ const App: React.FC = () => {
             return response
         }).then(async data => {
             setListPropertyFactor(data.data)
-        })
+        }).catch((error) => {
+                    if (error.request.status === 403) {
+                        console.warn('دسترسی ندارید')
+                    }
+                })
     }
+
 
     useEffect(() => {
                 new Promise(async  resolve => resolve(() => {
@@ -97,6 +103,23 @@ const App: React.FC = () => {
                     return response
                 }).then(async data => {
                     setPermission(data.data.message);
+                }).catch((error) => {
+                    if (error.request.status === 401) {
+                        localStorage.removeItem("access_token");
+                        localStorage.removeItem("refresh_token");
+                        setLogged(false)
+                        navigate('/login')
+                    }
+                })}}).then(async () => {
+              if (isLogged) {
+                await axios.get(`${Url}/permission_detailed/`, {
+                    headers: {
+                        'Authorization': 'Bearer ' + localStorage.getItem('access_token'),
+                    }
+                }).then(response => {
+                    return response
+                }).then(async data => {
+                    setPermissionD(data.data.content);
                 }).catch((error) => {
                     if (error.request.status === 401) {
                         localStorage.removeItem("access_token");
@@ -211,6 +234,7 @@ const App: React.FC = () => {
                     setCurrentPropertyTable,
                     setCompressed,
                     currentPropertyTable,
+                    permissionD,
                     currentPropertyForm,
                     setCurrentPropertyForm,
                     currentProductFactor,

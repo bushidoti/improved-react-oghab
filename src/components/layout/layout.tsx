@@ -2,7 +2,7 @@ import {
    UserOutlined,
 } from '@ant-design/icons';
 import {Avatar, Layout} from 'antd';
-import React, {useContext} from "react";
+import React, {useContext, useState} from "react";
 import {Context} from "../../context";
 import {MenuLayout} from "./menu_items";
 import {RouteLayout} from "./route";
@@ -14,10 +14,20 @@ const {Content, Footer, Sider} = Layout;
 
 const LayoutForm: React.FC = () => {
     const context = useContext(Context)
+    const [siderW , setSiderW] = useState<number>()
+    const [breakP , setBreakP] = useState<boolean>()
 
     return (
         <Layout>
-              <Sider breakpoint="xl" collapsedWidth="0">
+              <Sider breakpoint="xl" width={siderW}  className={breakP ? '!fixed !z-[99] ! h-[100vh]' : ''} collapsedWidth={0} onBreakpoint={broken => {
+                  if (broken) {
+                      setSiderW(300)
+                      setBreakP(true)
+                  }else {
+                      setSiderW(200)
+                      setBreakP(false)
+                  }
+              }}>
                 <div className='flex flex-col items-center m-5'>
                     <Avatar className='bg-sky-500' size={100} icon={<UserOutlined />} />
                     <p className='text-gray-50'>{context.fullName}</p>

@@ -68,13 +68,13 @@ const App: React.FC = () => {
 
     useEffect(() => {
                 new Promise(async  resolve => resolve(() => {
-                    if (localStorage.getItem('access_token') !== null) {
+                    if (localStorage.getItem('access_token') != null) {
                          setLogged(true);
                     } else {
                          navigate('/login');
                     }
                 })).then(async () => {
-                    if (localStorage.getItem('access_token') !== null) {
+                    if (localStorage.getItem('access_token') != null) {
                          setLogged(true);
                     } else {
                          navigate('/login');
@@ -89,7 +89,16 @@ const App: React.FC = () => {
                         }));
                         setOffice(data.message);
                     }
-            }).then(() => {
+            }).catch((error) => {
+                    if (error.request.status === 401) {
+                        localStorage.removeItem("access_token");
+                        localStorage.removeItem("refresh_token");
+                        setLogged(false)
+                        navigate('/login')
+                        console.warn('دسترسی ندارید')
+
+                    }
+                }).then(() => {
                  if (isLogged) {
                     void fetchData()
                 }
@@ -109,6 +118,8 @@ const App: React.FC = () => {
                         localStorage.removeItem("refresh_token");
                         setLogged(false)
                         navigate('/login')
+                        console.warn('دسترسی ندارید')
+
                     }
                 })}}).then(async () => {
               if (isLogged) {

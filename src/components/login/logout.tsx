@@ -17,7 +17,8 @@ export const Logout = () => {
                         'Content-Type': 'application/json'
                     }
                 }).then(() => {
-                        localStorage.clear();
+                        localStorage.removeItem("access_token");
+                        localStorage.removeItem("refresh_token");
                         axios.defaults.headers.common['Authorization'] = null;
                     }
                 ).finally(() => {

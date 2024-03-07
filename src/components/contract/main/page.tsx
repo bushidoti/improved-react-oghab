@@ -269,12 +269,46 @@ const MainContract: React.FC = () => {
 
 
      const columns: ColumnsType<DataType> = [
-        {
+         {
+            align: "center",
+            title: 'نام و نشانی',
+            fixed: 'left',
+            dataIndex: 'name',
+            width: '7%',
+             ellipsis: {
+              showTitle: false,
+            },
+            key: 'name',
+            ...getColumnSearchProps('name'),
+            filteredValue: filteredInfo.name || null,
+            render: (_value, record) =>
+              <Tooltip placement="topLeft" title={record.name}>
+                <Button type={"link"} onClick={() => {
+                context.setCurrentContract(record.id)
+                navigate(`/contract/edit/${record.id}`)
+            }}>{record.name}</Button>
+              </Tooltip>,
+        }, {
+            align: "center",
+            title: 'شماره قرارداد',
+            width: '6.30%',
+            dataIndex: 'contractNumber',
+            key: 'contractNumber',
+             ellipsis: {
+              showTitle: false,
+            },
+            filteredValue: filteredInfo.contractNumber || null,
+            ...getColumnSearchProps('contractNumber'),
+             render: (_value, record) => (
+              <Tooltip placement="topLeft" title={record.contractNumber}>
+                {record.contractNumber}
+              </Tooltip>
+            ),
+        },{
             align: "center",
             title: 'شماره ثبت',
             dataIndex: 'id',
             width: '6.30%',
-            fixed: 'left',
             key: 'id',
             ...getColumnSearchProps('id'),
             sorter: (a, b) => a.id - b.id,
@@ -298,7 +332,6 @@ const MainContract: React.FC = () => {
         }, {
             align: "center",
             title: 'فرم',
-            fixed: 'left',
             dataIndex: 'type_form',
             width: '5%',
             key: 'type_form',
@@ -314,42 +347,6 @@ const MainContract: React.FC = () => {
             filteredValue: filteredInfo.type_form || null,
             onFilter: (value, record) => record.type_form === value,
 
-        }, {
-            align: "center",
-            title: 'نام و نشانی',
-            fixed: 'left',
-            dataIndex: 'name',
-            width: '7%',
-             ellipsis: {
-              showTitle: false,
-            },
-            key: 'name',
-            ...getColumnSearchProps('name'),
-            filteredValue: filteredInfo.name || null,
-            render: (_value, record) =>
-              <Tooltip placement="topLeft" title={record.name}>
-                <Button type={"link"} onClick={() => {
-                context.setCurrentContract(record.id)
-                navigate(`/contract/edit/${record.id}`)
-            }}>{record.name}</Button>
-              </Tooltip>,
-
-        }, {
-            align: "center",
-            title: 'شماره قرارداد',
-            width: '6.30%',
-            dataIndex: 'contractNumber',
-            key: 'contractNumber',
-             ellipsis: {
-              showTitle: false,
-            },
-            filteredValue: filteredInfo.contractNumber || null,
-            ...getColumnSearchProps('contractNumber'),
-             render: (_value, record) => (
-              <Tooltip placement="topLeft" title={record.contractNumber}>
-                {record.contractNumber}
-              </Tooltip>
-            ),
         }, {
             align: "center",
             title: 'تاریخ قرارداد',

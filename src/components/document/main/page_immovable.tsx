@@ -213,12 +213,24 @@ const MainImmovable: React.FC = () => {
 
 
     const columns: ColumnsType<DataType> = [
-        {
+         {
+            align: "center",
+            title: 'نام',
+            fixed: 'left',
+            dataIndex: 'name',
+            width: '4%',
+            key: 'name',
+            ...getColumnSearchProps('name'),
+            filteredValue: filteredInfo.name || null,
+            render: (_value, record) => <Button type={"link"} onClick={() => {
+                context.setCurrentDocProperty(record.id)
+                navigate(`/document/immovable/edit/${record.id}`)
+            }}>{record.name}</Button>,
+        }, {
             align: "center",
             title: 'شماره ثبت',
             dataIndex: 'id',
-            width: '4%',
-            fixed: 'left',
+            width: '3%',
             key: 'id',
             ...getColumnSearchProps('id'),
             sorter: (a, b) => a.id - b.id,
@@ -242,7 +254,6 @@ const MainImmovable: React.FC = () => {
         }, {
             align: "center",
             title: 'نوع ملک',
-            fixed: 'left',
             dataIndex: 'typeEstate',
             width: '4%',
             key: 'typeEstate',
@@ -258,20 +269,7 @@ const MainImmovable: React.FC = () => {
             filteredValue: filteredInfo.typeEstate || null,
             onFilter: (value, record) => record.typeEstate === value,
 
-        }, {
-            align: "center",
-            title: 'نام دستگاه',
-            fixed: 'left',
-            dataIndex: 'name',
-            width: '4%',
-            key: 'name',
-            ...getColumnSearchProps('name'),
-            filteredValue: filteredInfo.name || null,
-            render: (_value, record) => <Button type={"link"} onClick={() => {
-                context.setCurrentDocProperty(record.id)
-                navigate(`/document/immovable/edit/${record.id}`)
-            }}>{record.name}</Button>,
-        }, {
+        },{
             align: "center",
             title: 'شماره سند',
             width: '4%',
@@ -334,7 +332,7 @@ const MainImmovable: React.FC = () => {
         }, {
             align: "center",
             title: 'محل',
-            width: '4%',
+            width: '3%',
             fixed: 'right',
             dataIndex: 'location',
             key: 'location',

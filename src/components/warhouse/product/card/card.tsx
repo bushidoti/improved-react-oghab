@@ -253,26 +253,11 @@ const Card: React.FC = () => {
     });
 
     const columns: ColumnsType<DataType> = [
-        {
-            align: "center",
-            title: 'ردیف',
-            dataIndex: 'index',
-            fixed: "left",
-            width: '4.88%',
-            key: 'index',
-            render: (_value, _record, index) => index + 1,
-        }, {
-            align: "center",
-            title: 'نوع سند',
-            dataIndex: 'document_type',
-            width: '5%',
-            key: 'document_type',
-            ...getColumnSearchProps('document_type'),
-            filteredValue: filteredInfo.document_type || null,
-        }, {
+         {
             align: "center",
             title: 'شماره ثبت سیستم',
             dataIndex: 'systemID',
+            fixed: "left",
             width: '5%',
             key: 'systemID',
             render: (_value, record) => <Button type={"link"} onClick={() => {
@@ -285,6 +270,21 @@ const Card: React.FC = () => {
                 navigate(`/warhouse/product/editDoc/${record.document_type}/${record.systemID}`)
             }}>{record.systemID}</Button>,
         }, {
+            align: "center",
+            title: 'ردیف',
+            dataIndex: 'index',
+            width: '4.88%',
+            key: 'index',
+            render: (_value, _record, index) => index + 1,
+        }, {
+            align: "center",
+            title: 'نوع سند',
+            dataIndex: 'document_type',
+            width: '5%',
+            key: 'document_type',
+            ...getColumnSearchProps('document_type'),
+            filteredValue: filteredInfo.document_type || null,
+        },{
             align: "center",
             title: 'شناسه سند',
             dataIndex: 'document_code',

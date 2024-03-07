@@ -302,19 +302,10 @@ const ReportProduct: React.FC = () => {
             title: 'ردیف',
             dataIndex: 'index',
             fixed: "left",
-            width: '4.88%',
+            width: '3%',
             key: 'index',
             render: (_value, _record, index) => index + 1,
-        }, {
-            align: "center",
-            title: 'کد کالا',
-            dataIndex: 'product',
-            fixed: "left",
-            width: '4.88%',
-            key: 'product_contain',
-            ...getColumnSearchProps('product'),
-            filteredValue: filteredInfo.product_contain || null,
-        }, {
+        },{
             align: "center",
             title: 'نام کالا',
             dataIndex: 'name',
@@ -324,6 +315,14 @@ const ReportProduct: React.FC = () => {
             ...getColumnSearchProps('name'),
             filteredValue: filteredInfo.name || null,
         }, {
+            align: "center",
+            title: 'کد کالا',
+            dataIndex: 'product',
+            width: '4.88%',
+            key: 'product_contain',
+            ...getColumnSearchProps('product'),
+            filteredValue: filteredInfo.product_contain || null,
+        },{
             align: "center",
             title: 'گروه',
             dataIndex: 'category',

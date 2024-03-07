@@ -269,10 +269,32 @@ const MainPersonal: React.FC = () => {
     const columns: ColumnsType<DataType> = [
         {
             align: "center",
+            title: 'نام و نشانی',
+            fixed: 'left',
+            dataIndex: 'full_name',
+            width: '7%',
+            key: 'full_name',
+            ...getColumnSearchProps('full_name'),
+            filteredValue: filteredInfo.full_name || null,
+            render: (_value, record) => <Button type={"link"} onClick={() => {
+                context.setCurrentPersonal(record.id)
+                navigate(`/personal/edit/${record.id}`)
+            }}>{record.full_name}</Button>,
+
+        }, {
+            align: "center",
+            title: 'شماره پرونده',
+            width: '4.55%',
+            dataIndex: 'caseNumber',
+            key: 'caseNumber',
+            filteredValue: filteredInfo.caseNumber || null,
+            ...getColumnSearchProps('caseNumber'),
+
+        },{
+            align: "center",
             title: 'شماره ثبت',
             dataIndex: 'id',
             width: '4.88%',
-            fixed: 'left',
             key: 'id',
             ...getColumnSearchProps('id'),
             sorter: (a, b) => a.id - b.id,
@@ -302,7 +324,6 @@ const MainPersonal: React.FC = () => {
         }, {
             align: "center",
             title: 'وضعیت',
-            fixed: 'left',
             dataIndex: 'type',
             width: '5%',
             key: 'type',
@@ -317,29 +338,6 @@ const MainPersonal: React.FC = () => {
             ],
             filteredValue: filteredInfo.type || null,
             onFilter: (value, record) => record.type === value,
-
-        }, {
-            align: "center",
-            title: 'نام و نشانی',
-            fixed: 'left',
-            dataIndex: 'full_name',
-            width: '7%',
-            key: 'full_name',
-            ...getColumnSearchProps('full_name'),
-            filteredValue: filteredInfo.full_name || null,
-            render: (_value, record) => <Button type={"link"} onClick={() => {
-                context.setCurrentPersonal(record.id)
-                navigate(`/personal/edit/${record.id}`)
-            }}>{record.full_name}</Button>,
-
-        }, {
-            align: "center",
-            title: 'شماره پرونده',
-            width: '4.55%',
-            dataIndex: 'caseNumber',
-            key: 'caseNumber',
-            filteredValue: filteredInfo.caseNumber || null,
-            ...getColumnSearchProps('caseNumber'),
 
         }, {
             align: "center",

@@ -228,9 +228,17 @@ const VehicleTable: React.FC = () => {
     const columns: ColumnsType<DataType> = [
         {
             align: "center",
+            title: 'نام اموال',
+            dataIndex: 'name',
+            fixed: "left",
+            width: '3%',
+            key: 'name',
+            ...getColumnSearchProps('name'),
+            filteredValue: filteredInfo.name || null,
+        },{
+            align: "center",
             title: 'ردیف',
             dataIndex: 'index',
-            fixed: "left",
             width: '3%',
             key: 'index',
              render: (_value, record, index) =>
@@ -261,7 +269,6 @@ const VehicleTable: React.FC = () => {
             align: "center",
             title: 'کد اموال',
             dataIndex: 'code',
-            fixed: "left",
             width: '3%',
             key: 'code',
             ...getColumnSearchProps('code'),
@@ -270,15 +277,6 @@ const VehicleTable: React.FC = () => {
                 context.setCurrentProperty(record.code)
                 navigate(`/warhouse/property/vehicle/edit/${record.code}`)
              }}>{record.code}</Button>,
-        }, {
-            align: "center",
-            title: 'نام اموال',
-            dataIndex: 'name',
-            fixed: "left",
-            width: '3%',
-            key: 'name',
-            ...getColumnSearchProps('name'),
-            filteredValue: filteredInfo.name || null,
         }, {
             align: "center",
             title: 'دسته',

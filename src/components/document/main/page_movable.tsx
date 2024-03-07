@@ -232,12 +232,24 @@ const MainMovable: React.FC = () => {
 
 
     const columns: ColumnsType<DataType> = [
-        {
+         {
+            align: "center",
+            title: 'نام دستگاه',
+            fixed: 'left',
+            dataIndex: 'name',
+            width: '7%',
+            key: 'name',
+            ...getColumnSearchProps('name'),
+            filteredValue: filteredInfo.name || null,
+            render: (_value, record) => <Button type={"link"} onClick={() => {
+                context.setCurrentDocProperty(record.id)
+                navigate(`/document/movable/edit/${record.id}`)
+            }}>{record.name}</Button>,
+        }, {
             align: "center",
             title: 'شماره ثبت',
             dataIndex: 'id',
             width: '6.30%',
-            fixed: 'left',
             key: 'id',
             ...getColumnSearchProps('id'),
             sorter: (a, b) => a.id - b.id,
@@ -261,7 +273,6 @@ const MainMovable: React.FC = () => {
         }, {
             align: "center",
             title: 'نوع خودرو',
-            fixed: 'left',
             dataIndex: 'typeVehicle',
             width: '5%',
             key: 'typeVehicle',
@@ -277,20 +288,7 @@ const MainMovable: React.FC = () => {
             filteredValue: filteredInfo.typeVehicle || null,
             onFilter: (value, record) => record.typeVehicle === value,
 
-        }, {
-            align: "center",
-            title: 'نام دستگاه',
-            fixed: 'left',
-            dataIndex: 'name',
-            width: '7%',
-            key: 'name',
-            ...getColumnSearchProps('name'),
-            filteredValue: filteredInfo.name || null,
-            render: (_value, record) => <Button type={"link"} onClick={() => {
-                context.setCurrentDocProperty(record.id)
-                navigate(`/document/movable/edit/${record.id}`)
-            }}>{record.name}</Button>,
-        }, {
+        },{
             align: "center",
             title: 'شماره سند',
             width: '6.30%',

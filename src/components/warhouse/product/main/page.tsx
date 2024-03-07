@@ -213,6 +213,7 @@ const MainProduct: React.FC = () => {
             align: "center",
             title: 'کد کالا',
             dataIndex: 'code',
+            fixed: "left",
             width: '4.88%',
             key: 'code',
             ...getColumnSearchProps('code'),
@@ -224,6 +225,7 @@ const MainProduct: React.FC = () => {
             align: "center",
             title: 'نام کالا',
             dataIndex: 'name',
+            fixed: "left",
             ellipsis: true,
             width: '7%',
             key: 'name',
@@ -271,6 +273,7 @@ const MainProduct: React.FC = () => {
             align: "center",
             title: 'انبار',
             width: '4.55%',
+            fixed: "right",
             dataIndex: 'inventory',
             key: 'inventory',
             filters: [
@@ -330,7 +333,7 @@ const MainProduct: React.FC = () => {
                 columns={columns}
                 dataSource={product?.results}
                 tableLayout={"fixed"}
-                scroll={{y: '60vh'}}
+                scroll={{x: 1000, y: '60vh'}}
                 rowKey="code"
                 onChange={handleChange}
                 loading={loading}

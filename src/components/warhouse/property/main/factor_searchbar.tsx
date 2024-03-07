@@ -17,7 +17,7 @@ const FactorSearchBar = () => {
                             onChange={value => context.setCurrentPropertyFactor(value)}
                             filterOption={filterOption}
                             options={context.listPropertyFactor.map((item:any) => ({
-                                label: ' کد سیستم ' + item.code +   ' شناسه فاکتور '  + item.jsonData[0].document_code + ' انبار ' + item.inventory,
+                                label: ' کد سیستم ' + item.code +   ' شناسه فاکتور '  + item.jsonData[0]?.document_code + ' انبار ' + item.inventory,
                                 value: item.code
                             }))}
                     />

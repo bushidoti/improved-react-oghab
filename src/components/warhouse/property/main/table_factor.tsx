@@ -19,7 +19,7 @@ const TableFactorPrint = (props: { componentPDF: React.LegacyRef<HTMLTableElemen
                 <thead>
                 <tr>
                     <td colSpan={4} className='td'>
-                        {`فاکتور با کد سیستم ${props.Factor.code} و شماره فاکتور ${props.Factor.jsonData[0].document_code} در انبار ${props.Factor.inventory} ثبت شده است. `}
+                        {`فاکتور با کد سیستم ${props.Factor.code} و شماره فاکتور ${props.Factor.jsonData[0]?.document_code} در انبار ${props.Factor.inventory} ثبت شده است. `}
                     </td>
                 </tr>
                  {props.Factor.factor_type === 'ثبت اولیه / خرید' ?

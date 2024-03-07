@@ -253,20 +253,7 @@ const DigitalFurnitureTable: React.FC = () => {
                         }
                     })()}
                 </>
-        }, {
-            align: "center",
-            title: 'کد اموال',
-            dataIndex: 'code',
-            fixed: "left",
-            width: '3%',
-            key: 'code',
-            ...getColumnSearchProps('code'),
-            filteredValue: filteredInfo.code || null,
-            render: (_value, record) => <Button disabled={record.movement_status === 'ارسال شده'} type={"link"} onClick={() => {
-                context.setCurrentProperty(record.code)
-                navigate(`/warhouse/property/digital-furniture/edit/${record.code}`)
-             }}>{record.code}</Button>,
-        }, {
+        },{
             align: "center",
             title: 'نام اموال',
             dataIndex: 'name',

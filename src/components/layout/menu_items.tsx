@@ -93,7 +93,6 @@ export const MenuLayout = () => {
             getItem(<Link to='../warhouse/property/sent'>ارسالی</Link>, '/warhouse/property/sent'),
             getItem(<Link to='../warhouse/property/upload' style={!['Can change property'].some((element: any) => context.permissionD.includes(element)) ? {pointerEvents:'none'} : {}}>بارگذاری فاکتور</Link>, '/warhouse/property/upload',undefined,undefined,!['Can change property'].some((element: any) => context.permissionD.includes(element))),
         ]),
-        getItem(<Link to='../warhouse/handling'>انبارگردانی</Link>, '/warhouse/handling')
     ] , !['Can view property', 'Can view product'].some((element: any) => context.permissionD.includes(element))),
     getItem(<a href='https://www.oghab-asaluyeh.ir/scanner.zip'>دانلود اسکنر</a>, '21', <DownloadOutlined/>,undefined,undefined),
     getItem(<Link to='../logout'>خروج</Link>, '22', <PoweroffOutlined/>,undefined,undefined,true),

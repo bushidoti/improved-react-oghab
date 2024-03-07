@@ -19,7 +19,7 @@ const LayoutForm: React.FC = () => {
 
     return (
         <Layout>
-              <Sider breakpoint="xl" width={siderW}  className={breakP ? '!fixed !z-[99] ! h-[100vh]' : ''} collapsedWidth={0} onBreakpoint={broken => {
+              <Sider breakpoint="xl" width={siderW} className={breakP ? '!fixed  !z-[99] !h-[100vh] top-0 right-0  bottom-0' : ''} collapsedWidth={0} onBreakpoint={broken => {
                   if (broken) {
                       setSiderW(300)
                       setBreakP(true)

@@ -49,7 +49,7 @@ const Login: React.FC = () => {
 
     return (
         <div className='grid h-screen place-items-center'>
-            <div className='w-[30vw] shadow-2xl shadow-indigo-500/50 bg-cyan-50 p-[2vw] rounded-[25px]  border-[25px]'>
+            <div className='sm:w-[50vw] lg:w-[30vw] mobile:w-[70vw] md:w-[40vw] shadow-2xl shadow-indigo-500/50 bg-cyan-50 p-[2vw] rounded-[25px]  border-[25px]'>
                 <div className='flex flex-col items-center mb-5'>
                     <Avatar shape="square" src={require('../../assets/icons/icon-512x512.png')} size={100} />
                 </div>

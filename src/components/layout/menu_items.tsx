@@ -101,6 +101,7 @@ export const MenuLayout = () => {
     return (
          <Menu
             theme="dark"
+            className='!overflow-auto sm:max-h-[50vh] lg:max-h-[60vh] md:max-h-[55vh] xl:max-h-[100vh] 2xl:max-h-[100vh]'
             defaultSelectedKeys={[window.location.pathname]}
             mode="inline"
             items={items}

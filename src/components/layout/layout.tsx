@@ -41,7 +41,6 @@ const LayoutForm: React.FC = () => {
                         <RouteLayout/>
                     </div>
                 </Content>
-                <Footer style={{textAlign: 'center'}}>تمامی حقوق برای شرکت digitkey می باشد.</Footer>
             </Layout>
         </Layout>
     );

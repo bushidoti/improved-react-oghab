@@ -7,7 +7,7 @@ import {Context} from "../../context";
 import {MenuLayout} from "./menu_items";
 import {RouteLayout} from "./route";
 
-const {Content, Footer, Sider} = Layout;
+const {Content, Sider} = Layout;
 
 
 

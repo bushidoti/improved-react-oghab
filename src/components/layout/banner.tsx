@@ -37,18 +37,18 @@ export const Banner = () => {
 
 
     return (
-          <Marquee speed={100} className='bg-amber-100' pauseOnHover gradient={false}>
+          <Marquee direction={"right"} speed={50} className='bg-amber-100' pauseOnHover gradient={false}>
               <Space size={500}>
                   {
                       event.map((data: any , i : number) => (
-                          <p key={i}>
+                          <p className={'ms-[200px]'} key={i}>
                               {`رویداد امروز :  ${data?.description}`}
                           </p>
                       ))
                   }
                     {
-                      [`امروز ${day} , ${today}`,message].map((data: string) => (
-                          <p className={'me-4'} key={data}>
+                      [`امروز ${day} , ${today}`,message].map((data: string, index: number) => (
+                          <p className={`me-4 ${index === 1 ? 'text-red-800' : null }`} key={data}>
                                {data}
                           </p>
                       ))

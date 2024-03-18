@@ -37,7 +37,7 @@ export const Banner = () => {
 
 
     return (
-          <Marquee direction={"right"} speed={50} className='bg-amber-100' pauseOnHover gradient={false}>
+          <Marquee direction={"right"} speed={100} className='bg-amber-100' pauseOnHover gradient={false}>
               <Space size={500}>
                   {
                       event.map((data: any , i : number) => (

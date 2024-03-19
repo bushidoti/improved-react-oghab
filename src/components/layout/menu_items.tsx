@@ -53,12 +53,6 @@ export const MenuLayout = () => {
 
   const items: MenuItem[] = [
     getItem(<Link to='/'>خانه</Link>, '/', <HomeOutlined/>),
-    getItem(<Link target={"_blank"} style={context.permission !== 'مدیر' ? {pointerEvents:'none'} : {}} to='https://api.oghab-asaluyeh.ir/admin/'>پنل مدیریت</Link>, '2', <PieChartOutlined/> ,  undefined , context.permission !== 'مدیر'),
-
-    getItem(<Link target={"_blank"} style={context.permission !== 'مدیر' ? {pointerEvents:'none'} : {}} to='http://www.oghab-asaluyeh.ir:2082/cpsess6008508683/frontend/
-  jupiter/backup/wizard-backup-type.html?login=1&post_login=3837540636687'>بکاپ</Link>
-        , '3', <CloudSyncOutlined/> ,  undefined , context.permission !== 'مدیر'),
-
     getItem('مدیریت قراردادها', 'sub1', <SolutionOutlined/>, [
 
         getItem(<Link to='../contract'>قراردادها</Link>, '/contract', null, [
@@ -94,6 +88,10 @@ export const MenuLayout = () => {
             getItem(<Link to='../warhouse/property/upload' style={!['Can change property'].some((element: any) => context.permissionD.includes(element)) ? {pointerEvents:'none'} : {}}>بارگذاری فاکتور</Link>, '/warhouse/property/upload',undefined,undefined,!['Can change property'].some((element: any) => context.permissionD.includes(element))),
         ]),
     ] , !['Can view property', 'Can view product'].some((element: any) => context.permissionD.includes(element))),
+     getItem(<Link target={"_blank"} style={context.permission !== 'مدیر' ? {pointerEvents:'none'} : {}} to='https://api.oghab-asaluyeh.ir/admin/'>پنل مدیریت</Link>, '2', <PieChartOutlined/> ,  undefined , context.permission !== 'مدیر'),
+    getItem(<Link target={"_blank"} style={context.permission !== 'مدیر' ? {pointerEvents:'none'} : {}} to='http://www.oghab-asaluyeh.ir:2082/cpsess6008508683/frontend/
+  jupiter/backup/wizard-backup-type.html?login=1&post_login=3837540636687'>بکاپ</Link>
+        , '3', <CloudSyncOutlined/> ,  undefined , context.permission !== 'مدیر'),
     getItem(<a href='https://www.oghab-asaluyeh.ir/scanner.zip'>دانلود اسکنر</a>, '21', <DownloadOutlined/>,undefined,undefined),
     getItem(<Link to='../logout'>خروج</Link>, '22', <PoweroffOutlined/>,undefined,undefined,true),
 ];

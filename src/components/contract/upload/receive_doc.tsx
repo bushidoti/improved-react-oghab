@@ -111,9 +111,9 @@ const ReceiveDoc = () => {
                         colorPrimary: '#faad14',
                     }
                 }}>
-                    <Button type={"primary"} loading={loading} onClick={onPreview}>مشاهده</Button>
+                    <Button type={"primary"} loading={loading} onClick={onPreview} disabled={!selected}>مشاهده</Button>
                 </ConfigProvider>
-                <Button type={"primary"} htmlType={"button"} onClick={onFinish} loading={loading}>دانلود</Button>
+                <Button type={"primary"} htmlType={"button"} onClick={onFinish} loading={loading} disabled={!selected}>دانلود</Button>
                 <Select style={{width: 200}} placeholder="نوع مدرک" options={options} onChange={onValuesChange}/>
                 <Select style={{width: 200}} placeholder="مدرک مورد نظر" options={subDocument} onChange={(value) => {
                     setSelected(value)

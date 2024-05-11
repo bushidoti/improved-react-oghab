@@ -79,7 +79,7 @@ const MainContract: React.FC = () => {
         await axios.get(`${Url}/api/documents/?size=${pagination.pageSize}&page=${pagination.current}&fields=id,contractNumber,name,type_form,dateContract,contractPrice,durationContract,prePaidPrice,goodPrice,typeBail1,firstBail,secondBail,commitmentPrice,typeBail2,firstBail2,secondBail2,topicContract,typeContract,clearedDate,receivedDocument,clearedStatus,office,&${qs.stringify(filteredInfo, {
             encode: false,
             arrayFormat: 'comma'
-        })}&office=${context.permission === 'مدیر اداری' || context.permission === 'مشاهده' ? qs.stringify(filteredInfo, {
+        })}&office=${context.permission === 'مدیر اداری' || context.permission === 'مشاهده' || context.permission === 'مدیر'  ? qs.stringify(filteredInfo, {
             encode: false,
             arrayFormat: 'comma'
         }) : context.office}`, {
@@ -561,7 +561,7 @@ const MainContract: React.FC = () => {
                     value: 'اورهال اصفهان',
                 },
             ],
-            filteredValue: context.permission === 'مدیر اداری' || context.permission === 'مشاهده' ? filteredInfo.office || null : [context.office] || null,
+            filteredValue: context.permission === 'مدیر اداری' || context.permission === 'مشاهده' || context.permission === 'مدیر' ? filteredInfo.office || null : [context.office] || null,
             onFilter: (value, record) => record.office === value,
 
         }

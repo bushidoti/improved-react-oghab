@@ -77,7 +77,7 @@ const MainPersonal: React.FC = () => {
         await axios.get(`${Url}/api/persons/?size=${pagination.pageSize}&page=${pagination.current}&fields=affidavitStatus,id,type,full_name,expireDate,date,national_id,caseNumber,sex,office,job,approvedPrice,commitmentPrice,typeBail,firstBail,secondBail,clearedStatus,clearedDate,receivedDocument,&${qs.stringify(filteredInfo, {
             encode: false,
             arrayFormat: 'comma'
-        })}&office=${context.permission === 'مدیر اداری' || context.permission === 'مشاهده' ? qs.stringify(filteredInfo, {
+        })}&office=${context.permission === 'مدیر اداری' || context.permission === 'مشاهده' || context.permission === 'مدیر'  ? qs.stringify(filteredInfo, {
             encode: false,
             arrayFormat: 'comma'
         }) : context.office}`, {
@@ -528,7 +528,7 @@ const MainPersonal: React.FC = () => {
                     value: 'اورهال اصفهان',
                 },
             ],
-            filteredValue: context.permission === 'مدیر اداری' || context.permission === 'مشاهده' ? filteredInfo.office || null : [context.office] || null,
+            filteredValue: context.permission === 'مدیر اداری' || context.permission === 'مشاهده' || context.permission === 'مدیر'  ? filteredInfo.office || null : [context.office] || null,
             onFilter: (value, record) => record.office === value,
 
         }

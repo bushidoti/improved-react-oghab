@@ -67,7 +67,7 @@ const MainImmovable: React.FC = () => {
         await axios.get(`${Url}/api/immovable/?size=${pagination.pageSize}&page=${pagination.current}&fields=id,typeEstate,name,docNumber,plate,address,landlord,meter,location,madeOf,description,soldDate,buyer,soldStatus,&${qs.stringify(filteredInfo, {
             encode: false,
             arrayFormat: 'comma'
-        })}&location=${context.permission === 'مدیر اداری' || context.permission === 'مشاهده' ? qs.stringify(filteredInfo, {
+        })}&location=${context.permission === 'مدیر اداری' || context.permission === 'مشاهده' || context.permission === 'مدیر'  ? qs.stringify(filteredInfo, {
             encode: false,
             arrayFormat: 'comma'
         }) : context.office}`, {
@@ -360,7 +360,7 @@ const MainImmovable: React.FC = () => {
                     value: 'اورهال اصفهان',
                 },
             ],
-            filteredValue: context.permission === 'مدیر اداری' || context.permission === 'مشاهده' ? filteredInfo.location || null : [context.office] || null,
+            filteredValue: context.permission === 'مدیر اداری' || context.permission === 'مشاهده' || context.permission === 'مدیر'  ? filteredInfo.location || null : [context.office] || null,
             onFilter: (value, record) => record.location === value,
 
         }

@@ -76,7 +76,7 @@ const MainMovable: React.FC = () => {
         await axios.get(`${Url}/api/movable/?size=${pagination.pageSize}&page=${pagination.current}&fields=id,typeVehicle,name,docNumber,motorNumber,chassisNumber,owner,model,madeOf,part1plate,part2plate,part3plate,location,cityPlate,descriptionLocation,paperDoc,insurancePaper,gasCard,carCard,description,soldDate,buyer,soldStatus,&${qs.stringify(filteredInfo, {
             encode: false,
             arrayFormat: 'comma'
-        })}&location=${context.permission === 'مدیر اداری' || context.permission === 'مشاهده' ? qs.stringify(filteredInfo, {
+        })}&location=${context.permission === 'مدیر اداری' || context.permission === 'مشاهده' || context.permission === 'مدیر'  ? qs.stringify(filteredInfo, {
             encode: false,
             arrayFormat: 'comma'
         }) : context.office}`, {
@@ -426,7 +426,7 @@ const MainMovable: React.FC = () => {
                     value: 'اورهال اصفهان',
                 },
             ],
-            filteredValue: context.permission === 'مدیر اداری' || context.permission === 'مشاهده' ? filteredInfo.location || null : [context.office] || null,
+            filteredValue: context.permission === 'مدیر اداری' || context.permission === 'مشاهده' || context.permission === 'مدیر'  ? filteredInfo.location || null : [context.office] || null,
             onFilter: (value, record) => record.location === value,
 
         }

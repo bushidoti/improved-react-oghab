@@ -23,6 +23,7 @@ type ContextType = {
   currentPropertyForm: string;
   compressed: string;
   scan: string;
+  compress: string;
   office: string;
   currentPropertyTable: string;
   propertyTab: string;
@@ -42,6 +43,7 @@ type ContextType = {
   setCurrentDocProperty: SetValueNumber;
   setCurrentProductDoc: SetValueString;
   setCompressed: SetValueString;
+  setCompress: SetValueString;
   setCurrentPropertyTable: SetValueString;
   setPropertyCapsule: SetValueAny;
   setCurrentPropertyForm: SetValueString;
@@ -54,6 +56,7 @@ export const Context = createContext<ContextType>({
     setCurrentPersonal:() => {},
     setCurrentProperty:() => {},
     setCurrentPropertyForm:() => {},
+    setCompress:() => {},
     setCurrentContract:() => {},
     setCurrentProduct:() => {},
     setCurrentProductFactor:() => {},
@@ -75,6 +78,7 @@ export const Context = createContext<ContextType>({
     propertyCapsule: [],
     listPropertyFactor: [],
     compressed: '',
+    compress: '',
     path: '',
     currentPropertyForm: '',
     currentPersonal: 0,

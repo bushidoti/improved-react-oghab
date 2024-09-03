@@ -72,16 +72,16 @@ export default function UploadContract() {
                     {value: 'صفحه 8', label: 'صفحه 8'},
                     {value: 'صفحه 9', label: 'صفحه 9'},
                     {value: 'صفحه 10', label: 'صفحه 10'},
-                    {value: 'صفحه 11', label: 'صفحه 10'},
-                    {value: 'صفحه 12', label: 'صفحه 10'},
-                    {value: 'صفحه 13', label: 'صفحه 10'},
-                    {value: 'صفحه 14', label: 'صفحه 10'},
-                    {value: 'صفحه 15', label: 'صفحه 10'},
-                    {value: 'صفحه 16', label: 'صفحه 10'},
-                    {value: 'صفحه 17', label: 'صفحه 10'},
-                    {value: 'صفحه 18', label: 'صفحه 10'},
-                    {value: 'صفحه 19', label: 'صفحه 10'},
-                    {value: 'صفحه 20', label: 'صفحه 10'},
+                    {value: 'صفحه 11', label: 'صفحه 11'},
+                    {value: 'صفحه 12', label: 'صفحه 12'},
+                    {value: 'صفحه 13', label: 'صفحه 13'},
+                    {value: 'صفحه 14', label: 'صفحه 14'},
+                    {value: 'صفحه 15', label: 'صفحه 15'},
+                    {value: 'صفحه 16', label: 'صفحه 16'},
+                    {value: 'صفحه 17', label: 'صفحه 17'},
+                    {value: 'صفحه 18', label: 'صفحه 18'},
+                    {value: 'صفحه 19', label: 'صفحه 19'},
+                    {value: 'صفحه 20', label: 'صفحه 20'},
                 ])
             } else if (allValues.document.type === 'تضامین') {
                 setSubDocument([
@@ -226,9 +226,19 @@ export default function UploadContract() {
         }).then(async data => {
             if (data.status === 200) {
                 message.success('ثبت شد');
-                form.resetFields();
                 setLoading(false)
-                context.setCompressed('')}
+                form.setFieldValue(['document', 'sub'], null)
+                form.setFieldValue(['document', 'type'], null)
+                setScanButton((prevState) => ({
+                            ...prevState,
+                            upload: true,
+                        }))
+                setScanButton((prevState) => ({
+                    ...prevState,
+                    sub: true,
+                }))
+                context.setCompress('')
+            }
         }).catch((error) => {
             if (error.request.status === 403) {
                 navigate('/no_access')
@@ -304,7 +314,7 @@ export default function UploadContract() {
                     </Form.Item>
                 </ConfigProvider>
                 <Form.Item>
-                    <Button type={"dashed"} danger={true} onClick={() => setVisible(true)} disabled={!context.compressed}>پیش نمایش</Button>
+                    <Button type={"dashed"} danger={true} onClick={() => setVisible(true)} disabled={!context.compress}>پیش نمایش</Button>
                     <Button type={"primary"} htmlType={"submit"} loading={loading} danger={loading} disabled={scanButton.upload}>بارگذاری</Button>
                 </Form.Item>
                 <Form.Item
@@ -312,7 +322,7 @@ export default function UploadContract() {
                     name={['document', 'type']}
                     rules={[{required: true, message: 'نوع مدرک را انتخاب کنید!'}]}
                 >
-                    <Select placeholder="نوع مدرک" options={options} disabled={!context.compressed}/>
+                    <Select placeholder="نوع مدرک" options={options} disabled={!context.compress}/>
                 </Form.Item>
                 <Form.Item
                     style={{width: 200}}

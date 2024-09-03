@@ -10,6 +10,7 @@ interface ButtonState {
     sub?: boolean;
     type?: boolean;
     scan?: boolean;
+    file?: boolean;
 }
 export default function UploadPersonal() {
     const [subDocument, setSubDocument] = useState<object[]>([])
@@ -20,7 +21,7 @@ export default function UploadPersonal() {
     const context = useContext(Context)
     const navigate = useNavigate();
     const [visible, setVisible] = useState(false);
-   const [scanButton, setScanButton] = useState<ButtonState>(
+    const [scanButton, setScanButton] = useState<ButtonState>(
         {
             upload:true,
             sub:true,
@@ -40,6 +41,8 @@ export default function UploadPersonal() {
         {value: 'مدرک تحصیلی', label: 'مدرک تحصیلی'},
         {value: 'قرارداد', label: 'قرارداد'},
     ];
+
+
     const onValuesChange = (changedValues: any, allValues: any) => {
             if (allValues.document.personal) {
                   setScanButton((prevState) => ({
@@ -62,6 +65,7 @@ export default function UploadPersonal() {
                           upload: false,
                         }))
             }
+
         if (changedValues.document.type) {
             if (allValues.document.type === 'شناسنامه') {
                 setSubDocument([
@@ -130,7 +134,7 @@ export default function UploadPersonal() {
                 ])
             }
         } else if (changedValues.document.sub) {
-            if (allValues.document.sub === 'رو') {
+             if (allValues.document.sub === 'رو') {
                 setScannedObject({
                     front_card: context.compressed
                 })
@@ -304,26 +308,38 @@ export default function UploadPersonal() {
 
     const onFinish = async (values: any) => {
         setLoading(true)
-        await axios.put(
-            `${Url}/api/persons/${values.document.personal}/`, scannedObject, {
-                headers: {
-                    'Authorization': 'Bearer ' + localStorage.getItem('access_token'),
-                }
-            }).then(response => {
-            return response
-        }).then(async data => {
-            if (data.status === 200) {
-                message.success('ثبت شد');
-                setLoading(false)
-            }
-        }).catch((error) => {
-            if (error.request.status === 403) {
-                navigate('/no_access')
-            } else if (error.request.status === 400) {
-                message.error('عدم ثبت');
-                setLoading(false)
-            }
-        })
+                await axios.put(
+                    `${Url}/api/persons/${values.document.personal}/`, scannedObject, {
+                        headers: {
+                            'Authorization': 'Bearer ' + localStorage.getItem('access_token'),
+                        }
+                    }).then(response => {
+                    return response
+                }).then(async data => {
+                    if (data.status === 200) {
+                        message.success('ثبت شد');
+                        form.setFieldValue(['document', 'sub'], null)
+                        form.setFieldValue(['document', 'type'], null)
+                        setScanButton((prevState) => ({
+                            ...prevState,
+                            upload: true,
+                        }))
+                        setScanButton((prevState) => ({
+                            ...prevState,
+                            sub: true,
+                        }))
+                        setScannedObject({})
+                        setLoading(false)
+                        context.setCompress('')
+                    }
+                }).catch((error) => {
+                    if (error.request.status === 403) {
+                        navigate('/no_access')
+                    } else if (error.request.status === 400) {
+                        message.error('عدم ثبت');
+                        setLoading(false)
+                    }
+                })
     };
 
     useEffect(() => {
@@ -389,7 +405,7 @@ export default function UploadPersonal() {
                     </Form.Item>
                 </ConfigProvider>
                 <Form.Item>
-                    <Button type={"dashed"} danger={true} onClick={() => setVisible(true)} disabled={!context.compressed}>پیش نمایش</Button>
+                    <Button type={"dashed"} danger={true} onClick={() => setVisible(true)} disabled={!context.compress}>پیش نمایش</Button>
                     <Button type={"primary"} htmlType={"submit"} loading={loading} danger={loading} disabled={scanButton.upload}>بارگذاری</Button>
                 </Form.Item>
                 <Form.Item
@@ -397,7 +413,7 @@ export default function UploadPersonal() {
                     name={['document', 'type']}
                     rules={[{required: true, message: 'نوع مدرک را انتخاب کنید!'}]}
                 >
-                    <Select placeholder="نوع مدرک" options={options} disabled={!context.compressed}/>
+                    <Select placeholder="نوع مدرک" options={options} disabled={!context.compress}/>
                 </Form.Item>
                 <Form.Item
                     style={{width: 200}}

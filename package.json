@@ -15,7 +15,7 @@
     "@types/react": "^18.2.22",
     "@types/react-dom": "^18.2.7",
     "antd": "^5.10.0",
-    "antd-jalali": "^1.0.3",
+    "antd-jalali": "^2.0.1",
     "axios": "^1.5.0",
     "compressorjs": "^1.2.1",
     "jquery": "^3.7.1",

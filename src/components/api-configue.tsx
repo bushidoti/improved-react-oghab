@@ -1,2 +1,2 @@
-const Url = "https://api.oghab-asaluyeh.ir"
+const Url = "w"
 export default Url
